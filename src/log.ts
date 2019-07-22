@@ -18,7 +18,7 @@ const _severity: Record<string, Severity> = {};
 let _callback: (...params: unknown[]) => void;
 
 /**
- * emits to the log listeners when appropriate
+ * calls log callback when appropriate
  * @param component
  * @param severity
  * @param message
@@ -36,7 +36,7 @@ function write<T extends string>(component: T, severity: Severity, message: unkn
 
 export const log = {
   /**
-   * Initialize log
+   * Initialize component log levels and set log event callback
    * @param config
    * @param callback
    */
@@ -48,7 +48,7 @@ export const log = {
   },
 
   /**
-   * Writes an error message for log listeners
+   * Writes an error message to the log
    * @param component
    * @param message
    * @param optionalParams
@@ -58,7 +58,7 @@ export const log = {
   },
 
   /**
-   * Writes an warning message to the log listeners
+   * Writes a warning to the log
    * @param message
    * @param message
    * @param optionalParams
@@ -68,7 +68,7 @@ export const log = {
   },
 
   /**
-   * Writes an info message for the log listeners
+   * Writes an info message to the log
    * @param message
    * @param message
    * @param optionalParams
