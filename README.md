@@ -1,5 +1,5 @@
 # missionlog
-Super simple and flexible logging
+Super simple and flexible logging that's granular
 
 ## Install
 ```shell
@@ -10,9 +10,9 @@ npm install @rmartone/missionlog
 ```typescript
 improt { log } from 'missionlog';
 
-// set max log level for componennts
-log.init({ loader: 'INFO', security: 'ERROR' }, (severity, msg, params): void => {
-  console.log(severity, msg, params);
+// set max log level for subsystem
+log.init({ loader: 'INFO', security: 'ERROR' }, (severity, category, msg, params): void => {
+  console.log(`${severity}: [${category}] msg`, params`);
 });
 ```
 ## Use
