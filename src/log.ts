@@ -1,77 +1,79 @@
-import { Signal } from './signal';
-
 /**
  * Severity (relies on enum being both a number and string)
  */
-export enum Severity {
+enum Severity {
   ERROR = 1,
   WARN,
   INFO,
 }
 
 /**
- * maps a component to its max severity
+ * maps a logging category to its max severity
  */
 const _severity: Record<string, Severity> = {};
 
 /**
- * log event emiiter
+ * log event callback
  */
-let _event: Signal;
+let _callback: (severity: string, category: string, ...params: unknown[]) => void;
 
 /**
- * emits a message to the log listeners when appropriate
- * @param component
+ * calls log callback when appropriate
+ * @param category
  * @param severity
  * @param message
  * @param optionalParams
  */
-function write<T extends string>(component: T, severity: Severity, message: unknown, optionalParams: unknown[]): void {
-  const maxSeverity = _severity[component];
+function write<T extends string>(category: T, severity: Severity, message: unknown, optionalParams: unknown[]): void {
+  const maxSeverity = _severity[category];
   if (maxSeverity === undefined) {
-    throw Error(`component ${component} not configured`);
+    throw Error(`category ${category} not configured`);
   }
   if (severity <= maxSeverity) {
-    _event.dispatch(severity, message, ...optionalParams);
+    _callback(Severity[severity], category, message, optionalParams);
   }
 }
 
 export const log = {
   /**
-   * Initialize log from settings
-   * @param severity log messages with this or greater severaity
-   * @param signal Signal interface that supports add and dispatch
+   * Initialize category log levels and set log event callback
+   * @param config
+   * @param callback
    */
-  init: (config: Record<string, 'ERROR' | 'INFO' | 'WARN'>, signal: Signal): void => {
+  init: (config: Record<string, 'ERROR' | 'INFO' | 'WARN'>, callback: (...params: unknown[]) => void): void => {
     for (const k in config) {
       _severity[k] = Severity[config[k]];
     }
-    _event = signal;
+    _callback = callback;
   },
 
   /**
-   * Writes an error message for log listeners
-   * @param component
+   * Writes an error message to the log
+   * @param category
    * @param message
    * @param optionalParams
    */
-  error: <T extends string>(component: T, message: unknown, ...optionalParams: unknown[]): void => {
-    write(component, Severity.ERROR, message, optionalParams);
+  error: <T extends string>(category: T, message: unknown, ...optionalParams: unknown[]): void => {
+    write(category, Severity.ERROR, message, optionalParams);
   },
 
   /**
-   * Writes an warning message to the log listeners
+   * Writes a warning to the log
    * @param message
+   * @param message
+   * @param optionalParams
    */
-  warn: <T extends string>(component: T, message: unknown, ...optionalParams: unknown[]): void => {
-    write(component, Severity.WARN, message, optionalParams);
+  warn: <T extends string>(category: T, message: unknown, ...optionalParams: unknown[]): void => {
+    write(category, Severity.WARN, message, optionalParams);
   },
 
   /**
-   * Writes an info message for the log listeners
+   * Writes an info message to the log
    * @param message
+   * @param message
+   * @param optionalParams
    */
-  info: <T extends string>(component: T, message: unknown, ...optionalParams: unknown[]): void => {
-    write(component, Severity.INFO, message, optionalParams);
+  info: <T extends string>(category: T, message: unknown, ...optionalParams: unknown[]): void => {
+    write(category, Severity.INFO, message, optionalParams);
   },
 };
