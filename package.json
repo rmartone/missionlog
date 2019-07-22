@@ -5,23 +5,34 @@
   "version": "1.0.0",
   "scripts": {
     "build": "rimraf ./dist && tsc",
-    "lint": "tsc --noEmit && eslint 'src/**/*.ts' --fix"
+    "lint": "tsc --noEmit && eslint 'src/**/*.ts' --fix",
+    "test": "jest"
   },
   "author": "ray martone <rmartone@gmail.com>",
   "dependencies": {
-    "@types/lodash.template": "*",
-    "lodash.template": "*"
+    "@types/lodash.template": "^4.4.6",
+    "lodash.template": "^4.5.0"
   },
   "devDependencies": {
-    "@types/node": "*",
-    "@typescript-eslint/eslint-plugin": "*",
-    "@typescript-eslint/parser": "*",
-    "eslint": "*",
-    "eslint-config-prettier": "*",
-    "eslint-plugin-prettier": "*",
-    "prettier": "*",
-    "rimraf": "*",
-    "typescript": "*"
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "@babel/preset-typescript": "^7.3.3",
+    "@types/jest": "^24.0.15",
+    "@types/node": "^12.6.8",
+    "@typescript-eslint/eslint-plugin": "^1.13.0",
+    "@typescript-eslint/parser": "^1.13.0",
+    "babel-jest": "^24.8.0",
+    "eslint": "^6.1.0",
+    "eslint-config-prettier": "^6.0.0",
+    "eslint-plugin-prettier": "^3.1.0",
+    "jest": "^24.8.0",
+    "prettier": "^1.18.2",
+    "rimraf": "^2.6.3",
+    "typescript": "^3.5.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rmartone/missionlog"
   },
   "engine": "node >= v8.15.0",
   "private": true,
@@ -42,5 +53,23 @@
       "ecmaVersion": 2018,
       "sourceType": "module"
     }
+  },
+  "jest": {
+    "roots": [
+      "./tests"
+    ]
+  },
+  "babel": {
+    "presets": [
+      [
+        "@babel/preset-env",
+        {
+          "targets": {
+            "node": "current"
+          }
+        }
+      ],
+      "@babel/preset-typescript"
+    ]
   }
 }
