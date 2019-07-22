@@ -1,7 +1,7 @@
 {
   "name": "@rmartone/missionlog",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/log.js",
+  "types": "./dist/log.d.ts",
   "version": "1.0.0",
   "scripts": {
     "build": "rimraf ./dist && tsc",

@@ -1,9 +1,7 @@
-import { Signal } from './signal';
-
 /**
  * Severity (relies on enum being both a number and string)
  */
-export enum Severity {
+enum Severity {
   ERROR = 1,
   WARN,
   INFO,
@@ -15,12 +13,12 @@ export enum Severity {
 const _severity: Record<string, Severity> = {};
 
 /**
- * log event emiiter
+ * log event callback
  */
-let _event: Signal;
+let _callback: (...params: unknown[]) => void;
 
 /**
- * emits a message to the log listeners when appropriate
+ * emits to the log listeners when appropriate
  * @param component
  * @param severity
  * @param message
@@ -32,21 +30,21 @@ function write<T extends string>(component: T, severity: Severity, message: unkn
     throw Error(`component ${component} not configured`);
   }
   if (severity <= maxSeverity) {
-    _event.dispatch(Severity[severity], message, optionalParams);
+    _callback(Severity[severity], message, optionalParams);
   }
 }
 
 export const log = {
   /**
-   * Initialize log from settings
-   * @param severity log messages with this or greater severaity
-   * @param signal Signal interface that supports add and dispatch
+   * Initialize log
+   * @param config
+   * @param callback
    */
-  init: (config: Record<string, 'ERROR' | 'INFO' | 'WARN'>, signal: Signal): void => {
+  init: (config: Record<string, 'ERROR' | 'INFO' | 'WARN'>, callback: (...params: unknown[]) => void): void => {
     for (const k in config) {
       _severity[k] = Severity[config[k]];
     }
-    _event = signal;
+    _callback = callback;
   },
 
   /**
@@ -62,6 +60,8 @@ export const log = {
   /**
    * Writes an warning message to the log listeners
    * @param message
+   * @param message
+   * @param optionalParams
    */
   warn: <T extends string>(component: T, message: unknown, ...optionalParams: unknown[]): void => {
     write(component, Severity.WARN, message, optionalParams);
@@ -70,6 +70,8 @@ export const log = {
   /**
    * Writes an info message for the log listeners
    * @param message
+   * @param message
+   * @param optionalParams
    */
   info: <T extends string>(component: T, message: unknown, ...optionalParams: unknown[]): void => {
     write(component, Severity.INFO, message, optionalParams);

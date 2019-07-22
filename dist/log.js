@@ -1,26 +1,26 @@
-export var Severity;
+var Severity;
 (function (Severity) {
     Severity[Severity["ERROR"] = 1] = "ERROR";
     Severity[Severity["WARN"] = 2] = "WARN";
     Severity[Severity["INFO"] = 3] = "INFO";
 })(Severity || (Severity = {}));
 const _severity = {};
-let _event;
+let _onLog;
 function write(component, severity, message, optionalParams) {
     const maxSeverity = _severity[component];
     if (maxSeverity === undefined) {
         throw Error(`component ${component} not configured`);
     }
     if (severity <= maxSeverity) {
-        _event.dispatch(severity, message, ...optionalParams);
+        _onLog(Severity[severity], message, optionalParams);
     }
 }
 export const log = {
-    init: (config, signal) => {
+    init: (config, callback) => {
         for (const k in config) {
             _severity[k] = Severity[config[k]];
         }
-        _event = signal;
+        _onLog = callback;
     },
     error: (component, message, ...optionalParams) => {
         write(component, Severity.ERROR, message, optionalParams);
