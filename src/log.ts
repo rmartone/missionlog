@@ -32,7 +32,7 @@ function write<T extends string>(component: T, severity: Severity, message: unkn
     throw Error(`component ${component} not configured`);
   }
   if (severity <= maxSeverity) {
-    _event.dispatch(severity, message, optionalParams);
+    _event.dispatch(Severity[severity], message, optionalParams);
   }
 }
 

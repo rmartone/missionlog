@@ -1,21 +1,23 @@
 # missionlog
-Simple and flexible logging for javascript
+Simple and flexible logging
 
-### Setup
-Download
+## Install
 ```shell
 npm install @rmartone/missionlog
 ```
 
-Initialize
-```javascript
+## Initialize
+```typescript
 improt { log, Severity } from 'missionlog';
 
+// specify components and their max log level
 log.init({ loader: 'INFO', system: 'ERROR }, (severity, msg, params) => {
-  console.log(Severity[severity], msg, ...params);
+  console.log(severity, msg, ...params);
 });
 ```
-And use
-```javascript
-log.info('loader', 'asset loaded');
+## Use
+```typescript
+log.error('loader', 'asset failed to load');
+
+log.info('system', 'object created');
 ```
