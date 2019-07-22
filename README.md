@@ -3,7 +3,7 @@ Super simple and flexible logging that's granular
 
 ## Install
 ```shell
-npm install @rmartone/missionlog
+npm install missionlog
 ```
 
 ## Initialize
