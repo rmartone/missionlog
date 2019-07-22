@@ -1,5 +1,5 @@
 {
-  "name": "@rmartone/missionlog",
+  "name": "missionlog",
   "main": "./dist/log.js",
   "types": "./dist/log.d.ts",
   "version": "1.0.0",
