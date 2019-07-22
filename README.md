@@ -1,5 +1,5 @@
 # missionlog
-Super simple and flexible logging that's granular
+lightweight and granular logging that's flexible
 
 ## Install
 ```shell
@@ -10,13 +10,17 @@ npm install missionlog
 ```typescript
 improt { log } from 'missionlog';
 
-// set max log level for subsystem
+// set the max log level for various subsystem
 log.init({ loader: 'INFO', security: 'ERROR' }, (severity, category, msg, params): void => {
-  console.log(`${severity}: [${category}] ${msg}`, ...params);
+  // use chalk, send JSON to a service or log objects to the console...
+  console.log(`${severity}: [${category}] `, msg, ...params);
 });
 ```
 ## Use
 ```typescript
-log.error('loader', 'asset failed to load');
+log.error('loader', 'failed to load', url);
+log.error('security', 'not authorized');
+log.info('loader', 'asset was loaded', url);
+// filtered since 'security' was set to ERROR or higher
 log.info('security', 'login successful');
 ```

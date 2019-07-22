@@ -15,7 +15,8 @@ const _severity: Record<string, Severity> = {};
 /**
  * log event callback
  */
-let _callback: (severity: string, category: string, ...params: unknown[]) => void;
+type Callback = (severity: string, category: string, message: unknown, optionalParams: unknown[]) => void;
+let _callback: Callback;
 
 /**
  * calls log callback when appropriate
@@ -40,7 +41,7 @@ export const log = {
    * @param config
    * @param callback
    */
-  init: (config: Record<string, 'ERROR' | 'INFO' | 'WARN'>, callback: (...params: unknown[]) => void): void => {
+  init: (config: Record<string, 'ERROR' | 'INFO' | 'WARN'>, callback: Callback): void => {
     for (const k in config) {
       _severity[k] = Severity[config[k]];
     }
@@ -59,7 +60,7 @@ export const log = {
 
   /**
    * Writes a warning to the log
-   * @param message
+   * @param category
    * @param message
    * @param optionalParams
    */
@@ -69,7 +70,7 @@ export const log = {
 
   /**
    * Writes an info message to the log
-   * @param message
+   * @param category
    * @param message
    * @param optionalParams
    */
