@@ -8,7 +8,7 @@ enum Severity {
 }
 
 /**
- * maps a component to its max severity
+ * maps a logging category to its max severity
  */
 const _severity: Record<string, Severity> = {};
 
@@ -19,15 +19,15 @@ let _callback: (...params: unknown[]) => void;
 
 /**
  * calls log callback when appropriate
- * @param component
+ * @param category
  * @param severity
  * @param message
  * @param optionalParams
  */
-function write<T extends string>(component: T, severity: Severity, message: unknown, optionalParams: unknown[]): void {
-  const maxSeverity = _severity[component];
+function write<T extends string>(category: T, severity: Severity, message: unknown, optionalParams: unknown[]): void {
+  const maxSeverity = _severity[category];
   if (maxSeverity === undefined) {
-    throw Error(`component ${component} not configured`);
+    throw Error(`category ${category} not configured`);
   }
   if (severity <= maxSeverity) {
     _callback(Severity[severity], message, optionalParams);
@@ -36,7 +36,7 @@ function write<T extends string>(component: T, severity: Severity, message: unkn
 
 export const log = {
   /**
-   * Initialize component log levels and set log event callback
+   * Initialize category log levels and set log event callback
    * @param config
    * @param callback
    */
@@ -49,12 +49,12 @@ export const log = {
 
   /**
    * Writes an error message to the log
-   * @param component
+   * @param category
    * @param message
    * @param optionalParams
    */
-  error: <T extends string>(component: T, message: unknown, ...optionalParams: unknown[]): void => {
-    write(component, Severity.ERROR, message, optionalParams);
+  error: <T extends string>(category: T, message: unknown, ...optionalParams: unknown[]): void => {
+    write(category, Severity.ERROR, message, optionalParams);
   },
 
   /**
@@ -63,8 +63,8 @@ export const log = {
    * @param message
    * @param optionalParams
    */
-  warn: <T extends string>(component: T, message: unknown, ...optionalParams: unknown[]): void => {
-    write(component, Severity.WARN, message, optionalParams);
+  warn: <T extends string>(category: T, message: unknown, ...optionalParams: unknown[]): void => {
+    write(category, Severity.WARN, message, optionalParams);
   },
 
   /**
@@ -73,7 +73,7 @@ export const log = {
    * @param message
    * @param optionalParams
    */
-  info: <T extends string>(component: T, message: unknown, ...optionalParams: unknown[]): void => {
-    write(component, Severity.INFO, message, optionalParams);
+  info: <T extends string>(category: T, message: unknown, ...optionalParams: unknown[]): void => {
+    write(category, Severity.INFO, message, optionalParams);
   },
 };

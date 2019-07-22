@@ -1,5 +1,5 @@
 # missionlog
-Simple and flexible logging
+Super simple and flexible logging
 
 ## Install
 ```shell
@@ -10,14 +10,13 @@ npm install @rmartone/missionlog
 ```typescript
 improt { log } from 'missionlog';
 
-// specify components and their max log level
-log.init({ loader: 'INFO', system: 'ERROR' }, (severity, msg, params): void => {
+// set max log level for componennts
+log.init({ loader: 'INFO', security: 'ERROR' }, (severity, msg, params): void => {
   console.log(severity, msg, params);
 });
 ```
 ## Use
 ```typescript
 log.error('loader', 'asset failed to load');
-
-log.info('system', 'object created');
+log.info('security', 'login successful');
 ```
