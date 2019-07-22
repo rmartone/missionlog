@@ -1,3 +1,5 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var Severity;
 (function (Severity) {
     Severity[Severity["ERROR"] = 1] = "ERROR";
@@ -15,7 +17,7 @@ function write(category, severity, message, optionalParams) {
         _callback(Severity[severity], category, message, optionalParams);
     }
 }
-export const log = {
+exports.log = {
     init: (config, callback) => {
         for (const k in config) {
             _severity[k] = Severity[config[k]];
