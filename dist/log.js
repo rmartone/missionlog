@@ -5,14 +5,14 @@ var Severity;
     Severity[Severity["INFO"] = 3] = "INFO";
 })(Severity || (Severity = {}));
 const _severity = {};
-let _onLog;
-function write(component, severity, message, optionalParams) {
-    const maxSeverity = _severity[component];
+let _callback;
+function write(category, severity, message, optionalParams) {
+    const maxSeverity = _severity[category];
     if (maxSeverity === undefined) {
-        throw Error(`component ${component} not configured`);
+        throw Error(`category ${category} not configured`);
     }
     if (severity <= maxSeverity) {
-        _onLog(Severity[severity], message, optionalParams);
+        _callback(Severity[severity], category, message, optionalParams);
     }
 }
 export const log = {
@@ -20,15 +20,15 @@ export const log = {
         for (const k in config) {
             _severity[k] = Severity[config[k]];
         }
-        _onLog = callback;
+        _callback = callback;
     },
-    error: (component, message, ...optionalParams) => {
-        write(component, Severity.ERROR, message, optionalParams);
+    error: (category, message, ...optionalParams) => {
+        write(category, Severity.ERROR, message, optionalParams);
     },
-    warn: (component, message, ...optionalParams) => {
-        write(component, Severity.WARN, message, optionalParams);
+    warn: (category, message, ...optionalParams) => {
+        write(category, Severity.WARN, message, optionalParams);
     },
-    info: (component, message, ...optionalParams) => {
-        write(component, Severity.INFO, message, optionalParams);
+    info: (category, message, ...optionalParams) => {
+        write(category, Severity.INFO, message, optionalParams);
     },
 };

@@ -9,6 +9,7 @@
     "test": "jest"
   },
   "author": "ray martone <rmartone@gmail.com>",
+  "license": "MIT",
   "dependencies": {
     "@types/lodash.template": "^4.4.6",
     "lodash.template": "^4.5.0"
@@ -35,7 +36,6 @@
     "url": "https://github.com/rmartone/missionlog"
   },
   "engine": "node >= v8.15.0",
-  "private": true,
   "prettier": {
     "semi": true,
     "trailingComma": "all",

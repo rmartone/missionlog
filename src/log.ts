@@ -15,7 +15,7 @@ const _severity: Record<string, Severity> = {};
 /**
  * log event callback
  */
-let _callback: (...params: unknown[]) => void;
+let _callback: (severity: string, category: string, ...params: unknown[]) => void;
 
 /**
  * calls log callback when appropriate
@@ -30,7 +30,7 @@ function write<T extends string>(category: T, severity: Severity, message: unkno
     throw Error(`category ${category} not configured`);
   }
   if (severity <= maxSeverity) {
-    _callback(Severity[severity], message, optionalParams);
+    _callback(Severity[severity], category, message, optionalParams);
   }
 }
 
