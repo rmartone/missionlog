@@ -12,7 +12,7 @@ improt { log } from 'missionlog';
 
 // set max log level for subsystem
 log.init({ loader: 'INFO', security: 'ERROR' }, (severity, category, msg, params): void => {
-  console.log(`${severity}: [${category}] msg`, params`);
+  console.log(`${severity}: [${category}] ${msg}`, params`);
 });
 ```
 ## Use
