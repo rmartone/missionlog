@@ -1,4 +1,4 @@
-import { log } from '../src/log';
+import { log } from '../src';
 
 let output: string;
 log.init({ loader: 'INFO', security: 'ERROR', system: 'OFF' }, (level, category, msg, params): void => {
