@@ -1,5 +1,4 @@
-# missionlog
-[![NPM version][npm-image]][npm-url] [![NPM downloads](https://img.shields.io/npm/dw/missionlog.svg)][npm-url] [![Build status](https://travis-ci.com/rmartone/missionlog.svg)](https://travis-ci.com/rmartone/missionlog)
+# missionlog [![NPM version][npm-image]][npm-url] [![NPM downloads](https://img.shields.io/npm/dw/missionlog.svg)][npm-url] [![Build status](https://travis-ci.com/rmartone/missionlog.svg)](https://travis-ci.com/rmartone/missionlog) [![Coverage Status](https://coveralls.io/repos/github/rmartone/missionlog/badge.svg?branch=master)](https://coveralls.io/github/rmartone/missionlog?branch=master)
 
 [npm-image]: https://img.shields.io/npm/v/missionlog.svg?style=flat
 [npm-url]: https://www.npmjs.com/package/missionlog

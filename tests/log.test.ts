@@ -59,3 +59,9 @@ test('log objects', (): void => {
   log.info(category, msg, param1, param2);
   expect(output).toBe(`INFO: [${category}] ${msg}, ${param1}, ${param2}`);
 });
+
+test('bad ccategory', (): void => {
+  expect((): void => {
+    log.info('undefined_category', 'and a bogus message');
+  }).toThrow(Error);
+});
