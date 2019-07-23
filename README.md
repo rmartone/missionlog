@@ -1,7 +1,8 @@
-# missionlog [![NPM version][npm-image]][npm-url] [![NPM downloads](https://img.shields.io/npm/dw/missionlog.svg)](https://www.npmjs.com/package/missionlog) [![Build status](https://travis-ci.org/pimterry/missionlog.png)](https://travis-ci.org/pimterry/missionlog)
+# missionlog
+[![NPM version][npm-image]][npm-url][![NPM downloads](https://img.shields.io/npm/dw/missionlog.svg)][npm-url][![Build status](https://travis-ci.com/rmartone/missionlog.svg)](https://travis-ci.com/rmartone/missionlog)
 
 [npm-image]: https://img.shields.io/npm/v/missionlog.svg?style=flat
-[npm-url]: https://npmjs.org/package/missionlog
+[npm-url]: https://www.npmjs.com/package/missionlog
 
 Provides lightweight easy to use level-based logging and category filtering with minimal overhead. Missionlog is a barebones reliable everyday logging library. It isn't fancy or complicated, but it does everything you're likely to need.
 
