@@ -1,4 +1,4 @@
-# missionlog
+# missionlog [![NPM version][npm-image]][npm-url] [![NPM downloads](https://img.shields.io/npm/dw/missionlog.svg)](https://www.npmjs.com/package/missionlog) [![Build status](https://travis-ci.org/pimterry/missionlog.png)](https://travis-ci.org/pimterry/missionlog)
 
 Provides lightweight easy to use level-based logging and category filtering for JavaScript and TypeScript. Missionlog is a barebones reliable everyday  logging library. It isn't fancy (or complicated), but it does everything you're likely to need.
 
