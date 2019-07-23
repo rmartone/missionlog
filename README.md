@@ -47,3 +47,5 @@ log.info('security', 'login successful');
 // filtered since system's log level is turned OFF
 log.error('system', 'eject the warp core', error);
 ```
+
+![console](https://raw.githubusercontent.com/rmartone/missionlog/master/console.jpg)
