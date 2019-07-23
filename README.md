@@ -18,12 +18,12 @@ Provides lightweight easy to use level-based logging and category filtering with
 * Includes **TypeScript definitions** so no `@types` needed
 * Super small footprint with **zero dependencies**
 
-## Install
+### Install
 ```shell
 npm install missionlog
 ```
 
-## Initialize
+### Initialize
 ```typescript
 improt { log } from 'missionlog';
 
@@ -37,7 +37,7 @@ log.init({ loader: 'INFO', security: 'ERROR', system: 'OFF' }, (level, category,
   console.log(`${level}: [${category}] `, msg, ...params);
 });
 ```
-## Use
+### Use
 ```typescript
 log.warn('loader', 'failed to load', url);
 log.error('security', 'not authorized');
@@ -48,5 +48,5 @@ log.info('security', 'login successful');
 log.error('system', 'eject the warp core', error);
 ```
 
-## Result
+### Result
 ![console](https://raw.githubusercontent.com/rmartone/missionlog/master/console.jpg)
