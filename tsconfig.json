@@ -4,7 +4,6 @@
     "target": "es6",
     "module": "commonjs",
     "forceConsistentCasingInFileNames": true,
-    "importHelpers": true,
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "removeComments": true,
