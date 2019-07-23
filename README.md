@@ -16,7 +16,7 @@ Provides lightweight easy to use level-based logging and category filtering with
 * API mirrors `console.log` **logs objects** and **supports rest parameters**
 * **CommonJS** module that works with node and browser through any bundler
 * Includes **TypeScript definitions** so no `@types` needed
-* Super small footprint with **zero dependencies**
+* **Super small footprint** with **zero dependencies**
 
 ### Install
 ```shell
