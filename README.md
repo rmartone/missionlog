@@ -1,19 +1,22 @@
 # missionlog [![NPM version][npm-image]][npm-url] [![NPM downloads](https://img.shields.io/npm/dw/missionlog.svg)](https://www.npmjs.com/package/missionlog) [![Build status](https://travis-ci.org/pimterry/missionlog.png)](https://travis-ci.org/pimterry/missionlog)
 
-Provides lightweight easy to use level-based logging and category filtering for JavaScript and TypeScript. Missionlog is a barebones reliable everyday  logging library. It isn't fancy (or complicated), but it does everything you're likely to need.
+[npm-image]: https://img.shields.io/npm/v/missionlog.svg?style=flat
+[npm-url]: https://npmjs.org/package/missionlog
+
+Provides lightweight easy to use level-based logging and category filtering with minimal overhead. Missionlog is a barebones reliable everyday logging library. It isn't fancy or complicated, but it does everything you're likely to need.
 
 # Features
-* Simple JSON configuration
-* Filter by level (SILENT < ERROR < WARN < INFO)
-* Filter by named category (eg 'system' | 'whatever' )
-* Flexible log event callback
+* Simple **JSON configuration**
+* Filter by level `SILENT < ERROR < WARN < INFO`
+* Filter by named category `'system' | 'whatever'`
+* **Flexible** log event callback
   * Style terminal output with chalk
   * Send JSON to a cloud logging service like Splunk
   * Log strings and objects to the browser's console
-* API mirrors `console.log`, logs objects and supports rest parameters
-* UMD module that works with node and browser
-* Includes TypeScript definitions so no @types needed
-* Super small footprint with zero dependencies
+* API mirrors `console.log`, **logs objects** and **supports rest parameters**
+* **UMD module** that works with node and browser
+* Includes **TypeScript definitions** so no `@types` needed
+* Super **small footprint** with **zero dependencies**
 
 ## Install
 ```shell
