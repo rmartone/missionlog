@@ -11,7 +11,7 @@
     "allowSyntheticDefaultImports": true,
     "noUnusedParameters": true,
     "declaration": true,
-    "outDir": "./dist"
+    "outDir": "."
   },
-  "include": ["./src/*.ts"]
+  "files": ["./src/index.ts"]
 }
