@@ -2,7 +2,7 @@
   "name": "missionlog",
   "main": "./dist/log.js",
   "types": "./dist/log.d.ts",
-  "version": "1.0.9",
+  "version": "1.0.13",
   "keywords": [
     "missionlog",
     "log",
