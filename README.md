@@ -1,5 +1,5 @@
 # missionlog
-lightweight granular logging for both node and browser
+lightweight granular logging for node and browser
 
 ## Install
 ```shell
