@@ -7,7 +7,6 @@
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "removeComments": true,
-    "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "noUnusedParameters": true,
     "declaration": true,
