@@ -1,8 +1,9 @@
 /**
- * Severity (relies on enum being both a number and string)
+ * Level (relies on enum being both a number and string)
  */
-enum Severity {
-  ERROR = 1,
+enum Level {
+  OFF = 1,
+  ERROR,
   WARN,
   INFO,
 }
@@ -10,28 +11,28 @@ enum Severity {
 /**
  * maps a logging category to its max severity
  */
-const _severity: Record<string, Severity> = {};
+const _level: Record<string, Level> = {};
 
 /**
  * log event callback
  */
-type Callback = (severity: string, category: string, message: unknown, optionalParams: unknown[]) => void;
+type Callback = (level: string, category: string, message: unknown, optionalParams: unknown[]) => void;
 let _callback: Callback;
 
 /**
  * calls log callback when appropriate
  * @param category
- * @param severity
+ * @param level
  * @param message
  * @param optionalParams
  */
-function write<T extends string>(category: T, severity: Severity, message: unknown, optionalParams: unknown[]): void {
-  const maxSeverity = _severity[category];
-  if (maxSeverity === undefined) {
+function write<T extends string>(category: T, level: Level, message: unknown, optionalParams: unknown[]): void {
+  const maxLevel = _level[category];
+  if (maxLevel === undefined) {
     throw Error(`category ${category} not configured`);
   }
-  if (severity <= maxSeverity) {
-    _callback(Severity[severity], category, message, optionalParams);
+  if (level <= maxLevel) {
+    _callback(Level[level], category, message, optionalParams);
   }
 }
 
@@ -41,9 +42,9 @@ export const log = {
    * @param config
    * @param callback
    */
-  init: (config: Record<string, 'ERROR' | 'INFO' | 'WARN'>, callback: Callback): void => {
+  init: (config: Record<string, 'OFF' | 'ERROR' | 'INFO' | 'WARN'>, callback: Callback): void => {
     for (const k in config) {
-      _severity[k] = Severity[config[k]];
+      _level[k] = Level[config[k]];
     }
     _callback = callback;
   },
@@ -55,7 +56,7 @@ export const log = {
    * @param optionalParams
    */
   error: <T extends string>(category: T, message: unknown, ...optionalParams: unknown[]): void => {
-    write(category, Severity.ERROR, message, optionalParams);
+    write(category, Level.ERROR, message, optionalParams);
   },
 
   /**
@@ -65,7 +66,7 @@ export const log = {
    * @param optionalParams
    */
   warn: <T extends string>(category: T, message: unknown, ...optionalParams: unknown[]): void => {
-    write(category, Severity.WARN, message, optionalParams);
+    write(category, Level.WARN, message, optionalParams);
   },
 
   /**
@@ -75,6 +76,6 @@ export const log = {
    * @param optionalParams
    */
   info: <T extends string>(category: T, message: unknown, ...optionalParams: unknown[]): void => {
-    write(category, Severity.INFO, message, optionalParams);
+    write(category, Level.INFO, message, optionalParams);
   },
 };

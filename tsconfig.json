@@ -2,7 +2,8 @@
   "compilerOptions": {
     "strict": true,
     "target": "es6",
-    "module": "commonjs",
+    "module": "UMD",
+    "moduleResolution": "node",
     "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,
     "noUnusedLocals": true,

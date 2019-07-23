@@ -1,20 +1,19 @@
 # missionlog
 
-Provides lightweight easy to use level-based logging and category filtering for JavaScript and TypeScript within a minimal footprint.
+Provides lightweight easy to use level-based logging and category filtering for JavaScript and TypeScript. Missionlog is a barebones reliable everyday  logging library. It isn't fancy (or complicated), but it does everything you're likely to need.
 
-Missionlog is a barebones reliable everyday es6 logging library written in TypeScript. It isn't fancy (or complicated), but it does everything you're likely to need:
-
-## Features
+# Features
 * Simple JSON configuration
 * Filter by level (SILENT < ERROR < WARN < INFO)
-* Filter by arbitrary named category (eg 'system' | 'whatever' )
+* Filter by named category (eg 'system' | 'whatever' )
 * Flexible log event callback
-  * style terminal output with chalk
-  * send JSON to a cloud logging service like splunk
-  * log strings and objects to the browser's console
-* Mirrors console's supports for logging objects and rest parameters
-* Works on node and browser (UMD module)
+  * Style terminal output with chalk
+  * Send JSON to a cloud logging service like Splunk
+  * Log strings and objects to the browser's console
+* API mirrors `console.log`, logs objects and supports rest parameters
+* UMD module that works with node and browser
 * Includes TypeScript definitions so no @types needed
+* Super small footprint with zero dependencies
 
 ## Install
 ```shell
@@ -25,14 +24,14 @@ npm install missionlog
 ```typescript
 improt { log } from 'missionlog';
 
-// Set the max severity to log for arbitrary categories
+// Set the max level to log for arbitrary categories
 // where INFO > WARN > ERROR > OFF
-log.init({ loader: 'INFO', security: 'ERROR', system: 'OFF' }, (severity, category, msg, params): void => {
+log.init({ loader: 'INFO', security: 'ERROR', system: 'OFF' }, (level, category, msg, params): void => {
   // then log the way that works best for you
   //  * style terminal output with chalk
-  //  * send JSON to a cloud logging service like splunk
+  //  * send JSON to a cloud logging service like Splunk
   //  * log strings and objects to the browser's console
-  console.log(`${severity}: [${category}] `, msg, ...params);
+  console.log(`${level}: [${category}] `, msg, ...params);
 });
 ```
 ## Use
@@ -40,8 +39,8 @@ log.init({ loader: 'INFO', security: 'ERROR', system: 'OFF' }, (severity, catego
 log.error('loader', 'failed to load', url);
 log.error('security', 'not authorized');
 log.info('loader', 'asset loaded', { name, url });
-// filtered since category's max severity ERROR is less than INFO
+// filtered since security's log level ERROR is less than INFO
 log.info('security', 'login successful');
-// filtered since system's level set to silent
+// filtered since system's log level is turned OFF
 log.error('system', 'eject the warp core', error);
 ```

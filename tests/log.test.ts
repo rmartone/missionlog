@@ -1,12 +1,12 @@
 import { log } from '../src/log';
 
 let output: string;
-log.init({ loader: 'INFO', security: 'ERROR' }, (severity, category, msg, params): void => {
-  output = `${severity}: [${category}] ${msg}`;
+log.init({ loader: 'INFO', security: 'ERROR', system: 'OFF' }, (level, category, msg, params): void => {
+  output = `${level}: [${category}] ${msg}`;
   for (const param of params) {
     output += `, ${param}`;
   }
-  // console.log(`${severity}: [${category}]`, msg, ...params);
+  // console.log(`${level}: [${category}]`, msg, ...params);
 });
 
 test('log info', (): void => {
@@ -37,6 +37,14 @@ test('log error', (): void => {
 test('filter category', (): void => {
   const category = 'security';
   const msg = 'login success';
+  output = '';
+  log.info(category, msg);
+  expect(output).toBe('');
+});
+
+test('silent category', (): void => {
+  const category = 'system';
+  const msg = 'warp core breach';
   output = '';
   log.info(category, msg);
   expect(output).toBe('');
