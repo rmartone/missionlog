@@ -3,6 +3,10 @@
   "main": "./dist/log.js",
   "types": "./dist/log.d.ts",
   "version": "1.0.6",
+  "keywords": [
+    "log",
+    "logger"
+  ],
   "scripts": {
     "build": "rimraf ./dist && tsc",
     "lint": "tsc --noEmit && eslint 'src/**/*.ts' --fix",
