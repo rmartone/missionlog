@@ -10,14 +10,14 @@ Provides lightweight easy to use level-based logging and category filtering with
 * Simple **JSON configuration**
 * Filter by level `SILENT < ERROR < WARN < INFO`
 * Filter by named category `'system' | 'whatever'`
-* **Flexible** log event callback
+* Flexible log event callback
   * Style terminal output with chalk
   * Send JSON to a cloud logging service like Splunk
   * Log strings and objects to the browser's console
-* API mirrors `console.log`, **logs objects** and **supports rest parameters**
+* API mirrors `console.log` **logs objects** and **supports rest parameters**
 * **UMD module** that works with node and browser
 * Includes **TypeScript definitions** so no `@types` needed
-* Super **small footprint** with **zero dependencies**
+* Super small footprint with **zero dependencies**
 
 ## Install
 ```shell

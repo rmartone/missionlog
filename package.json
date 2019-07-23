@@ -13,6 +13,7 @@
   ],
   "scripts": {
     "build": "rimraf ./dist && tsc",
+    "coveralls": "jest --coverage && cat ./coverage/lcov.info | coveralls",
     "lint": "tsc --noEmit && eslint 'src/**/*.ts' --fix",
     "test": "jest"
   },
@@ -27,6 +28,7 @@
     "@typescript-eslint/eslint-plugin": "^1.13.0",
     "@typescript-eslint/parser": "^1.13.0",
     "babel-jest": "^24.8.0",
+    "coveralls": "^3.0.5",
     "eslint": "^6.1.0",
     "eslint-config-prettier": "^6.0.0",
     "eslint-plugin-prettier": "^3.1.0",
