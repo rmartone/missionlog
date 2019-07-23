@@ -42,8 +42,10 @@ log.init({ loader: 'INFO', security: 'ERROR', system: 'OFF' }, (level, category,
 log.warn('loader', 'failed to load', url);
 log.error('security', 'not authorized');
 log.info('loader', 'asset loaded', { name, url });
+
 // filtered since security's log level ERROR is less than INFO
 log.info('security', 'login successful');
+
 // filtered since system's log level is turned OFF
 log.error('system', 'eject the warp core', error);
 ```
