@@ -48,5 +48,5 @@ log.info('security', 'login successful');
 log.error('system', 'eject the warp core', error);
 ```
 
-
+## Result
 ![console](https://raw.githubusercontent.com/rmartone/missionlog/master/console.jpg)
