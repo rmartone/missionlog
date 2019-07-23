@@ -10,7 +10,7 @@ npm install missionlog
 ```typescript
 improt { log } from 'missionlog';
 
-// Set the max log level for arbitrary categories
+// Set the max severity to log for arbitrary categories
 // where INFO > WARN > ERROR
 log.init({ loader: 'INFO', security: 'ERROR' }, (severity, category, msg, params): void => {
   // then log the way that works best for you
@@ -25,6 +25,6 @@ log.init({ loader: 'INFO', security: 'ERROR' }, (severity, category, msg, params
 log.error('loader', 'failed to load', url);
 log.error('security', 'not authorized');
 log.info('loader', 'asset loaded', url);
-// filtered since security's max log level is ERROR
+// filtered since security's max severity is ERROR which is less than INFO
 log.info('security', 'login successful');
 ```
