@@ -10,9 +10,13 @@ npm install missionlog
 ```typescript
 improt { log } from 'missionlog';
 
-// set the max log level for various subsystem
+// Set the max log level for arbitrary categories
+// where INFO > WARN > ERROR
 log.init({ loader: 'INFO', security: 'ERROR' }, (severity, category, msg, params): void => {
-  // use chalk, send JSON to a service or log objects to the console...
+  // then log the way that works best for you
+  //  * style terminal output with chalk
+  //  * send JSON to a cloud logging service like splunk
+  //  * log strings and objects to the browser's console
   console.log(`${severity}: [${category}] `, msg, ...params);
 });
 ```
@@ -20,7 +24,7 @@ log.init({ loader: 'INFO', security: 'ERROR' }, (severity, category, msg, params
 ```typescript
 log.error('loader', 'failed to load', url);
 log.error('security', 'not authorized');
-log.info('loader', 'asset was loaded', url);
-// filtered since 'security' was set to ERROR or higher
+log.info('loader', 'asset loaded', url);
+// filtered since security's max log level is ERROR
 log.info('security', 'login successful');
 ```
