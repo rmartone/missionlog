@@ -2,7 +2,7 @@
   "name": "missionlog",
   "main": "index.js",
   "types": "index.d.ts",
-  "version": "1.0.17",
+  "version": "1.0.18",
   "keywords": [
     "log",
     "logger",
@@ -11,15 +11,21 @@
     "node"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "yarn build:types && yarn build:js",
+    "build:types": "tsc --emitDeclarationOnly",
+    "build:js": "babel src --out-dir . --extensions \".ts\"",
     "coverage": "jest --coverage && cat ./coverage/lcov.info | coveralls",
-    "lint": "tsc --noEmit && eslint 'src/**/*.ts' --fix",
+    "lint": "tsc --noEmit && eslint 'src/*.ts' --fix",
     "test": "jest"
   },
   "author": "ray martone <rmartone@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "@babel/cli": "^7.5.5",
     "@babel/core": "^7.5.5",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/plugin-proposal-numeric-separator": "^7.2.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
     "@babel/preset-typescript": "^7.3.3",
     "@types/jest": "^24.0.15",
@@ -64,16 +70,26 @@
     ]
   },
   "babel": {
+    "comments": false,
     "presets": [
       [
         "@babel/preset-env",
         {
           "targets": {
-            "node": "current"
+            "browsers": [
+              "last 1 version",
+              "> 1%",
+              "maintained node versions",
+              "not dead"
+            ]
           }
         }
       ],
       "@babel/preset-typescript"
+    ],
+    "plugins": [
+      "@babel/proposal-class-properties",
+      "@babel/proposal-object-rest-spread"
     ]
   }
 }
