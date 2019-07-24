@@ -2,7 +2,7 @@
   "name": "missionlog",
   "main": "index.js",
   "types": "index.d.ts",
-  "version": "1.0.15",
+  "version": "1.0.16",
   "keywords": [
     "missionlog",
     "log",
@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "build": "tsc",
-    "coveralls": "jest --coverage && cat ./coverage/lcov.info | coveralls",
+    "coverage": "jest --coverage && cat ./coverage/lcov.info | coveralls",
     "lint": "tsc --noEmit && eslint 'src/**/*.ts' --fix",
     "test": "jest"
   },

@@ -1,10 +1,10 @@
 import { log } from '../src';
 
-let output: string;
+let buffer: string;
 log.init({ loader: 'INFO', security: 'ERROR', system: 'OFF' }, (level, category, msg, params): void => {
-  output = `${level}: [${category}] ${msg}`;
+  buffer += `${level}: [${category}] ${msg}`;
   for (const param of params) {
-    output += `, ${param}`;
+    buffer += `, ${param}`;
   }
   // console.log(`${level}: [${category}]`, msg, ...params);
 });
@@ -13,41 +13,41 @@ test('log info', (): void => {
   const category = 'loader';
   const msg = 'asset failed to load';
   const url = 'image.png';
-  output = '';
+  buffer = '';
   log.info(category, msg, url);
-  expect(output).toBe(`INFO: [${category}] ${msg}, ${url}`);
+  expect(buffer).toBe(`INFO: [${category}] ${msg}, ${url}`);
 });
 
 test('log warning', (): void => {
   const category = 'loader';
   const msg = 'asset failed to load';
-  output = '';
+  buffer = '';
   log.warn(category, msg);
-  expect(output).toBe(`WARN: [${category}] ${msg}`);
+  expect(buffer).toBe(`WARN: [${category}] ${msg}`);
 });
 
 test('log error', (): void => {
   const category = 'security';
   const msg = 'login failed';
-  output = '';
+  buffer = '';
   log.error(category, msg);
-  expect(output).toBe(`ERROR: [${category}] ${msg}`);
+  expect(buffer).toBe(`ERROR: [${category}] ${msg}`);
 });
 
 test('filter category', (): void => {
   const category = 'security';
   const msg = 'login success';
-  output = '';
+  buffer = '';
   log.info(category, msg);
-  expect(output).toBe('');
+  expect(buffer).toBe('');
 });
 
 test('silent category', (): void => {
   const category = 'system';
   const msg = 'warp core breach';
-  output = '';
+  buffer = '';
   log.info(category, msg);
-  expect(output).toBe('');
+  expect(buffer).toBe('');
 });
 
 test('log objects', (): void => {
@@ -55,13 +55,25 @@ test('log objects', (): void => {
   const msg = 'logging objects works!';
   const param1 = { foo: 'bar' };
   const param2 = { foo: 'baz' };
-  output = '';
+  buffer = '';
   log.info(category, msg, param1, param2);
-  expect(output).toBe(`INFO: [${category}] ${msg}, ${param1}, ${param2}`);
+  expect(buffer).toBe(`INFO: [${category}] ${msg}, ${param1}, ${param2}`);
 });
 
-test('bad ccategory', (): void => {
-  expect((): void => {
-    log.info('undefined_category', 'and a bogus message');
-  }).toThrow(Error);
+test('uninitialized ccategory', (): void => {
+  const category = 'transporter';
+  const msg = 'evil twin detected';
+  const expected = `ERROR: [missionlog] uninitialized category "${category}"WARN: [${category}] ${msg}`;
+  buffer = '';
+  log.warn(category, msg);
+  expect(buffer).toBe(expected);
+});
+
+test('update config', (): void => {
+  log.init({ loader: 'ERROR', system: 'INFO' });
+  const category = 'system';
+  const msg = 'warp core breach';
+  buffer = '';
+  log.warn(category, msg);
+  expect(buffer).toBe(`WARN: [${category}] ${msg}`);
 });
