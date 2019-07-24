@@ -23,9 +23,7 @@ function _log(level, category, message, optionalParams) {
 
     if (maxLevel === undefined) {
       _callback('ERROR', 'missionlog', "uninitialized category \"".concat(category, "\""), []);
-    }
-
-    if (level <= maxLevel || maxLevel === undefined) {
+    } else if (level <= maxLevel) {
       _callback(Level[level], category, message, optionalParams);
     }
   }
@@ -37,7 +35,7 @@ var log = {
       _level[k] = Level[config[k]];
     }
 
-    if (callback) {
+    if (callback !== undefined) {
       _callback = callback;
     }
 
@@ -48,21 +46,21 @@ var log = {
       optionalParams[_key - 2] = arguments[_key];
     }
 
-    return _log(Level.ERROR, category, message, optionalParams);
+    _log(Level.ERROR, category, message, optionalParams);
   },
   warn: function warn(category, message) {
     for (var _len2 = arguments.length, optionalParams = new Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
       optionalParams[_key2 - 2] = arguments[_key2];
     }
 
-    return _log(Level.WARN, category, message, optionalParams);
+    _log(Level.WARN, category, message, optionalParams);
   },
   info: function info(category, message) {
     for (var _len3 = arguments.length, optionalParams = new Array(_len3 > 2 ? _len3 - 2 : 0), _key3 = 2; _key3 < _len3; _key3++) {
       optionalParams[_key3 - 2] = arguments[_key3];
     }
 
-    return _log(Level.INFO, category, message, optionalParams);
+    _log(Level.INFO, category, message, optionalParams);
   }
 };
 exports.log = log;

@@ -32,8 +32,7 @@ function _log<T extends string>(level: Level, category: T, message: unknown, opt
     const maxLevel = _level[category];
     if (maxLevel === undefined) {
       _callback('ERROR', 'missionlog', `uninitialized category "${category}"`, []);
-    }
-    if (level <= maxLevel || maxLevel === undefined) {
+    } else if (level <= maxLevel) {
       _callback(Level[level], category, message, optionalParams);
     }
   }
@@ -57,7 +56,7 @@ export const log: Log = {
     for (const k in config) {
       _level[k] = Level[config[k]];
     }
-    if (callback) {
+    if (callback !== undefined) {
       _callback = callback;
     }
     return log;
@@ -69,7 +68,9 @@ export const log: Log = {
    * @param message
    * @param optionalParams
    */
-  error: (category, message, ...optionalParams): void => _log(Level.ERROR, category, message, optionalParams),
+  error: (category, message, ...optionalParams): void => {
+    _log(Level.ERROR, category, message, optionalParams);
+  },
 
   /**
    * Writes a warning to the log
@@ -77,7 +78,9 @@ export const log: Log = {
    * @param message
    * @param optionalParams
    */
-  warn: (category, message, ...optionalParams): void => _log(Level.WARN, category, message, optionalParams),
+  warn: (category, message, ...optionalParams): void => {
+    _log(Level.WARN, category, message, optionalParams);
+  },
 
   /**
    * Writes an info message to the log
@@ -85,5 +88,7 @@ export const log: Log = {
    * @param message
    * @param optionalParams
    */
-  info: (category, message, ...optionalParams): void => _log(Level.INFO, category, message, optionalParams),
+  info: (category, message, ...optionalParams): void => {
+    _log(Level.INFO, category, message, optionalParams);
+  },
 };

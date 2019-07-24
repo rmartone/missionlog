@@ -21,17 +21,18 @@ test('log info', (): void => {
 test('log warning', (): void => {
   const category = 'loader';
   const msg = 'asset failed to load';
+  const url = 'image.png';
   buffer = '';
-  log.warn(category, msg);
-  expect(buffer).toBe(`WARN: [${category}] ${msg}`);
+  log.warn(category, msg, url);
+  expect(buffer).toBe(`WARN: [${category}] ${msg}, ${url}`);
 });
 
 test('log error', (): void => {
   const category = 'security';
   const msg = 'login failed';
   buffer = '';
-  log.error(category, msg);
-  expect(buffer).toBe(`ERROR: [${category}] ${msg}`);
+  log.error(category, msg, 401);
+  expect(buffer).toBe(`ERROR: [${category}] ${msg}, 401`);
 });
 
 test('filter category', (): void => {
@@ -62,18 +63,23 @@ test('log objects', (): void => {
 
 test('uninitialized ccategory', (): void => {
   const category = 'transporter';
-  const msg = 'evil twin detected';
-  const expected = `ERROR: [missionlog] uninitialized category "${category}"WARN: [${category}] ${msg}`;
   buffer = '';
-  log.warn(category, msg);
-  expect(buffer).toBe(expected);
+  log.warn(category, 'evil twin detected');
+  expect(buffer).toBe(`ERROR: [missionlog] uninitialized category "${category}"`);
 });
 
 test('update config', (): void => {
-  log.init({ loader: 'ERROR', system: 'INFO' });
   const category = 'system';
   const msg = 'warp core breach';
   buffer = '';
-  log.warn(category, msg);
+  log.init({ loader: 'ERROR', system: 'INFO' }).warn(category, msg);
   expect(buffer).toBe(`WARN: [${category}] ${msg}`);
+});
+
+test('disable callback', (): void => {
+  const category = 'system';
+  const msg = 'warp core breach';
+  buffer = '';
+  log.init({ loader: 'ERROR', system: 'INFO' }, null).warn(category, msg);
+  expect(buffer).toBe(``);
 });
