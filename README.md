@@ -6,7 +6,7 @@
 Missionlog is an easy to use lightweight logging library that provides level-based logging and category filtering with minimal overhead.
 
 # Features
-* Small footprint **390 bytes with zero dependencies**
+* Small footprint **470 bytes with 0 dependencies**
 * Simple **JSON configuration**
 * Filter by level `SILENT < ERROR < WARN < INFO`
 * Filter by named category `'system' | 'whatever'`
