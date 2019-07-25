@@ -2,7 +2,7 @@
   "name": "missionlog",
   "main": "index.js",
   "types": "index.d.ts",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "keywords": [
     "log",
     "logger",
@@ -45,7 +45,6 @@
     "type": "git",
     "url": "https://github.com/rmartone/missionlog"
   },
-  "engine": "node >= v8.15.0",
   "prettier": {
     "semi": true,
     "trailingComma": "all",
@@ -71,17 +70,19 @@
   },
   "babel": {
     "comments": false,
+    "minified": true,
     "presets": [
       [
         "@babel/preset-env",
         {
           "targets": {
             "browsers": [
-              "last 1 version",
-              "> 1%",
-              "maintained node versions",
+              ">1%",
+              "last 2 versions",
+              "not ie < 11",
               "not dead"
-            ]
+            ],
+            "node": "8"
           }
         }
       ],

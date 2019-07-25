@@ -1,8 +1,8 @@
 .*
+!.gitignore
+!.gitattributes
+!.npmignore
+!.travis.yml
 .*/
 coverage/
 node_modules/
-!.gitignore
-!.gitattributes
-!.travis.yml
-

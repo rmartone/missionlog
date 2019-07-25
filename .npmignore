@@ -1,0 +1,6 @@
+.*
+.*/
+console.jpg
+coverage/
+node_modules/
+yarn.lock
