@@ -18,12 +18,12 @@ Missionlog is an easy to use lightweight logging library that provides level bas
 * **CommonJS** module that works reliably with node or any browser through a bundler
 * Includes **TypeScript definitions** so no `@types`
 
-### Install
+## Install
 ```shell
 npm install missionlog
 ```
 
-### Initialize
+## Initialize
 ```typescript
 improt { log } from 'missionlog';
 
@@ -37,7 +37,7 @@ log.init({ loader: 'INFO', security: 'ERROR', system: 'OFF' }, (level, category,
   console.log(`${level}: [${category}] `, msg, ...params);
 });
 ```
-### Use
+## Use
 ```typescript
 log.warn('loader', 'failed to load', url);
 log.error('security', 'not authorized');
@@ -52,9 +52,9 @@ log.error('system', 'eject the warp core', error);
 // update log levels
 log.init({ loader: 'ERROR', system: 'INFO' });
 ```
-### Example
+## Example
 >![console](https://raw.githubusercontent.com/rmartone/missionlog/master/console.jpg)
 *statements from the "Initialization" and "Use" sections run in a webpage*
 
-### About
+## About
 Created by [Ray Martone](mailto:rmartone@gmail.com).
