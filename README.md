@@ -54,7 +54,7 @@ log.init({ loader: 'ERROR', system: 'INFO' });
 ```
 ### Example
 >![console](https://raw.githubusercontent.com/rmartone/missionlog/master/console.jpg)
-*statements from the "Initialization" and "Use" sections run in a webpage^
+*statements from the "Initialization" and "Use" sections run in a webpage*
 
 ### About
 Created by [Ray Martone](mailto:rmartone@gmail.com).
