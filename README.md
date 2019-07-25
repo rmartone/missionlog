@@ -31,7 +31,7 @@ var log = require('missionlog').log;
 /**
  * init
  * @param config JSON which sets category levels that otherwise default to INFO
- * @param callback? callback to log the way that works best for you
+ * @param callback? supports logging whatever way works best for you
  *  - style terminal output with chalk
  *  - send JSON to a cloud logging service like Splunk
  *  - log strings and objects to the browser's console *
