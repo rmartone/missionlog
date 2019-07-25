@@ -37,7 +37,7 @@ log.init({ loader: 'INFO', security: 'ERROR', system: 'OFF' }, (level, category,
   console.log(`${level}: [${category}] `, msg, ...params);
 });
 ```
-### Usage
+### Use
 ```typescript
 log.warn('loader', 'failed to load', url);
 log.error('security', 'not authorized');
@@ -52,10 +52,9 @@ log.error('system', 'eject the warp core', error);
 // update log levels
 log.init({ loader: 'ERROR', system: 'INFO' });
 ```
-
-### Result
+### Example
 >![console](https://raw.githubusercontent.com/rmartone/missionlog/master/console.jpg)
-
+*statements from the "Initialization" and "Use" sections run in a webpage^
 
 ### About
 Created by [Ray Martone](mailto:rmartone@gmail.com).
