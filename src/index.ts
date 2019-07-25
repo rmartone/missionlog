@@ -32,9 +32,9 @@ interface Log {
 export const log: Log = {
   /**
    * init optional
-   * @param config JSON sets category levels that default to INFO
+   * @param config JSON sets category levels which default to INFO
    * @param callback log callback defaults to console.log
-   * @param {Log} support chaining
+   * @return {Log} supports chaining
    */
   init: (config: Record<string, LevelString>, callback?: Callback): Log => {
     for (const k in config) {

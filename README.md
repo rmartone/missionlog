@@ -30,9 +30,9 @@ var log = require('missionlog').log;
 
 /**
  * init optional
- * @param config JSON sets category levels that default to INFO
+ * @param config JSON sets category levels which default to INFO
  * @param callback log callback defaults to console.log
- * @param {Log} support chaining
+ * @return {Log} supports chaining
  */
 log.init({ loader: 'INFO', security: 'ERROR', system: 'OFF' });
 
