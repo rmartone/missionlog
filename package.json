@@ -2,8 +2,8 @@
   "name": "missionlog",
   "main": "index.js",
   "types": "index.d.ts",
-  "version": "1.1.20",
-  "description": "🔥 lightweight level based logging that weighs in at ~400 bytes 🔥",
+  "version": "1.1.21",
+  "description": "🔥 fast lightweight level based logging that weighs in at ~0.5kB 🔥",
   "keywords": [
     "log",
     "logger",

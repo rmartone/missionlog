@@ -6,7 +6,7 @@
 Missionlog is an easy to use lightweight logging library that provides level based category filtering. Messages are logged when their level is greater than or equal to their category's level `(ERROR > WARN > INFO)`. A category is a string that typically refers to a subsystem like "security" or "renderer". At initialization, each category is assigned a level. **Granular control over your logs keeps them readable and uncluttered**.
 
 # Features
-* Small footprint **~400 bytes with 0 dependencies**
+* Small footprint **~0.5kB with 0 dependencies**
 * Simple **JSON configuration**
 * Filter by level
 * Filter by named category `'system' | 'whatever'`
@@ -27,14 +27,34 @@ npm install missionlog
 ```javascript
 // improt { log } from 'missionlog';
 var log = require('missionlog').log;
-// Set the max level to log for arbitrary categories
-// where INFO > WARN > ERROR > OFF
+
+/**
+ * init category levels and set custom log callback
+ * @param config JSON for category levels if unspecified default to INFO
+ * @param callback custum log callback defaults to console.log
+ * @param {Log} support chaining
+ */
+log.init({ loader: 'INFO', security: 'ERROR', system: 'OFF' });
+
+/**
+ * Or set a callback to log the way that works best for you
+ *  - style terminal output with chalk
+ *  - send JSON to a cloud logging service like Splunk
+ *  - log strings and objects to the browser's console *
+ */
 log.init({ loader: 'INFO', security: 'ERROR', system: 'OFF' }, (level, category, msg, params) => {
-  // then log the way that works best for you
-  //  * style terminal output with chalk
-  //  * send JSON to a cloud logging service like Splunk
-  //  * log strings and objects to the browser's console
-  console.log(`${level}: [${category}] `, msg, ...params);
+  const prefix = `${level}: [${category}] `;
+  switch(level) {
+    case 'ERROR':
+      console.error(prefix, msg, ...params);
+      break;
+    case 'WARN':
+      console.warn(prefix, msg, ...params);
+      break;
+    case 'INFO':
+      console.info(prefix, msg, ...params);
+      break;
+  }
 });
 ```
 ## Use

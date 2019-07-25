@@ -18,26 +18,9 @@ const _level: Record<string, Level> = {};
  * log callback
  */
 type Callback = (level: string, category: string, message: unknown, optionalParams: unknown[]) => void;
-let _callback: Callback;
-
-/**
- * This predicate determines whether a message gets logged based
- * on its category and level. It also avoids unnecessary arguments
- * access to safely support rest params in transpiled code
- * @param level
- * @param category
- * @return {boolean}
- */
-function _log<T extends string>(level: Level, category: T): boolean {
-  if (_callback) {
-    if (_level[category] === undefined) {
-      _callback('ERROR', 'missionlog', `uninitialized category "${category}"`, []);
-    } else {
-      return level >= _level[category];
-    }
-  }
-  return false;
-}
+let _callback: Callback = (level, category, msg, params): void => {
+  console.log(`${level}: [${category}]`, msg, ...params);
+};
 
 interface Log {
   init(config: Record<string, LevelString>, callback?: Callback): Log;
@@ -48,9 +31,9 @@ interface Log {
 
 export const log: Log = {
   /**
-   * Initialize category log levels and set log event callback
-   * @param config
-   * @param callback
+   * init category levels and set custom log callback
+   * @param config JSON for category levels if unspecified default to INFO
+   * @param callback custum log callback defaults to console.log
    * @param {Log} support chaining
    */
   init: (config: Record<string, LevelString>, callback?: Callback): Log => {
@@ -70,7 +53,8 @@ export const log: Log = {
    * @param optionalParams
    */
   error: (category, message, ...optionalParams): void => {
-    if (_log(Level.ERROR, category)) {
+    // predicate avoids unnecessary arguments access needed to support rest params in transpiled code
+    if (_callback && (_level[category] === undefined || Level.ERROR >= _level[category])) {
       _callback(Level[Level.ERROR], category, message, optionalParams);
     }
   },
@@ -82,7 +66,7 @@ export const log: Log = {
    * @param optionalParams
    */
   warn: (category, message, ...optionalParams): void => {
-    if (_log(Level.WARN, category)) {
+    if (_callback && (_level[category] === undefined || Level.WARN >= _level[category])) {
       _callback(Level[Level.WARN], category, message, optionalParams);
     }
   },
@@ -94,7 +78,7 @@ export const log: Log = {
    * @param optionalParams
    */
   info: (category, message, ...optionalParams): void => {
-    if (_log(Level.INFO, category)) {
+    if (_callback && (_level[category] === undefined || Level.INFO >= _level[category])) {
       _callback(Level[Level.INFO], category, message, optionalParams);
     }
   },

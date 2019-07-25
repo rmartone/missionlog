@@ -1,12 +1,30 @@
 import { log } from '../src';
 
 let buffer: string;
-log.init({ loader: 'INFO', security: 'ERROR', system: 'OFF' }, (level, category, msg, params): void => {
-  buffer += `${level}: [${category}] ${msg}`;
-  for (const param of params) {
-    buffer += `, ${param}`;
-  }
-  // console.log(`${level}: [${category}]`, msg, ...params);
+
+const temp = console.log;
+console.log = (...args: unknown[]): void => {
+  buffer = '$' + args.join(' ') + '$';
+};
+
+test('test defaults', (): void => {
+  const category = 'loader';
+  const msg = 'asset failed to load';
+  const url = 'image.png';
+  buffer = '';
+  log.info(category, msg, url);
+  expect(buffer).toBe(`$INFO: [${category}] ${msg} ${url}$`);
+
+  // restore console
+  console.log = temp;
+  // setup a handler
+  log.init({ loader: 'INFO', security: 'ERROR', system: 'OFF' }, (level, category, msg, params): void => {
+    buffer += `${level}: [${category}] ${msg}`;
+    for (const param of params) {
+      buffer += `, ${param}`;
+    }
+    // console.log(`${level}: [${category}]`, msg, ...params);
+  });
 });
 
 test('log info', (): void => {
@@ -63,9 +81,10 @@ test('log objects', (): void => {
 
 test('uninitialized ccategory', (): void => {
   const category = 'transporter';
+  const msg = 'evil twin detected';
   buffer = '';
-  log.warn(category, 'evil twin detected');
-  expect(buffer).toBe(`ERROR: [missionlog] uninitialized category "${category}"`);
+  log.warn(category, msg);
+  expect(buffer).toBe(`WARN: [${category}] ${msg}`);
 });
 
 test('update config', (): void => {
