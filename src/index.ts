@@ -2,10 +2,10 @@
  * Level enum relies on being both a number and string
  */
 enum Level {
-  OFF = 1,
-  ERROR,
-  WARN,
-  INFO,
+  INFO = 1,
+  WARN = 2,
+  ERROR = 3,
+  OFF = 4,
 }
 type LevelString = 'OFF' | 'ERROR' | 'INFO' | 'WARN';
 
@@ -32,7 +32,7 @@ function _log<T extends string>(level: Level, category: T, message: unknown, opt
     const maxLevel = _level[category];
     if (maxLevel === undefined) {
       _callback('ERROR', 'missionlog', `uninitialized category "${category}"`, []);
-    } else if (level <= maxLevel) {
+    } else if (level >= maxLevel) {
       _callback(Level[level], category, message, optionalParams);
     }
   }

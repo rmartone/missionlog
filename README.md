@@ -8,7 +8,7 @@ Missionlog is an easy to use lightweight logging library that provides level-bas
 # Features
 * Small footprint **~400 bytes with 0 dependencies**
 * Simple **JSON configuration**
-* Filter by level `SILENT < ERROR < WARN < INFO`
+* Filter by level
 * Filter by named category `'system' | 'whatever'`
 * Flexible log event callback
   * Style terminal output with chalk
@@ -38,12 +38,14 @@ log.init({ loader: 'INFO', security: 'ERROR', system: 'OFF' }, (level, category,
 });
 ```
 ### Usage
+Messages are logged when their level is equal to or greater than their category's level. Levels are ordered, `OFF > ERROR > WARN > INFO`. Categories often correspond to the name of a system like "security" or "renderer". Each category has its own independent level. This provides granular control over your logs and helps keep them **readable and uncluttered**.
+
 ```typescript
 log.warn('loader', 'failed to load', url);
 log.error('security', 'not authorized');
 log.info('loader', 'asset loaded', { name, url });
 
-// filtered since security's log level ERROR is less than INFO
+// filtered since security's log level ERROR is greater than INFO
 log.info('security', 'login successful');
 
 // filtered since system's log level is turned OFF
