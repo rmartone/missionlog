@@ -3,7 +3,7 @@
 [npm-image]: https://img.shields.io/npm/v/missionlog.svg?style=flat
 [npm-url]: https://www.npmjs.com/package/missionlog
 
-Missionlog is an easy to use lightweight logging library that provides level-based logging and category filtering. Messages are logged when their level is greater than or equal to their category's level `(OFF > ERROR > WARN > INFO)`. A category is a string that typically refers to a subsystem like "security" or "renderer". At initialization, each category is assigned a level. This provides **granular control over your logs and helps keep them readable and uncluttered**.
+Missionlog is an easy to use lightweight logging library that provides level based category filtering. Messages are logged when their level is greater than or equal to their category's level `(OFF > ERROR > WARN > INFO)`. A category is a string that typically refers to a subsystem like "security" or "renderer". At initialization, each category is assigned a level. This provides **granular control over your logs and helps keep them readable and uncluttered**.
 
 # Features
 * Small footprint **~400 bytes with 0 dependencies**
