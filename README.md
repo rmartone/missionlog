@@ -16,7 +16,7 @@ Missionlog is an easy to use lightweight logging library that provides level bas
   * Log strings and objects to the browser's console
 * API mirrors `console.log` **logs objects** and **supports rest parameters**
 * **CommonJS** module that works reliably with node or any browser through a bundler
-* Includes **TypeScript definitions** so no `@types`
+* Includes **TypeScript definitions** so no need for external `@types`
 
 ## Install
 ```shell
