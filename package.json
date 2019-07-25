@@ -2,7 +2,7 @@
   "name": "missionlog",
   "main": "index.js",
   "types": "index.d.ts",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "keywords": [
     "log",
     "logger",
