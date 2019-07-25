@@ -40,7 +40,7 @@ log.init({ loader: 'INFO', security: 'ERROR', system: 'OFF' }, (level, category,
 ## Use
 ```typescript
 log.warn('loader', 'failed to load', url);
-log.error('security', 'not authorized');
+log.error('security', 'not authorized', err);
 log.info('loader', 'asset loaded', { name, url });
 
 // filtered since security's log level ERROR is greater than INFO
