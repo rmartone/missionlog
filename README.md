@@ -29,9 +29,9 @@ npm install missionlog
 var log = require('missionlog').log;
 
 /**
- * init category levels and set custom log callback
- * @param config JSON for category levels if unspecified default to INFO
- * @param callback custum log callback defaults to console.log
+ * init optional
+ * @param config JSON sets category levels that default to INFO
+ * @param callback log callback defaults to console.log
  * @param {Log} support chaining
  */
 log.init({ loader: 'INFO', security: 'ERROR', system: 'OFF' });
