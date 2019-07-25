@@ -52,7 +52,6 @@ log.error('system', 'eject the warp core', error);
 // update log levels
 log.init({ loader: 'ERROR', system: 'INFO' });
 ```
-## Example
 >![console](https://raw.githubusercontent.com/rmartone/missionlog/master/console.jpg)
 *statements from the "Initialization" and "Use" sections run in a webpage*
 
