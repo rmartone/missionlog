@@ -21,7 +21,9 @@ type Callback = (level: string, category: string, message: unknown, optionalPara
 let _callback: Callback;
 
 /**
- * predicate that determines whether a message is log based on category and level
+ * This predicate determines whether a message is log based on its
+ * category and level and avoids unnecessary arguments access to
+ * support rest params in transpiled code
  * @param level
  * @param category
  * @return {boolean}
