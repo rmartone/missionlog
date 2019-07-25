@@ -18,9 +18,7 @@ const _level: Record<string, Level> = {};
  * log callback
  */
 type Callback = (level: string, category: string, message: unknown, optionalParams: unknown[]) => void;
-let _callback: Callback = (level, category, msg, params): void => {
-  console.log(`${level}: [${category}]`, msg, ...params);
-};
+let _callback: Callback;
 
 interface Log {
   init(config: Record<string, LevelString>, callback?: Callback): Log;
@@ -31,9 +29,12 @@ interface Log {
 
 export const log: Log = {
   /**
-   * init optional
-   * @param config JSON sets category levels which default to INFO
-   * @param callback log callback defaults to console.log
+   * init
+   * @param config JSON which sets category levels that otherwise default to INFO
+   * @param callback? callback to log the way that works best for you
+   *  - style terminal output with chalk
+   *  - send JSON to a cloud logging service like Splunk
+   *  - log strings and objects to the browser's console *
    * @return {Log} supports chaining
    */
   init: (config: Record<string, LevelString>, callback?: Callback): Log => {

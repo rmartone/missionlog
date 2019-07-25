@@ -2,29 +2,13 @@ import { log } from '../src';
 
 let buffer: string;
 
-const temp = console.log;
-console.log = (...args: unknown[]): void => {
-  buffer = '$' + args.join(' ') + '$';
-};
-
-test('test defaults', (): void => {
-  const category = 'loader';
-  const msg = 'asset failed to load';
-  const url = 'image.png';
-  buffer = '';
-  log.info(category, msg, url);
-  expect(buffer).toBe(`$INFO: [${category}] ${msg} ${url}$`);
-
-  // restore console
-  console.log = temp;
-  // setup a handler
-  log.init({ loader: 'INFO', security: 'ERROR', system: 'OFF' }, (level, category, msg, params): void => {
-    buffer += `${level}: [${category}] ${msg}`;
-    for (const param of params) {
-      buffer += `, ${param}`;
-    }
-    // console.log(`${level}: [${category}]`, msg, ...params);
-  });
+// setup a handler
+log.init({ loader: 'INFO', security: 'ERROR', system: 'OFF' }, (level, category, msg, params): void => {
+  buffer += `${level}: [${category}] ${msg}`;
+  for (const param of params) {
+    buffer += `, ${param}`;
+  }
+  // console.log(`${level}: [${category}]`, msg, ...params);
 });
 
 test('log info', (): void => {
