@@ -3,9 +3,9 @@
  */
 enum Level {
   INFO = 1,
-  WARN = 2,
-  ERROR = 3,
-  OFF = 4,
+  WARN,
+  ERROR,
+  OFF,
 }
 type LevelString = 'OFF' | 'ERROR' | 'INFO' | 'WARN';
 
