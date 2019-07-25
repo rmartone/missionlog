@@ -21,21 +21,20 @@ type Callback = (level: string, category: string, message: unknown, optionalPara
 let _callback: Callback;
 
 /**
- * handler that invokes the log callback when appropriate
+ * predicate that determines whether a message is log based on category and level
  * @param level
  * @param category
- * @param message
- * @param optionalParams
+ * @return {boolean}
  */
-function _log<T extends string>(level: Level, category: T, message: unknown, optionalParams: unknown[]): void {
+function _log<T extends string>(level: Level, category: T): boolean {
   if (_callback) {
-    const maxLevel = _level[category];
-    if (maxLevel === undefined) {
+    if (_level[category] === undefined) {
       _callback('ERROR', 'missionlog', `uninitialized category "${category}"`, []);
-    } else if (level >= maxLevel) {
-      _callback(Level[level], category, message, optionalParams);
+    } else {
+      return level >= _level[category];
     }
   }
+  return false;
 }
 
 interface Log {
@@ -69,7 +68,9 @@ export const log: Log = {
    * @param optionalParams
    */
   error: (category, message, ...optionalParams): void => {
-    _log(Level.ERROR, category, message, optionalParams);
+    if (_log(Level.ERROR, category)) {
+      _callback(Level[Level.ERROR], category, message, optionalParams);
+    }
   },
 
   /**
@@ -79,7 +80,9 @@ export const log: Log = {
    * @param optionalParams
    */
   warn: (category, message, ...optionalParams): void => {
-    _log(Level.WARN, category, message, optionalParams);
+    if (_log(Level.WARN, category)) {
+      _callback(Level[Level.WARN], category, message, optionalParams);
+    }
   },
 
   /**
@@ -89,6 +92,8 @@ export const log: Log = {
    * @param optionalParams
    */
   info: (category, message, ...optionalParams): void => {
-    _log(Level.INFO, category, message, optionalParams);
+    if (_log(Level.INFO, category)) {
+      _callback(Level[Level.INFO], category, message, optionalParams);
+    }
   },
 };
