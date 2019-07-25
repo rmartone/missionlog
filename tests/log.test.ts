@@ -43,11 +43,11 @@ test('filter category', (): void => {
   expect(buffer).toBe('');
 });
 
-test('silent category', (): void => {
+test('category OFF', (): void => {
   const category = 'system';
   const msg = 'warp core breach';
   buffer = '';
-  log.info(category, msg);
+  log.error(category, msg);
   expect(buffer).toBe('');
 });
 
