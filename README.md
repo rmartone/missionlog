@@ -6,7 +6,7 @@
 Missionlog is an easy to use lightweight logging library that provides level based category filtering. Messages are logged when their level is greater than or equal to their category's level `(ERROR > WARN > INFO)`. A category is a string that typically refers to a subsystem like "security" or "renderer". At initialization, each category is assigned a level. **Granular control over your logs keeps them readable and uncluttered**.
 
 # Features
-* Small footprint **~0.5kB with 0 dependencies**
+* Small footprint **~400 bytes with 0 dependencies**
 * Simple **JSON configuration**
 * Filter by level
 * Filter by named category `'system' | 'whatever'`
