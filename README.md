@@ -53,7 +53,7 @@ log.error('system', 'eject the warp core', error);
 log.init({ loader: 'ERROR', system: 'INFO' });
 ```
 >![console](https://raw.githubusercontent.com/rmartone/missionlog/master/console.jpg)
-*statements from the "Initialization" and "Use" sections run in a webpage*
+*statements from the "Initialization" and "Use" sections as displayed by Chrome's console*
 
 ## About
 Created by [Ray Martone](mailto:rmartone@gmail.com).
