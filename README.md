@@ -24,12 +24,12 @@ npm install missionlog
 ```
 
 ## Initialize
-```typescript
-improt { log } from 'missionlog';
-
+```javascript
+// improt { log } from 'missionlog';
+var log = require('missionlog').log;
 // Set the max level to log for arbitrary categories
 // where INFO > WARN > ERROR > OFF
-log.init({ loader: 'INFO', security: 'ERROR', system: 'OFF' }, (level, category, msg, params): void => {
+log.init({ loader: 'INFO', security: 'ERROR', system: 'OFF' }, (level, category, msg, params) => {
   // then log the way that works best for you
   //  * style terminal output with chalk
   //  * send JSON to a cloud logging service like Splunk
@@ -38,7 +38,7 @@ log.init({ loader: 'INFO', security: 'ERROR', system: 'OFF' }, (level, category,
 });
 ```
 ## Use
-```typescript
+```javascript
 log.warn('loader', 'failed to load', url);
 log.error('security', 'not authorized', err);
 log.info('loader', 'asset loaded', { name, url });
