@@ -19,3 +19,11 @@ All notable changes to this project will be documented in this file. See [standa
 
 * improved docs and replaced 'category' with 'tag' which better describes the usage
 ([a4edb6c39bfb58f233cc83a1b7e25501d2f549bf](https://github.com/rmartone/missionlog/commit/a4edb6c39bfb58f233cc83a1b7e25501d2f549bf))
+
+<a name="1.1.34"></a>
+## [1.1.34](https://github.com/rmartone/missionlog/compare/v1.1.33...v1.1.34) (2019-7-26)
+
+
+### Features
+
+* streamlined package.json description text
