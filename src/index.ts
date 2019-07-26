@@ -2,9 +2,11 @@
  * @author Ray Martone
  * @copyright Copyright (c) 2019 Ray Martone
  * @license MIT
- * @description missionlog is an easy to use lightweight logging library
- * that provides level based category filtering. Messages are logged
- * when their level is greater than or equal to their category's level.
+ * @description missionlog is a lightweight logging library
+ * supports granular level based filtering and tagging.
+ *
+ * TLDR: Messages are logged when their level is greater than
+ * or equal to their `tag`'s level.
  */
 
 /**
@@ -19,15 +21,15 @@ enum Level {
 type LevelString = 'OFF' | 'ERROR' | 'INFO' | 'WARN';
 
 /**
- * At initialization, categories are assigned a level.
- * _level maps categorites to their level
+ * init assigns tags a level or they default to INFO
+ * _tagToLevel hash that maps tags to their level
  */
-const _level: Record<string, Level> = {};
+const _tagTolevel: Record<string, Level> = {};
 
 /**
- * log callback that supports logging whatever way works best for you!
+ * callback that supports logging whatever way works best for you!
  */
-type Callback = (level: string, category: string, message: unknown, optionalParams: unknown[]) => void;
+type Callback = (level: string, tag: string, message: unknown, optionalParams: unknown[]) => void;
 let _callback: Callback;
 
 /**
@@ -35,25 +37,26 @@ let _callback: Callback;
  */
 interface Log {
   init(config: Record<string, LevelString>, callback?: Callback): Log;
-  error: <T extends string>(category: T, message: unknown, ...optionalParams: unknown[]) => void;
-  info: <T extends string>(category: T, message: unknown, ...optionalParams: unknown[]) => void;
-  warn: <T extends string>(category: T, message: unknown, ...optionalParams: unknown[]) => void;
+  error: <T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]) => void;
+  info: <T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]) => void;
+  warn: <T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]) => void;
 }
 
 export const log: Log = {
   /**
    * init
-   * @param config JSON assigns category levels. If uninitialized,
-   *    categories default to INFO (log everything)
+   * @param config JSON object that assigns tags levels. If uninitialized,
+   *    a tag's level defaults to INFO where ERROR > WARN > INFO.
    * @param callback? supports logging whatever way works best for you
    *  - style terminal output with chalk
    *  - send JSON to a cloud logging service like Splunk
    *  - log strings and objects to the browser console
+   *  - dynamic combination of the above based on your app's env
    * @return {Log} supports chaining
    */
   init: (config: Record<string, LevelString>, callback?: Callback): Log => {
     for (const k in config) {
-      _level[k] = Level[config[k]];
+      _tagTolevel[k] = Level[config[k]];
     }
     if (callback !== undefined) {
       _callback = callback;
@@ -63,40 +66,40 @@ export const log: Log = {
 
   /**
    * Writes an error to the log
-   * @param category
+   * @param tag
    * @param message
    * @param optionalParams
    */
-  error: (category, message, ...optionalParams): void => {
+  error: (tag, message, ...optionalParams): void => {
     // avoids unnecessary arguments access in transpiled code
-    if (_callback && (_level[category] === undefined || Level.ERROR >= _level[category])) {
-      _callback(Level[Level.ERROR], category, message, optionalParams);
+    if (_callback && (_tagTolevel[tag] === undefined || Level.ERROR >= _tagTolevel[tag])) {
+      _callback(Level[Level.ERROR], tag, message, optionalParams);
     }
   },
 
   /**
    * Writes a warning to the log
-   * @param category
+   * @param tag
    * @param message
    * @param optionalParams
    */
-  warn: (category, message, ...optionalParams): void => {
+  warn: (tag, message, ...optionalParams): void => {
     // avoids unnecessary arguments access...
-    if (_callback && (_level[category] === undefined || Level.WARN >= _level[category])) {
-      _callback(Level[Level.WARN], category, message, optionalParams);
+    if (_callback && (_tagTolevel[tag] === undefined || Level.WARN >= _tagTolevel[tag])) {
+      _callback(Level[Level.WARN], tag, message, optionalParams);
     }
   },
 
   /**
    * Writes info to the log
-   * @param category
+   * @param tag
    * @param message
    * @param optionalParams
    */
-  info: (category, message, ...optionalParams): void => {
+  info: (tag, message, ...optionalParams): void => {
     // avoids unnecessary arguments access...
-    if (_callback && (_level[category] === undefined || Level.INFO >= _level[category])) {
-      _callback(Level[Level.INFO], category, message, optionalParams);
+    if (_callback && (_tagTolevel[tag] === undefined || Level.INFO >= _tagTolevel[tag])) {
+      _callback(Level[Level.INFO], tag, message, optionalParams);
     }
   },
 };

@@ -3,86 +3,86 @@ import { log } from '../src';
 let buffer: string;
 
 // setup a handler
-log.init({ loader: 'INFO', security: 'ERROR', system: 'OFF' }, (level, category, msg, params): void => {
-  buffer += `${level}: [${category}] ${msg}`;
+log.init({ loader: 'INFO', security: 'ERROR', system: 'OFF' }, (level, tag, msg, params): void => {
+  buffer += `${level}: [${tag}] ${msg}`;
   for (const param of params) {
     buffer += `, ${param}`;
   }
-  // console.log(`${level}: [${category}]`, msg, ...params);
+  // console.log(`${level}: [${tag}]`, msg, ...params);
 });
 
 test('log info', (): void => {
-  const category = 'loader';
+  const tag = 'loader';
   const msg = 'asset failed to load';
   const url = 'image.png';
   buffer = '';
-  log.info(category, msg, url);
-  expect(buffer).toBe(`INFO: [${category}] ${msg}, ${url}`);
+  log.info(tag, msg, url);
+  expect(buffer).toBe(`INFO: [${tag}] ${msg}, ${url}`);
 });
 
 test('log warning', (): void => {
-  const category = 'loader';
+  const tag = 'loader';
   const msg = 'asset failed to load';
   const url = 'image.png';
   buffer = '';
-  log.warn(category, msg, url);
-  expect(buffer).toBe(`WARN: [${category}] ${msg}, ${url}`);
+  log.warn(tag, msg, url);
+  expect(buffer).toBe(`WARN: [${tag}] ${msg}, ${url}`);
 });
 
 test('log error', (): void => {
-  const category = 'security';
+  const tag = 'security';
   const msg = 'login failed';
   buffer = '';
-  log.error(category, msg, 401);
-  expect(buffer).toBe(`ERROR: [${category}] ${msg}, 401`);
+  log.error(tag, msg, 401);
+  expect(buffer).toBe(`ERROR: [${tag}] ${msg}, 401`);
 });
 
-test('filter category', (): void => {
-  const category = 'security';
+test('filter tag', (): void => {
+  const tag = 'security';
   const msg = 'login success';
   buffer = '';
-  log.info(category, msg);
+  log.info(tag, msg);
   expect(buffer).toBe('');
 });
 
-test('category OFF', (): void => {
-  const category = 'system';
+test(`tag's level is set to OFF`, (): void => {
+  const tag = 'system';
   const msg = 'warp core breach';
   buffer = '';
-  log.error(category, msg);
+  log.error(tag, msg);
   expect(buffer).toBe('');
 });
 
 test('log objects', (): void => {
-  const category = 'loader';
+  const tag = 'loader';
   const msg = 'logging objects works!';
   const param1 = { foo: 'bar' };
   const param2 = { foo: 'baz' };
   buffer = '';
-  log.info(category, msg, param1, param2);
-  expect(buffer).toBe(`INFO: [${category}] ${msg}, ${param1}, ${param2}`);
+  log.info(tag, msg, param1, param2);
+  expect(buffer).toBe(`INFO: [${tag}] ${msg}, ${param1}, ${param2}`);
 });
 
-test('uninitialized ccategory', (): void => {
-  const category = 'transporter';
+test('uninitialized tag', (): void => {
+  const tag = 'transporter';
   const msg = 'evil twin detected';
   buffer = '';
-  log.warn(category, msg);
-  expect(buffer).toBe(`WARN: [${category}] ${msg}`);
+  log.warn(tag, msg);
+  expect(buffer).toBe(`WARN: [${tag}] ${msg}`);
 });
 
 test('update config', (): void => {
-  const category = 'system';
+  const tag = 'system';
   const msg = 'warp core breach';
   buffer = '';
-  log.init({ loader: 'ERROR', system: 'INFO' }).warn(category, msg);
-  expect(buffer).toBe(`WARN: [${category}] ${msg}`);
+  log.init({ loader: 'ERROR', system: 'INFO' }).warn(tag, msg);
+  expect(buffer).toBe(`WARN: [${tag}] ${msg}`);
 });
 
 test('disable callback', (): void => {
-  const category = 'system';
+  const tag = 'system';
   const msg = 'warp core breach';
   buffer = '';
-  log.init({ loader: 'ERROR', system: 'INFO' }, null).warn(category, msg);
+  log.init({ loader: 'ERROR', system: 'INFO' }, null).warn(tag, msg);
   expect(buffer).toBe(``);
 });

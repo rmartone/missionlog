@@ -3,13 +3,15 @@
 [npm-image]: https://img.shields.io/npm/v/missionlog.svg?style=flat
 [npm-url]: https://www.npmjs.com/package/missionlog
 
-Missionlog is an easy to use lightweight logging library that provides level based category filtering. Messages are logged when their level is greater than or equal to their category's level `(ERROR > WARN > INFO)`. A category is a string that typically refers to a subsystem like "security" or "renderer". At initialization, each category is assigned a level. **Granular control over your logs keeps them readable and uncluttered**.
+Missionlog is an easy to use lightweight logging library that supports granular level based filtering and tagging. Filtering keep your logs readable and uncluttered while tagging makes them searchable.
 
-# Features
+Messages are logged when their level is greater than or equal to their `tag`'s level. Tags are assigned a level, when missionlog is initialized otherwise they default to `INFO`. Tags typically refer to a component like `'security'`, or `FooBar.name`.
+
+## Features
 * Small footprint **~400 bytes with 0 dependencies**
 * Simple **JSON configuration**
-* Filter by level
-* Filter by named category `'system' | 'whatever'`
+* Filter by level, `ERROR > WARN > INFO`
+* Filter by `tag` `'system' | 'whatever'`
 * Flexible log event callback
   * Style terminal output with chalk
   * Send JSON to a cloud service like Loggly
@@ -30,18 +32,19 @@ improt { log } from 'missionlog';
 
 /**
  * init
- * @param config JSON assigns category levels. If uninitialized,
- *    categories default to INFO (log everything)
+ * @param config JSON object which assigns tags levels. If uninitialized,
+ *    a tag's level defaults to INFO where ERROR > WARN > INFO.
  * @param callback? supports logging whatever way works best for you
  *  - style terminal output with chalk
  *  - send JSON to a cloud logging service like Splunk
  *  - log strings and objects to the browser console
+ *  - dynamic combination of the above based on your app's env
  * @return {Log} supports chaining
  */
 log.init(
   { loader: 'INFO', security: 'ERROR', system: 'OFF' },
-  (level, category, msg, params) => {
-    const prefix = `${level}: [${category}] `;
+  (level, tag, msg, params) => {
+    const prefix = `${level}: [${tag}] `;
     switch(level) {
       case 'ERROR':
         console.error(prefix, msg, ...params);
@@ -64,10 +67,10 @@ log.info('loader', 'asset loaded', { name, url });
 // filtered since security's log level ERROR is greater than INFO
 log.info('security', 'login successful');
 
-// filtered since system's log level is turned OFF
+// filtered since system's level is OFF
 log.error('system', 'eject the warp core', error);
 
-// update log levels
+// updates tag levels
 log.init({ loader: 'ERROR', system: 'INFO' });
 ```
 >![console](https://raw.githubusercontent.com/rmartone/missionlog/master/console.jpg)
