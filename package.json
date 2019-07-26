@@ -3,8 +3,8 @@
   "private": false,
   "main": "index.js",
   "types": "index.d.ts",
-  "version": "1.1.36",
-  "homepage": "https://github.com/rmartone/missionlog#missionlog----",
+  "version": "1.1.37",
+  "homepage": "https://www.facebook.com/Missionlog-109653907032872",
   "description": "🔥 lightweight log library • supports level based filtering and tagging • weighs in at 400 bytes 🔥",
   "keywords": [
     "log",
@@ -27,7 +27,7 @@
     "coverage": "jest --coverage && cat ./coverage/lcov.info | coveralls",
     "lint": "tsc --noEmit && eslint 'src/*.ts' --fix",
     "release": "standard-version",
-    "test": "jest"
+    "test": "jest ./tests/*.test.ts"
   },
   "author": "Ray Martone",
   "license": "MIT",
@@ -75,11 +75,6 @@
       "ecmaVersion": 2018,
       "sourceType": "module"
     }
-  },
-  "jest": {
-    "roots": [
-      "./tests"
-    ]
   },
   "babel": {
     "comments": false,
