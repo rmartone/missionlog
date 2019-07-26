@@ -1,5 +1,6 @@
 {
   "name": "missionlog",
+  "private": false,
   "main": "index.js",
   "types": "index.d.ts",
   "version": "1.1.35",
@@ -16,6 +17,9 @@
     "backend",
     "typescript"
   ],
+  "engines": {
+    "node": ">=8.0.0"
+  },
   "scripts": {
     "build": "yarn build:types && yarn build:js",
     "build:types": "tsc --emitDeclarationOnly",
@@ -25,8 +29,9 @@
     "release": "standard-version",
     "test": "jest"
   },
-  "author": "ray martone <rmartone@gmail.com>",
+  "author": "Ray Martone",
   "license": "MIT",
+  "dependencies": {},
   "devDependencies": {
     "@babel/cli": "^7.5.5",
     "@babel/core": "^7.5.5",
