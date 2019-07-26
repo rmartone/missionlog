@@ -25,32 +25,35 @@ npm install missionlog
 
 ## Initialize
 ```javascript
-// improt { log } from 'missionlog';
-var log = require('missionlog').log;
+// var log = require('missionlog').log;
+improt { log } from 'missionlog';
 
 /**
  * init
- * @param config JSON which sets category levels that otherwise default to INFO
+ * @param config JSON assigns category levels. If uninitialized,
+ *    categories default to INFO (log everything)
  * @param callback? supports logging whatever way works best for you
  *  - style terminal output with chalk
  *  - send JSON to a cloud logging service like Splunk
- *  - log strings and objects to the browser's console *
+ *  - log strings and objects to the browser console
  * @return {Log} supports chaining
  */
-log.init({ loader: 'INFO', security: 'ERROR', system: 'OFF' }, (level, category, msg, params) => {
-  const prefix = `${level}: [${category}] `;
-  switch(level) {
-    case 'ERROR':
-      console.error(prefix, msg, ...params);
-      break;
-    case 'WARN':
-      console.warn(prefix, msg, ...params);
-      break;
-    case 'INFO':
-      console.info(prefix, msg, ...params);
-      break;
-  }
-});
+log.init(
+  { loader: 'INFO', security: 'ERROR', system: 'OFF' },
+  (level, category, msg, params) => {
+    const prefix = `${level}: [${category}] `;
+    switch(level) {
+      case 'ERROR':
+        console.error(prefix, msg, ...params);
+        break;
+      case 'WARN':
+        console.warn(prefix, msg, ...params);
+        break;
+      case 'INFO':
+        console.info(prefix, msg, ...params);
+        break;
+    }
+  });
 ```
 ## Use
 ```javascript
