@@ -12,7 +12,7 @@ Missionlog is an easy to use lightweight log adapter that provides level based f
 * Filter by `tag` `'system' | 'whatever'`
 * Flexible log event callback
   * Style terminal output with chalk
-  * Send JSON to a cloud service like Loggly
+  * Send JSON to a cloud service like [Loggly](https://www.loggly.com/)
   * Log strings and objects to the browser's console
 * API mirrors `console.log` **logs objects** and **supports rest parameters**
 * **CommonJS** module that works reliably with node or any browser through a bundler
@@ -25,7 +25,7 @@ npm install missionlog
 
 ## Initialize
 
-Tags typically refer to a subsystem or component like `'security'` or `FooBar.name`.When missionlog is initialized they can be assigned a level, otherwise they default to `INFO`. When a message's level is greater than or equal to its `tag`'s level, missionlog fires the callkack. This simple but elegant approach to logging is flexible.
+Tags typically refer to a subsystem or component like `'security'` or `FooBar.name`.When missionlog is initialized, tags can be assigned a level. When a message's level is greater than or equal to its `tag`'s assigned level, missionlog executes a callkack. This simple and elegant approach to logging is incredibly flexible. For example, with **missionlog** you can seamlessly migrate from  `console` logging to a sophisticated cloud service with minimal impact!
 
 ```javascript
 // var log = require('missionlog').log;
