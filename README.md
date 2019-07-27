@@ -3,9 +3,7 @@
 [npm-image]: https://img.shields.io/npm/v/missionlog.svg?style=flat
 [npm-url]: https://www.npmjs.com/package/missionlog
 
-Missionlog is an easy to use lightweight logging library that supports granular level based filtering and tagging. **Filtering keeps your logs readable and uncluttered while tagging makes them searchable**.
-
-Messages are logged when their level is greater than or equal to their `tag`'s level. Tags are assigned a level, when missionlog is initialized otherwise they default to `INFO`. Tags typically refer to a component like `'security'`, or `FooBar.name`.
+Missionlog is an easy to use lightweight log adapter that provides level based filtering and tagging. **Filtering keeps your logs readable and uncluttered while tagging makes them searchable**.
 
 ## Features
 * Small footprint **~400 bytes with 0 dependencies**
@@ -14,7 +12,7 @@ Messages are logged when their level is greater than or equal to their `tag`'s l
 * Filter by `tag` `'system' | 'whatever'`
 * Flexible log event callback
   * Style terminal output with chalk
-  * Send JSON to a cloud service like Loggly
+  * Send JSON to a cloud service like [Loggly](https://www.loggly.com/)
   * Log strings and objects to the browser's console
 * API mirrors `console.log` **logs objects** and **supports rest parameters**
 * **CommonJS** module that works reliably with node or any browser through a bundler
@@ -26,6 +24,9 @@ npm install missionlog
 ```
 
 ## Initialize
+
+Tags typically refer to a subsystem or component like `'security'` or `FooBar.name`.When missionlog is initialized, tags can be assigned a level. When a message's level is greater than or equal to its `tag`'s assigned level, missionlog executes a callkack. This simple and elegant approach to logging is incredibly flexible. For example, with **missionlog** you can seamlessly migrate from  `console` logging to a sophisticated cloud service with minimal impact!
+
 ```javascript
 // var log = require('missionlog').log;
 improt { log } from 'missionlog';
