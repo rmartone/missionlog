@@ -5,6 +5,11 @@
 
 Missionlog is an easy to use lightweight log adapter that provides level based filtering and tagging. **Filtering keeps your logs readable and uncluttered while tagging makes them searchable**.
 
+```typescript
+log.error('system', 'Keyboard not found. Press ENTER to contine 😃.', err);
+log.warn('transporter', 'Evil twin detected!');
+log.info('printer', 'Printing not supported on this printer.');
+```
 ## Features
 * Small footprint **~400 bytes with 0 dependencies**
 * Simple **JSON configuration**
