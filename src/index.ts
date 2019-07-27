@@ -2,8 +2,8 @@
  * @author Ray Martone
  * @copyright Copyright (c) 2019 Ray Martone
  * @license MIT
- * @description missionlog is a lightweight logging library
- * supports granular level based filtering and tagging.
+ * @description missionlog is an easy to use lightweight log adapter
+ * that provides level based filtering and tagging.
  *
  * TLDR: Messages are logged when their level is greater than
  * or equal to their `tag`'s level.

@@ -3,9 +3,7 @@
 [npm-image]: https://img.shields.io/npm/v/missionlog.svg?style=flat
 [npm-url]: https://www.npmjs.com/package/missionlog
 
-Missionlog is an easy to use lightweight logging library that supports granular level based filtering and tagging. **Filtering keeps your logs readable and uncluttered while tagging makes them searchable**.
-
-Messages are logged when their level is greater than or equal to their `tag`'s level. Tags are assigned a level, when missionlog is initialized otherwise they default to `INFO`. Tags typically refer to a component like `'security'`, or `FooBar.name`.
+Missionlog is an easy to use lightweight log adapter that provides level based filtering and tagging. **Filtering keeps your logs readable and uncluttered while tagging makes them searchable**.
 
 ## Features
 * Small footprint **~400 bytes with 0 dependencies**
@@ -26,6 +24,9 @@ npm install missionlog
 ```
 
 ## Initialize
+
+Tags typically refer to a subsystem or component like `'security'` or `FooBar.name`.When missionlog is initialized they can be assigned a level, otherwise they default to `INFO`. When a message's level is greater than or equal to its `tag`'s level, missionlog fires the callkack. This simple but elegant approach to logging is flexible.
+
 ```javascript
 // var log = require('missionlog').log;
 improt { log } from 'missionlog';
