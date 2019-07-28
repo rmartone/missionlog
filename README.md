@@ -3,7 +3,7 @@
 [npm-image]: https://img.shields.io/npm/v/missionlog.svg?style=flat
 [npm-url]: https://www.npmjs.com/package/missionlog
 
-lightweight log adapter that provides level based filtering and tagging. Filtering keeps your logs readable and uncluttered while tagging makes them searchable.
+lightweight logging which provides level based filtering and tagging. Filtering keeps your logs readable and uncluttered while tagging makes them searchable.
 
 ## Features
 * Small footprint, around 400 bytes with 0 dependencies
