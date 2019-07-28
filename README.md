@@ -18,20 +18,10 @@ lightweight logging which provides level based filtering and tagging. Filtering 
 * **CommonJS** module that works reliably with node or any browser through a bundler
 * Includes **TypeScript definitions** so no need for external `@types`
 
-## Usage
+## Example
 ```javascript
-log.warn('loader', 'failed to load', url);
-log.error('security', 'not authorized', err);
-log.info('loader', 'asset loaded', { name, url });
-
-// filtered since security's log level ERROR is greater than INFO
-log.info('security', 'login successful');
-
-// filtered since system's level is OFF
-log.error('system', 'eject the warp core', error);
-
-// updates tag levels
-log.init({ loader: 'ERROR', system: 'INFO' });
+log.error('security', 'not authorized', statusCode);
+log.warn('transporter', 'Evil twin detected!');
 ```
 
 ## Install
@@ -70,4 +60,15 @@ log.init(
         break;
     }
   });
+```
+## Usage
+```javascript
+// filtered since security's log level ERROR is greater than INFO
+log.info('security', 'login successful');
+
+// filtered since system's level is OFF
+log.error('system', 'eject the warp core', error);
+
+// updates tag levels
+log.init({ loader: 'ERROR', system: 'INFO' });
 ```
