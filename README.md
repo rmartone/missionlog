@@ -3,7 +3,15 @@
 [npm-image]: https://img.shields.io/npm/v/missionlog.svg?style=flat
 [npm-url]: https://www.npmjs.com/package/missionlog
 
-Missionlog is an easy to use lightweight log adapter that provides level based filtering and tagging. **Filtering keeps your logs readable and uncluttered while tagging makes them searchable**.
+lightweight log adapter that provides level based filtering and tagging. **Filtering keeps your logs readable and uncluttered while tagging makes them searchable**.
+
+## Simple example
+```typescript
+improt { log } from 'missionlog';
+// assign min levels to tags and a log callback
+log.init({transporter: 'WARN'}, (...args) => console.log(...args));d
+log.error('transporter', 'evil twin detected!');
+```
 
 ## Features
 * Small footprint **~400 bytes with 0 dependencies**
@@ -13,7 +21,7 @@ Missionlog is an easy to use lightweight log adapter that provides level based f
 * Flexible log event callback
   * Style terminal output with chalk
   * Send JSON to a cloud service like [Loggly](https://www.loggly.com/)
-  * Log strings and objects to the browser's console
+  * Log strings and objects to the console
 * API mirrors `console.log` **logs objects** and **supports rest parameters**
 * **CommonJS** module that works reliably with node or any browser through a bundler
 * Includes **TypeScript definitions** so no need for external `@types`
@@ -36,10 +44,6 @@ improt { log } from 'missionlog';
  * @param config JSON object which assigns tags levels. If uninitialized,
  *    a tag's level defaults to INFO where ERROR > WARN > INFO.
  * @param callback? supports logging whatever way works best for you
- *  - style terminal output with chalk
- *  - send JSON to a cloud logging service like Splunk
- *  - log strings and objects to the browser console
- *  - dynamic combination of the above based on your app's env
  * @return {Log} supports chaining
  */
 log.init(
@@ -59,7 +63,7 @@ log.init(
     }
   });
 ```
-## Use
+## Usage
 ```javascript
 log.warn('loader', 'failed to load', url);
 log.error('security', 'not authorized', err);
@@ -74,8 +78,3 @@ log.error('system', 'eject the warp core', error);
 // updates tag levels
 log.init({ loader: 'ERROR', system: 'INFO' });
 ```
->![console](https://raw.githubusercontent.com/rmartone/missionlog/master/console.jpg)
-*statements from the "Initialization" and "Use" sections as displayed by Chrome's console*
-
-## About
-Created by [Ray Martone](mailto:rmartone@gmail.com).
