@@ -9,13 +9,13 @@ lightweight logging which provides level based filtering and tagging. Filtering 
 * Small footprint, around 400 bytes with 0 dependencies
 * JSON configuration
 * Filter by level, `ERROR > WARN > INFO`
-* Filter by `tag` `'system' | 'whatever'`
+* Filter by tag, `'system' | 'whatever'`
 * Flexible log callback
   * Style terminal output with chalk
   * Send JSON to a cloud service like [Loggly](https://www.loggly.com/)
   * Log strings and objects to the console
-* API mirrors `console.log` **logs objects** and **supports rest parameters**
-* **CommonJS** module that works reliably with node or any browser through a bundler
+* API mirrors `console.log`, logs objects** and supports rest parameters
+* Works reliably with node or any browser through a bundler
 * Includes **TypeScript definitions** so no need for external `@types`
 
 ## Example
@@ -31,7 +31,7 @@ npm install missionlog
 
 ## Initialize
 
-Tags typically refer to a subsystem or component like `'security'` or `FooBar.name`.When missionlog is initialized, tags can be assigned a level. When a message's level is greater than or equal to its `tag`'s assigned level, missionlog executes a callkack. This simple and elegant approach to logging is incredibly flexible. For example, with **missionlog** you can seamlessly migrate from  `console` logging to a sophisticated cloud service with minimal impact!
+Tags typically refer to a subsystem or component like `'security'` or `FooBar.name`.When missionlog is initialized, tags can be assigned a level. When a message's level is greater than or equal to its `tag`'s assigned level, missionlog executes a callkack. This simple and elegant approach to logging is incredibly flexible. For example, with *missionlog* you can seamlessly migrate from  `console` logging to a sophisticated cloud service with minimal impact!
 
 ```javascript
 // var log = require('missionlog').log;
