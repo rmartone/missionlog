@@ -8,10 +8,8 @@ lightweight log adapter that provides level based filtering and tagging. **Filte
 ## Simple example
 ```javascript
 import { log } from 'missionlog';
-
 // assign tags levels and set a log callback
 log.init({ transporter: 'WARN', phasers: 'OFF'}, (...args) => console.log(...args));
-
 log.error('transporter', 'evil twin detected!');
 ```
 
