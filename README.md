@@ -6,10 +6,11 @@
 lightweight log adapter that provides level based filtering and tagging. **Filtering keeps your logs readable and uncluttered while tagging makes them searchable**.
 
 ## Simple example
-```typescript
-improt { log } from 'missionlog';
-// assign min levels to tags and a log callback
-log.init({transporter: 'WARN'}, (...args) => console.log(...args));d
+```javascript
+import { log } from 'missionlog';
+
+// assign tags levels and set a log callback
+log.init({ transporter: 'WARN', phasers: 'OFF'}, (...args) => console.log(...args));
 log.error('transporter', 'evil twin detected!');
 ```
 
