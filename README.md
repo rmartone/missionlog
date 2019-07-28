@@ -3,28 +3,36 @@
 [npm-image]: https://img.shields.io/npm/v/missionlog.svg?style=flat
 [npm-url]: https://www.npmjs.com/package/missionlog
 
-lightweight log adapter that provides level based filtering and tagging. **Filtering keeps your logs readable and uncluttered while tagging makes them searchable**.
-
-## Simple example
-```javascript
-import { log } from 'missionlog';
-// assign tags levels and set a log callback
-log.init({ transporter: 'WARN', phasers: 'OFF'}, (...args) => console.log(...args));
-log.error('transporter', 'evil twin detected!');
-```
+lightweight log adapter that provides level based filtering and tagging. Filtering keeps your logs readable and uncluttered while tagging makes them searchable.
 
 ## Features
-* Small footprint **~400 bytes with 0 dependencies**
-* Simple **JSON configuration**
+* Small footprint, around 400 bytes with 0 dependencies
+* JSON configuration
 * Filter by level, `ERROR > WARN > INFO`
 * Filter by `tag` `'system' | 'whatever'`
-* Flexible log event callback
+* Flexible log callback
   * Style terminal output with chalk
   * Send JSON to a cloud service like [Loggly](https://www.loggly.com/)
   * Log strings and objects to the console
 * API mirrors `console.log` **logs objects** and **supports rest parameters**
 * **CommonJS** module that works reliably with node or any browser through a bundler
 * Includes **TypeScript definitions** so no need for external `@types`
+
+## Usage
+```javascript
+log.warn('loader', 'failed to load', url);
+log.error('security', 'not authorized', err);
+log.info('loader', 'asset loaded', { name, url });
+
+// filtered since security's log level ERROR is greater than INFO
+log.info('security', 'login successful');
+
+// filtered since system's level is OFF
+log.error('system', 'eject the warp core', error);
+
+// updates tag levels
+log.init({ loader: 'ERROR', system: 'INFO' });
+```
 
 ## Install
 ```shell
@@ -62,19 +70,4 @@ log.init(
         break;
     }
   });
-```
-## Usage
-```javascript
-log.warn('loader', 'failed to load', url);
-log.error('security', 'not authorized', err);
-log.info('loader', 'asset loaded', { name, url });
-
-// filtered since security's log level ERROR is greater than INFO
-log.info('security', 'login successful');
-
-// filtered since system's level is OFF
-log.error('system', 'eject the warp core', error);
-
-// updates tag levels
-log.init({ loader: 'ERROR', system: 'INFO' });
 ```
