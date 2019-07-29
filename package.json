@@ -5,6 +5,9 @@
   "types": "index.d.ts",
   "version": "1.1.46",
   "homepage": "https://www.facebook.com/Missionlog-109653907032872",
+  "bugs": {
+    "url": "https://github.com/rmartone/missionlog/issues"
+  },
   "description": "lightweight logger • supports level based filtering and tagging • weighs in at 400 bytes 🚀",
   "keywords": [
     "log",
@@ -30,7 +33,10 @@
     "release": "standard-version",
     "test": "jest ./tests/*.test.ts"
   },
-  "author": "Ray Martone",
+  "author": {
+    "name": "Ray Martone",
+    "email": "rmartone@gmail.com"
+  },
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {

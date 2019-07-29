@@ -8,7 +8,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [1.1.45](https://github.com/rmartone/missionlog/compare/v1.1.44...v1.1.45) (2019-07-29)
 
-
+* more minor changes to README.md
 
 ### [1.1.44](https://github.com/rmartone/missionlog/compare/v1.1.43...v1.1.44) (2019-07-28)
 
