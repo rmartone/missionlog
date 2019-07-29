@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.47](https://github.com/rmartone/missionlog/compare/v1.1.46...v1.1.47) (2019-07-29)
+
+
+
 ### [1.1.46](https://github.com/rmartone/missionlog/compare/v1.1.45...v1.1.46) (2019-07-29)
 
 * updated README.md & package.json
