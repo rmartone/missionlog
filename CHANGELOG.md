@@ -4,7 +4,9 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [1.1.47](https://github.com/rmartone/missionlog/compare/v1.1.46...v1.1.47) (2019-07-29)
 
-
+* added more detail to package.json
+* minor tweaks to readme
+* updated dependencies
 
 ### [1.1.46](https://github.com/rmartone/missionlog/compare/v1.1.45...v1.1.46) (2019-07-29)
 
