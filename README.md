@@ -3,18 +3,19 @@
 [npm-image]: https://img.shields.io/npm/v/missionlog.svg?style=flat
 [npm-url]: https://www.npmjs.com/package/missionlog
 
-lightweight logging which provides level based filtering and tagging. Filtering keeps your logs readable and uncluttered while tagging makes them searchable.
+Lightweight logger with an extensible configuration. Supports level based filtering and tagging. Filtering keeps your logs readable and uncluttered while tagging makes them searchable.
 
 ## Features
 * Small footprint, around 400 bytes with 0 dependencies
 * JSON configuration
 * Filter by level, `ERROR > WARN > INFO`
-* Filter by tag, `'system' | 'whatever'`
-* Flexible log callback
+* Filter by tag, `'security' | 'whatever'`
+* Log callback is extensible from console to cloud
   * Style terminal output with chalk
   * Send JSON to a cloud service like [Loggly](https://www.loggly.com/)
   * Log strings and objects to the console
-* API mirrors `console.log`, logs objects** and supports rest parameters
+  * Dynamically combine any of the above or try something new
+* API mirrors `console.log`, logs objects and supports rest parameters
 * Works reliably with node or any browser through a bundler
 * Includes **TypeScript definitions** so no need for external `@types`
 
