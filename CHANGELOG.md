@@ -4,48 +4,28 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [1.1.48](https://github.com/rmartone/missionlog/compare/v1.1.47...v1.1.48) (2019-07-30)
 
+#### Features
+* updated dependencies
+* tweaked package.json description
+
 ### [1.1.47](https://github.com/rmartone/missionlog/compare/v1.1.46...v1.1.47) (2019-07-29)
 
+#### Features
 * added more detail to package.json
 * minor tweaks to readme
 * updated dependencies
 
 ### [1.1.46](https://github.com/rmartone/missionlog/compare/v1.1.45...v1.1.46) (2019-07-29)
 
+#### Features
 * updated README.md & package.json
 
 ### [1.1.45](https://github.com/rmartone/missionlog/compare/v1.1.44...v1.1.45) (2019-07-29)
 
+#### Features
 * more minor changes to README.md
 
 ### [1.1.44](https://github.com/rmartone/missionlog/compare/v1.1.43...v1.1.44) (2019-07-28)
 
+#### Features
 * updated README.md
-
-### [1.1.43](https://github.com/rmartone/missionlog/compare/v1.1.42...v1.1.43) (2019-07-28)
-
-
-
-### [1.1.42](https://github.com/rmartone/missionlog/compare/v1.1.41...v1.1.42) (2019-07-28)
-
-
-
-### [1.1.41](https://github.com/rmartone/missionlog/compare/v1.1.39...v1.1.41) (2019-07-27)
-
-
-
-### [1.1.39](https://github.com/rmartone/missionlog/compare/v1.1.38...v1.1.39) (2019-07-27)
-
-
-
-### [1.1.38](https://github.com/rmartone/missionlog/compare/v1.1.35...v1.1.38) (2019-07-26)
-
-### Features
-
-* README & package.json improvements
-
-### [1.1.36](https://github.com/rmartone/missionlog/compare/v1.1.35...v1.1.36) (2019-07-26)
-
-
-
-### 1.1.35 (2019-07-26)
