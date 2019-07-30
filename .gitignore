@@ -1,4 +1,5 @@
 .*
+!.editorconfig
 !.gitignore
 !.gitattributes
 !.npmignore
