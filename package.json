@@ -4,7 +4,6 @@
   "main": "index.js",
   "types": "index.d.ts",
   "version": "1.1.48",
-  "homepage": "https://www.facebook.com/Missionlog-109653907032872",
   "bugs": {
     "url": "https://github.com/rmartone/missionlog/issues"
   },
