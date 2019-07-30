@@ -3,12 +3,12 @@
   "private": false,
   "main": "index.js",
   "types": "index.d.ts",
-  "version": "1.1.47",
+  "version": "1.1.48",
   "homepage": "https://www.facebook.com/Missionlog-109653907032872",
   "bugs": {
     "url": "https://github.com/rmartone/missionlog/issues"
   },
-  "description": "lightweight logger • supports level based filtering and tagging • weighs in at 400 bytes 🚀",
+  "description": " 🚀 lightweight logger • supports level based filtering and tagging • weighs in at 400 bytes",
   "keywords": [
     "log",
     "logger",
@@ -47,7 +47,7 @@
     "@babel/plugin-proposal-object-rest-spread": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
     "@babel/preset-typescript": "^7.3.3",
-    "@types/jest": "^24.0.15",
+    "@types/jest": "^24.0.16",
     "@types/node": "^12.6.8",
     "@typescript-eslint/eslint-plugin": "^1.13.0",
     "@typescript-eslint/parser": "^1.13.0",
@@ -58,7 +58,7 @@
     "eslint-plugin-prettier": "^3.1.0",
     "jest": "^24.8.0",
     "prettier": "^1.18.2",
-    "standard-version": "^6.0.1",
+    "standard-version": "^7.0.0",
     "typescript": "^3.5.3"
   },
   "repository": {
