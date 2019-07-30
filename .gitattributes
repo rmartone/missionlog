@@ -1,4 +1,4 @@
-# Auto detect text files and perform LF normalization
+*.* linguist-language=TypeScript
 * text=auto
 index.js linguist-generated
 index.d.ts linguist-generated

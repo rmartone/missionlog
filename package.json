@@ -64,6 +64,7 @@
     "type": "git",
     "url": "https://github.com/rmartone/missionlog"
   },
+  "homepage": "https://github.com/rmartone/missionlog#readme",
   "prettier": {
     "semi": true,
     "trailingComma": "all",
