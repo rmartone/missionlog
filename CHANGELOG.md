@@ -2,7 +2,10 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-### [1.1.51](https://github.com/rmartone/missionlog/compare/v1.1.49...v1.1.51) (2019-07-30)
+## [1.1.51](https://github.com/rmartone/missionlog/compare/v1.1.49...v1.1.51) (2019-07-30)
+
+### Features
+* added CONTRIBUTING.md
 
 ## [1.1.49](https://github.com/rmartone/missionlog/compare/v1.1.48...v1.1.49) (2019-07-30)
 
