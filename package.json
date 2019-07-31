@@ -1,6 +1,6 @@
 {
   "name": "missionlog",
-  "version": "1.1.53",
+  "version": "1.1.54",
   "description": " 🚀 lightweight logger • supports level based filtering and tagging • weighs in at 400 bytes",
   "private": false,
   "author": {

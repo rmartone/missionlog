@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.54](https://github.com/rmartone/missionlog/compare/v1.1.53...v1.1.54) (2019-07-31)
+
 ## [1.1.53](https://github.com/rmartone/missionlog/compare/v1.1.52...v1.1.53) (2019-07-30)
 
 ### Features
