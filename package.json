@@ -1,6 +1,6 @@
 {
   "name": "missionlog",
-  "version": "1.1.54",
+  "version": "1.1.55",
   "description": " 🚀 lightweight logger • supports level based filtering and tagging • weighs in at 400 bytes",
   "private": false,
   "author": {
@@ -54,7 +54,7 @@
     "typescript": "^3.5.3"
   },
   "scripts": {
-    "build": "npm run build:types && npm run build:js",
+    "build": "yarn build:types && yarn build:js",
     "build:types": "tsc --emitDeclarationOnly",
     "build:js": "babel src --out-dir . --extensions \".ts\"",
     "coverage": "jest --coverage && cat ./coverage/lcov.info | coveralls",
