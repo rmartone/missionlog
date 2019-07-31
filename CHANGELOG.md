@@ -2,14 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-### [1.1.55](https://github.com/rmartone/missionlog/compare/v1.1.54...v1.1.55) (2019-07-31)
-
-## [1.1.54](https://github.com/rmartone/missionlog/compare/v1.1.53...v1.1.54) (2019-07-31)
+## [1.1.55](https://github.com/rmartone/missionlog/compare/v1.1.54...v1.1.55) (2019-07-31)
 
 ### Features
-* switched travis.yml from yarn to npm
+* switched back to yarn but added yarn to dev dependencies
 
-## [1.1.53](https://github.com/rmartone/missionlog/compare/v1.1.52...v1.1.53) (2019-07-30)
+## [1.1.54](https://github.com/rmartone/missionlog/compare/v1.1.53...v1.1.54) (2019-07-31)
 
 ### Features
 * switched from yarn to npm since the later is more widely used
