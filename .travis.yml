@@ -10,9 +10,9 @@ cache:
   directories:
   - node_modules
 before_install:
-- npm update
+- yarn upgrade
 install:
-- npm install
+- yarn install
 script:
-- npm run test
-- npm run coverage
+- yarn test
+- yarn coverage
