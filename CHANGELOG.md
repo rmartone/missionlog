@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file. See [standa
 ## [1.1.55](https://github.com/rmartone/missionlog/compare/v1.1.54...v1.1.55) (2019-07-31)
 
 ### Features
+[['b10c864c25276d132b460d527e2689c06fa248e3'](https://github.com/rmartone/missionlog/commit/b10c864c25276d132b460d527e2689c06fa248e3)]
 * switched back to yarn but added yarn to dev dependencies
 
 ## [1.1.54](https://github.com/rmartone/missionlog/compare/v1.1.53...v1.1.54) (2019-07-31)

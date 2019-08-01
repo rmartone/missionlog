@@ -42,6 +42,7 @@ interface Log {
   warn: <T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]) => void;
 }
 
+/** singleton that implments the Log interface */
 export const log: Log = {
   /**
    * init
@@ -66,9 +67,9 @@ export const log: Log = {
 
   /**
    * Writes an error to the log
-   * @param tag
-   * @param message
-   * @param optionalParams
+   * @param tag string categorizes a message
+   * @param message object to log
+   * @param optionalParams optional list of objects to log
    */
   error: (tag, message, ...optionalParams): void => {
     // avoids unnecessary arguments access in transpiled code
@@ -79,9 +80,9 @@ export const log: Log = {
 
   /**
    * Writes a warning to the log
-   * @param tag
-   * @param message
-   * @param optionalParams
+   * @param tag string categorizes a message
+   * @param message object to log
+   * @param optionalParams optional list of objects to log
    */
   warn: (tag, message, ...optionalParams): void => {
     // avoids unnecessary arguments access...
@@ -92,9 +93,9 @@ export const log: Log = {
 
   /**
    * Writes info to the log
-   * @param tag
-   * @param message
-   * @param optionalParams
+   * @param tag string categorizes a message
+   * @param message object to log
+   * @param optionalParams optional list of objects to log
    */
   info: (tag, message, ...optionalParams): void => {
     // avoids unnecessary arguments access...

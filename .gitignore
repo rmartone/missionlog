@@ -2,7 +2,6 @@
 !.editorconfig
 !.gitignore
 !.gitattributes
-!.npmignore
 !.travis.yml
 .*/
 coverage/
