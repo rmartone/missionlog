@@ -2,13 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-### [1.1.56](https://github.com/rmartone/missionlog/compare/v1.1.55...v1.1.56) (2019-08-01)
+## [1.1.56](https://github.com/rmartone/missionlog/compare/v1.1.55...v1.1.56) (2019-08-01)
+
+### Features
+[['c88b11b90ac14ef8031ef123b0b56c50bc9239a1'](https://github.com/rmartone/missionlog/commit/c88b11b90ac14ef8031ef123b0b56c50bc9239a1)] * removing contributing, organzing package.json, non-compact babel output
 
 ## [1.1.55](https://github.com/rmartone/missionlog/compare/v1.1.54...v1.1.55) (2019-07-31)
 
 ### Features
-[['b10c864c25276d132b460d527e2689c06fa248e3'](https://github.com/rmartone/missionlog/commit/b10c864c25276d132b460d527e2689c06fa248e3)]
-* switched back to yarn but added yarn to dev dependencies
+[['b10c864c25276d132b460d527e2689c06fa248e3'](https://github.com/rmartone/missionlog/commit/b10c864c25276d132b460d527e2689c06fa248e3)] * switched back to yarn but added yarn to dev dependencies
 
 ## [1.1.54](https://github.com/rmartone/missionlog/compare/v1.1.53...v1.1.54) (2019-07-31)
 
