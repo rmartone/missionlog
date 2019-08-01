@@ -1,0 +1,9 @@
+
+{
+  "extends": ["tslint:recommended"],
+  "rules": {
+      "no-trailing-whitespace": false,
+      "max-classes-per-file": false,
+      "member-ordering": false
+  }
+}
