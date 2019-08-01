@@ -1,7 +1,7 @@
 {
   "name": "missionlog",
   "version": "1.1.56",
-  "description": " 🚀 lightweight logger • supports level based filtering and tagging • weighs in at 400 bytes",
+  "description": " 🚀 lightweight logger • level based filtering and tagging • weighs in at 400 bytes",
   "main": "index.js",
   "types": "index.d.ts",
   "files": [
@@ -64,10 +64,7 @@
   "engines": {
     "node": ">=8.0.0"
   },
-  "author": {
-    "name": "Ray Martone",
-    "email": "rmartone@gmail.com"
-  },
+  "author": "Ray Martone <rmartone@gmail.com>",
   "license": "MIT",
   "prettier": {
     "semi": true,

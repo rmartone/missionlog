@@ -7,7 +7,6 @@ Lightweight logger with an extensible configuration. Supports level based filter
 
 ## Features
 * Small footprint, around 400 bytes with 0 dependencies
-* JSON configuration
 * Filter by level, `ERROR > WARN > INFO`
 * Filter by tag, `'security' | 'whatever'`
 * Log callback is extensible from console to cloud
@@ -19,11 +18,6 @@ Lightweight logger with an extensible configuration. Supports level based filter
 * Works reliably with node or any browser through a bundler
 * Includes **TypeScript definitions** so no need for external `@types`
 
-## Example
-```javascript
-log.error('security', 'not authorized', statusCode);
-log.warn('transporter', 'Evil twin detected!');
-```
 
 ## Install
 ```shell
@@ -32,18 +26,17 @@ npm install missionlog
 
 ## Initialize
 
-Tags typically refer to a subsystem or component like `'security'` or `FooBar.name`.When missionlog is initialized, tags can be assigned a level. When a message's level is greater than or equal to its `tag`'s assigned level, missionlog executes a callkack. This simple and elegant approach to logging is incredibly flexible. For example, with *missionlog* you can seamlessly migrate from  `console` logging to a sophisticated cloud service with minimal impact!
+Tags typically refer to a subsystem or component like `'security'` or `FooBar.name`.When missionlog is initialized, tags can be assigned a level. When a message's level is greater than or equal to its `tag`'s assigned level, missionlog executes a callkack.
 
 ```javascript
 // var log = require('missionlog').log;
 improt { log } from 'missionlog';
 
 /**
- * init
- * @param config JSON object which assigns tags levels. If uninitialized,
- *    a tag's level defaults to INFO where ERROR > WARN > INFO.
- * @param callback? supports logging whatever way works best for you
- * @return {Log} supports chaining
+ * initialize missionlog
+ * @param config JSON which assigns tags levels. An uninitialized,
+ *    tag's level defaults to INFO.
+ * @param callback? handle logging whichever way works best for you
  */
 log.init(
   { loader: 'INFO', security: 'ERROR', system: 'OFF' },
@@ -64,6 +57,9 @@ log.init(
 ```
 ## Usage
 ```javascript
+log.error('security', 'not authorized', statusCode);
+log.warn('transporter', 'Evil twin detected!');
+
 // filtered since security's log level ERROR is greater than INFO
 log.info('security', 'login successful');
 
