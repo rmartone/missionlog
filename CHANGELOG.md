@@ -2,7 +2,10 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-### [1.1.60](https://github.com/rmartone/missionlog/compare/v1.1.57...v1.1.60) (2019-08-03)
+## [1.1.60](https://github.com/rmartone/missionlog/compare/v1.1.57...v1.1.60) (2019-08-03)
+
+### Features
+[['d5cd438f9f5f93364ade51e765eea2bb6e1fa8ad'](https://github.com/rmartone/missionlog/commit/d5cd438f9f5f93364ade51e765eea2bb6e1fa8ad)] * small improvement to level check for most common use case
 
 ## [1.1.57](https://github.com/rmartone/missionlog/compare/v1.1.56...v1.1.57) (2019-08-01)
 
