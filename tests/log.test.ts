@@ -63,12 +63,28 @@ test('log objects', (): void => {
   expect(buffer).toBe(`INFO: [${tag}] ${msg}, ${param1}, ${param2}`);
 });
 
-test('uninitialized tag', (): void => {
+test('Log.info - uninitialized tag', (): void => {
+  const tag = 'transporter';
+  const msg = 'evil twin detected';
+  buffer = '';
+  log.info(tag, msg);
+  expect(buffer).toBe(`INFO: [${tag}] ${msg}`);
+});
+
+test('Log.warn - uninitialized tag', (): void => {
   const tag = 'transporter';
   const msg = 'evil twin detected';
   buffer = '';
   log.warn(tag, msg);
   expect(buffer).toBe(`WARN: [${tag}] ${msg}`);
+});
+
+test('Log.error - uninitialized tag', (): void => {
+  const tag = 'transporter';
+  const msg = 'evil twin detected';
+  buffer = '';
+  log.error(tag, msg);
+  expect(buffer).toBe(`ERROR: [${tag}] ${msg}`);
 });
 
 test('update config', (): void => {
