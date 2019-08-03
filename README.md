@@ -26,7 +26,7 @@ npm install missionlog
 
 ## Initialize
 
-Tags typically refer to a subsystem or component like `'security'` or `FooBar.name`.When missionlog is initialized, tags can be assigned a level. When a message's level is greater than or equal to its `tag`'s assigned level, missionlog executes a callkack.
+Tags typically refer to a subsystem or component like `'security'` or `FooBar.name`.When missionlog is initialized, tags can be assigned a level. A message is logged when its level is greater than or equal to its `tag`'s assigned level.
 
 ```javascript
 // var log = require('missionlog').log;

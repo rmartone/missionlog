@@ -59,7 +59,8 @@
     "front-end",
     "backend",
     "isomorphic",
-    "typescript"
+    "typescript",
+    "minimal"
   ],
   "engines": {
     "node": ">=8.0.0"

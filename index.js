@@ -47,7 +47,7 @@ var _callback;
 var log = {
   /**
    * init
-   * @param config JSON object that assigns tags levels. If uninitialized,
+   * @param config JSON that assigns tags levels. If uninitialized,
    *    a tag's level defaults to INFO where ERROR > WARN > INFO.
    * @param callback? supports logging whatever way works best for you
    *  - style terminal output with chalk
@@ -75,8 +75,8 @@ var log = {
    * @param optionalParams optional list of objects to log
    */
   error: function error(tag, message) {
-    // avoids unnecessary arguments access in transpiled code
-    if (_callback && (_tagTolevel[tag] === undefined || Level.ERROR >= _tagTolevel[tag])) {
+    // avoid unnecessary arguments access in transpiled code
+    if (Level.ERROR >= (_tagTolevel[tag] || Level.INFO) && _callback) {
       for (var _len = arguments.length, optionalParams = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
         optionalParams[_key - 2] = arguments[_key];
       }
@@ -92,8 +92,8 @@ var log = {
    * @param optionalParams optional list of objects to log
    */
   warn: function warn(tag, message) {
-    // avoids unnecessary arguments access...
-    if (_callback && (_tagTolevel[tag] === undefined || Level.WARN >= _tagTolevel[tag])) {
+    // avoid unnecessary arguments access...
+    if (Level.WARN >= (_tagTolevel[tag] || Level.INFO) && _callback) {
       for (var _len2 = arguments.length, optionalParams = new Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
         optionalParams[_key2 - 2] = arguments[_key2];
       }
@@ -109,8 +109,8 @@ var log = {
    * @param optionalParams optional list of objects to log
    */
   info: function info(tag, message) {
-    // avoids unnecessary arguments access...
-    if (_callback && (_tagTolevel[tag] === undefined || Level.INFO >= _tagTolevel[tag])) {
+    // avoid unnecessary arguments access...
+    if (Level.INFO >= (_tagTolevel[tag] || Level.INFO) && _callback) {
       for (var _len3 = arguments.length, optionalParams = new Array(_len3 > 2 ? _len3 - 2 : 0), _key3 = 2; _key3 < _len3; _key3++) {
         optionalParams[_key3 - 2] = arguments[_key3];
       }

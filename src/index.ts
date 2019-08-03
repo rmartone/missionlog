@@ -46,7 +46,7 @@ interface Log {
 export const log: Log = {
   /**
    * init
-   * @param config JSON object that assigns tags levels. If uninitialized,
+   * @param config JSON that assigns tags levels. If uninitialized,
    *    a tag's level defaults to INFO where ERROR > WARN > INFO.
    * @param callback? supports logging whatever way works best for you
    *  - style terminal output with chalk
@@ -72,8 +72,8 @@ export const log: Log = {
    * @param optionalParams optional list of objects to log
    */
   error: (tag, message, ...optionalParams): void => {
-    // avoids unnecessary arguments access in transpiled code
-    if (_callback && (_tagTolevel[tag] === undefined || Level.ERROR >= _tagTolevel[tag])) {
+    // avoid unnecessary arguments access in transpiled code
+    if (Level.ERROR >= (_tagTolevel[tag] || Level.INFO) && _callback) {
       _callback(Level[Level.ERROR], tag, message, optionalParams);
     }
   },
@@ -85,8 +85,8 @@ export const log: Log = {
    * @param optionalParams optional list of objects to log
    */
   warn: (tag, message, ...optionalParams): void => {
-    // avoids unnecessary arguments access...
-    if (_callback && (_tagTolevel[tag] === undefined || Level.WARN >= _tagTolevel[tag])) {
+    // avoid unnecessary arguments access...
+    if (Level.WARN >= (_tagTolevel[tag] || Level.INFO) && _callback) {
       _callback(Level[Level.WARN], tag, message, optionalParams);
     }
   },
@@ -98,8 +98,8 @@ export const log: Log = {
    * @param optionalParams optional list of objects to log
    */
   info: (tag, message, ...optionalParams): void => {
-    // avoids unnecessary arguments access...
-    if (_callback && (_tagTolevel[tag] === undefined || Level.INFO >= _tagTolevel[tag])) {
+    // avoid unnecessary arguments access...
+    if (Level.INFO >= (_tagTolevel[tag] || Level.INFO) && _callback) {
       _callback(Level[Level.INFO], tag, message, optionalParams);
     }
   },
