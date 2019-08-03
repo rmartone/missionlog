@@ -4,15 +4,21 @@ All notable changes to this project will be documented in this file. See [standa
 
 ## [1.2.0](https://github.com/rmartone/missionlog/compare/v1.1.60...v1.2.0) (2019-08-03)
 
+### Features
+[['5011ed8fd6c918437e3310ddb678c3bc8495675e'](https://github.com/rmartone/missionlog/commit/5011ed8fd6c918437e3310ddb678c3bc8495675e)]
+* added two more tests so coverage is back at 100%
+
 ## [1.1.60](https://github.com/rmartone/missionlog/compare/v1.1.57...v1.1.60) (2019-08-03)
 
 ### Features
-[['d5cd438f9f5f93364ade51e765eea2bb6e1fa8ad'](https://github.com/rmartone/missionlog/commit/d5cd438f9f5f93364ade51e765eea2bb6e1fa8ad)] * small improvement to level check for most common use case
+[['d5cd438f9f5f93364ade51e765eea2bb6e1fa8ad'](https://github.com/rmartone/missionlog/commit/d5cd438f9f5f93364ade51e765eea2bb6e1fa8ad)]
+* small improvement to level check for most common use case
 
 ## [1.1.57](https://github.com/rmartone/missionlog/compare/v1.1.56...v1.1.57) (2019-08-01)
 
 ### Features
-[['5b181fc0a8e127aa2f48279e8abe4c70ba9a4e72'](https://github.com/rmartone/missionlog/commit/5b181fc0a8e127aa2f48279e8abe4c70ba9a4e72)] * streamlined README.md
+[['5b181fc0a8e127aa2f48279e8abe4c70ba9a4e72'](https://github.com/rmartone/missionlog/commit/5b181fc0a8e127aa2f48279e8abe4c70ba9a4e72)]
+* streamlined README.md
 
 ## [1.1.56](https://github.com/rmartone/missionlog/compare/v1.1.55...v1.1.56) (2019-08-01)
 
