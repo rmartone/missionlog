@@ -13,7 +13,7 @@ Lightweight logger with an extensible configuration. Supports level based filter
   * Style terminal output with chalk
   * Send JSON to a cloud service like [Loggly](https://www.loggly.com/)
   * Log strings and objects to the console
-  * Dynamically combine any of the above or try something new
+  * Combine any of the above based on env
 * API mirrors `console.log`, logs objects and supports rest parameters
 * Works reliably with node or any browser through a bundler
 * Includes **TypeScript definitions** so no need for external `@types`
