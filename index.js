@@ -53,7 +53,7 @@ var log = {
    *  - style terminal output with chalk
    *  - send JSON to a cloud logging service like Splunk
    *  - log strings and objects to the browser console
-   *  - dynamic combination of the above based on your app's env
+   *  - combine any of the above based on your app's env
    * @return {Log} supports chaining
    */
   init: function init(config, callback) {

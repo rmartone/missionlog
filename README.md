@@ -30,7 +30,7 @@ Tags typically refer to a subsystem or component like `'security'` or `FooBar.na
 
 ```javascript
 // var log = require('missionlog').log;
-improt { log } from 'missionlog';
+import { log } from 'missionlog';
 
 /**
  * initialize missionlog
