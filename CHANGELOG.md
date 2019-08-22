@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file. See [standa
 
 ## [1.3.0](https://github.com/rmartone/missionlog/compare/v1.2.1...v1.3.0) (2019-08-22)
 
+### Features
+* exported Log class
+* transitioned Log from object literal to class
+
 ## [1.2.1](https://github.com/rmartone/missionlog/compare/v1.2.0...v1.2.1) (2019-08-19)
 
 * Fixed typo in readme.md
