@@ -6,7 +6,7 @@
 Lightweight logger with an extensible configuration. Supports level based filtering and tagging. Filtering keeps your logs readable and uncluttered while tagging makes them searchable.
 
 ## Features
-* Small footprint, around 400 bytes with 0 dependencies
+* Small footprint, around 500 bytes with 0 dependencies
 * Filter by level, `ERROR > WARN > INFO`
 * Filter by tag, `'security' | 'whatever'`
 * Log callback is extensible from console to cloud
@@ -68,4 +68,18 @@ log.error('system', 'eject the warp core', error);
 
 // updates tag levels
 log.init({ loader: 'ERROR', system: 'INFO' });
+```
+## Advanced Usage
+Create a unique instance.
+```javascript
+
+import { Log } from 'missionlog';
+
+const myLog = new Log().init(
+  { loader: 'INFO', security: 'ERROR' },
+  (level, tag, msg, params) => {
+    console.log(`${level}: [${tag}] `, msg, ...params);
+});
+
+myLog.info('security', 'login successful');
 ```

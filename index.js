@@ -36,17 +36,13 @@ var Level;
   Level[Level["OFF"] = 4] = "OFF";
 })(Level || (Level = {}));
 
-/**
- * init assigns tags a level or they default to INFO
- * _tagToLevel hash that maps tags to their level
- */
-var _tagTolevel = {};
-
 var Log =
 /*#__PURE__*/
 function () {
   function Log() {
     _classCallCheck(this, Log);
+
+    _defineProperty(this, "_tagTolevel", {});
 
     _defineProperty(this, "_callback", void 0);
   }
@@ -67,7 +63,7 @@ function () {
      */
     value: function init(config, callback) {
       for (var k in config) {
-        _tagTolevel[k] = Level[config[k]];
+        this._tagTolevel[k] = Level[config[k]];
       }
 
       if (callback !== undefined) {
@@ -87,7 +83,7 @@ function () {
     key: "error",
     value: function error(tag, message) {
       // avoid unnecessary arguments access in transpiled code
-      if (Level.ERROR >= (_tagTolevel[tag] || Level.INFO) && this._callback) {
+      if (Level.ERROR >= (this._tagTolevel[tag] || Level.INFO) && this._callback) {
         for (var _len = arguments.length, optionalParams = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
           optionalParams[_key - 2] = arguments[_key];
         }
@@ -106,7 +102,7 @@ function () {
     key: "warn",
     value: function warn(tag, message) {
       // avoid unnecessary arguments access...
-      if (Level.WARN >= (_tagTolevel[tag] || Level.INFO) && this._callback) {
+      if (Level.WARN >= (this._tagTolevel[tag] || Level.INFO) && this._callback) {
         for (var _len2 = arguments.length, optionalParams = new Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
           optionalParams[_key2 - 2] = arguments[_key2];
         }
@@ -125,7 +121,7 @@ function () {
     key: "info",
     value: function info(tag, message) {
       // avoid unnecessary arguments access...
-      if (Level.INFO >= (_tagTolevel[tag] || Level.INFO) && this._callback) {
+      if (Level.INFO >= (this._tagTolevel[tag] || Level.INFO) && this._callback) {
         for (var _len3 = arguments.length, optionalParams = new Array(_len3 > 2 ? _len3 - 2 : 0), _key3 = 2; _key3 < _len3; _key3++) {
           optionalParams[_key3 - 2] = arguments[_key3];
         }
