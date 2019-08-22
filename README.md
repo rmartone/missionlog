@@ -70,7 +70,7 @@ log.error('system', 'eject the warp core', error);
 log.init({ loader: 'ERROR', system: 'INFO' });
 ```
 ## Advanced Usage
-Create a unique instance.
+Create an instance with its own tags and callback.
 ```javascript
 
 import { Log } from 'missionlog';
