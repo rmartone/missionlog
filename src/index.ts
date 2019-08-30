@@ -19,7 +19,6 @@ enum Level {
   OFF,
 }
 
-type LevelString = 'OFF' | 'ERROR' | 'INFO' | 'WARN';
 type Callback = (level: string, tag: string, message: unknown, optionalParams: unknown[]) => void;
 
 export class Log {
@@ -45,9 +44,9 @@ export class Log {
    *  - combine any of the above based on your app's env
    * @return {this} supports chaining
    */
-  public init(config: Record<string, LevelString>, callback?: Callback): this {
+  public init(config: Record<string, string>, callback?: Callback): this {
     for (const k in config) {
-      this._tagTolevel[k] = Level[config[k]];
+      this._tagTolevel[k] = Level[config[k] as ('OFF' | 'ERROR' | 'INFO' | 'WARN')];
     }
     if (callback !== undefined) {
       this._callback = callback;
