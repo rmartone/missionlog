@@ -1,6 +1,6 @@
 {
   "name": "missionlog",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "🚀 lightweight logger • level based filtering and tagging • weighs in at 500 bytes",
   "main": "index.js",
   "types": "index.d.ts",
@@ -12,37 +12,13 @@
     "tests/log.test.ts"
   ],
   "scripts": {
-    "build": "yarn build:types && yarn build:js",
+    "build": "npm run build:types && npm run build:js",
     "build:types": "tsc --emitDeclarationOnly",
     "build:js": "babel src --out-dir . --extensions \".ts\"",
     "coverage": "jest --coverage && cat ./coverage/lcov.info | coveralls",
     "lint": "tsc --noEmit && eslint 'src/*.ts' --fix",
     "release": "standard-version",
     "test": "jest ./tests/*.test.ts"
-  },
-  "dependencies": {},
-  "devDependencies": {
-    "@babel/cli": "^7.5.5",
-    "@babel/core": "^7.5.5",
-    "@babel/plugin-proposal-class-properties": "^7.5.5",
-    "@babel/plugin-proposal-numeric-separator": "^7.2.0",
-    "@babel/plugin-proposal-object-rest-spread": "^7.5.5",
-    "@babel/preset-env": "^7.5.5",
-    "@babel/preset-typescript": "^7.3.3",
-    "@types/jest": "^24.0.18",
-    "@types/node": "^12.7.3",
-    "@typescript-eslint/eslint-plugin": "^2.0.0",
-    "@typescript-eslint/parser": "^2.0.0",
-    "babel-jest": "^24.9.0",
-    "coveralls": "^3.0.6",
-    "eslint": "^6.2.2",
-    "eslint-config-prettier": "^6.1.0",
-    "eslint-plugin-prettier": "^3.1.0",
-    "jest": "^24.9.0",
-    "prettier": "^1.18.2",
-    "standard-version": "^7.0.0",
-    "typescript": "^3.6.2",
-    "yarn": "^1.17.3"
   },
   "homepage": "https://github.com/rmartone/missionlog#readme",
   "repository": {
@@ -67,6 +43,40 @@
   },
   "author": "Ray Martone <rmartone@gmail.com>",
   "license": "MIT",
+  "dependencies": {
+    "@babel/runtime": "^7.6.0",
+    "core-js": "^3.2.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "7.6.0",
+    "@babel/core": "7.6.0",
+    "@babel/generator": "^7.6.0",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/plugin-proposal-numeric-separator": "^7.2.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.5.5",
+    "@babel/plugin-transform-runtime": "^7.6.0",
+    "@babel/preset-env": "7.6.0",
+    "@babel/preset-typescript": "7.6.0",
+    "@babel/register": "^7.6.0",
+    "@types/jest": "^24.0.18",
+    "@types/node": "^12.7.5",
+    "@typescript-eslint/eslint-plugin": "^2.3.0",
+    "@typescript-eslint/parser": "^2.3.0",
+    "babel-jest": "^24.9.0",
+    "babel-plugin-const-enum": "^0.0.2",
+    "babel-plugin-module-resolver": "^3.2.0",
+    "babel-plugin-ts-optchain": "^1.1.5",
+    "coveralls": "^3.0.6",
+    "cross-env": "^6.0.0",
+    "eslint": "^6.4.0",
+    "eslint-config-prettier": "^6.3.0",
+    "eslint-plugin-prettier": "^3.1.1",
+    "jest": "^24.9.0",
+    "prettier": "^1.18.2",
+    "standard-version": "^7.0.0",
+    "ts-optchain": "^0.1.8",
+    "typescript": "^3.6.3"
+  },
   "prettier": {
     "semi": true,
     "trailingComma": "all",
@@ -74,22 +84,35 @@
     "printWidth": 120
   },
   "eslintConfig": {
-    "parser": "@typescript-eslint/parser",
     "extends": [
       "plugin:@typescript-eslint/recommended",
-      "prettier/@typescript-eslint",
-      "plugin:prettier/recommended"
+      "prettier",
+      "prettier/@typescript-eslint"
     ],
+    "parser": "@typescript-eslint/parser",
     "parserOptions": {
       "ecmaVersion": 2018,
       "sourceType": "module"
+    },
+    "rules": {
+      "@typescript-eslint/no-use-before-define": [
+        "error",
+        {
+          "functions": false,
+          "classes": false
+        }
+      ]
     }
   },
   "babel": {
+    "comments": false,
+    "minified": true,
     "presets": [
       [
         "@babel/preset-env",
         {
+          "useBuiltIns": "usage",
+          "corejs": 3,
           "targets": {
             "browsers": [
               ">1%",
@@ -105,7 +128,14 @@
     ],
     "plugins": [
       "@babel/proposal-class-properties",
-      "@babel/proposal-object-rest-spread"
+      "@babel/proposal-object-rest-spread",
+      [
+        "const-enum",
+        {
+          "transform": "constObject"
+        }
+      ],
+      "@babel/plugin-transform-runtime"
     ]
   }
 }

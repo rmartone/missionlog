@@ -57,14 +57,19 @@ log.init(
 ```
 ## Usage
 ```javascript
-log.error('security', 'not authorized', statusCode);
-log.warn('transporter', 'Evil twin detected!');
+import { log, tag } from 'missionlog';
+
+log.error(tag.security, 'not authorized', statusCode);
+log.warn(tag.transporter, 'Evil twin detected!');
 
 // filtered since security's log level ERROR is greater than INFO
+log.info(tag.security, 'login successful');
+
+// if you prefer to not use the generated tags pass a string
 log.info('security', 'login successful');
 
 // filtered since system's level is OFF
-log.error('system', 'eject the warp core', error);
+log.error(tag.system, 'eject the warp core', error);
 
 // updates tag levels
 log.init({ loader: 'ERROR', system: 'INFO' });
@@ -73,7 +78,7 @@ log.init({ loader: 'ERROR', system: 'INFO' });
 Create an instance with its own tags and callback.
 ```javascript
 
-import { Log } from 'missionlog';
+import { Log, tag } from 'missionlog';
 
 const myLog = new Log().init(
   { loader: 'INFO', security: 'ERROR' },
@@ -81,5 +86,5 @@ const myLog = new Log().init(
     console.log(`${level}: [${tag}] `, msg, ...params);
 });
 
-myLog.info('security', 'login successful');
+myLog.info(tag.security, 'login successful');
 ```

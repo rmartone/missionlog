@@ -2,16 +2,20 @@
   "compilerOptions": {
     "strict": true,
     "target": "esnext",
-    "module": "commonjs",
+    "moduleResolution": "node",
     "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,
     "noUnusedLocals": true,
-    "removeComments": true,
     "allowSyntheticDefaultImports": true,
     "noUnusedParameters": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
     "declaration": true,
     "outDir": ".",
-    "esModuleInterop": true,
+    "baseUrl": ".",
+    "paths": {
+      "/*": ["src/*"]
+    }
   },
   "files": ["./src/index.ts"]
 }
