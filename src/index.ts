@@ -12,7 +12,7 @@
 /**
  * Level where `ERROR > WARN > INFO`.
  */
-enum Level {
+export enum LogLevel {
   INFO = 1,
   WARN,
   ERROR,
@@ -28,7 +28,7 @@ export class Log {
    * init assigns tags a level or they default to INFO
    * _tagToLevel hash that maps tags to their level
    */
-  protected readonly _tagToLevel: Record<string, Level> = {};
+  protected readonly _tagToLevel: Record<string, LogLevel> = {};
 
   /**
    * callback that supports logging whatever way works best for you!
@@ -48,7 +48,7 @@ export class Log {
    */
   public init(config: Record<string, string>, callback?: Callback): this {
     for (const k in config) {
-      this._tagToLevel[k] = Level[config[k] as ('OFF' | 'ERROR' | 'INFO' | 'WARN')] || 1;
+      this._tagToLevel[k] = LogLevel[config[k] as ('OFF' | 'ERROR' | 'INFO' | 'WARN')] || 1;
     }
 
     if (callback !== undefined) {
@@ -70,8 +70,8 @@ export class Log {
    */
   public error<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
     // avoid unnecessary arguments access in transpiled code
-    if (Level.ERROR >= (this._tagToLevel[tag] || Level.INFO) && this._callback) {
-      this._callback(Level[Level.ERROR], tag, message, optionalParams);
+    if (LogLevel.ERROR >= (this._tagToLevel[tag] || LogLevel.INFO) && this._callback) {
+      this._callback(LogLevel[LogLevel.ERROR], tag, message, optionalParams);
     }
   }
 
@@ -83,8 +83,8 @@ export class Log {
    */
   public warn<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
     // avoid unnecessary arguments access...
-    if (Level.WARN >= (this._tagToLevel[tag] || Level.INFO) && this._callback) {
-      this._callback(Level[Level.WARN], tag, message, optionalParams);
+    if (LogLevel.WARN >= (this._tagToLevel[tag] || LogLevel.INFO) && this._callback) {
+      this._callback(LogLevel[LogLevel.WARN], tag, message, optionalParams);
     }
   }
 
@@ -96,8 +96,8 @@ export class Log {
    */
   public info<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
     // avoid unnecessary arguments access...
-    if (Level.INFO >= (this._tagToLevel[tag] || Level.INFO) && this._callback) {
-      this._callback(Level[Level.INFO], tag, message, optionalParams);
+    if (LogLevel.INFO >= (this._tagToLevel[tag] || LogLevel.INFO) && this._callback) {
+      this._callback(LogLevel[LogLevel.INFO], tag, message, optionalParams);
     }
   }
 }

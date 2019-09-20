@@ -11,7 +11,7 @@
 /**
  * Level where `ERROR > WARN > INFO`.
  */
-declare enum Level {
+export declare enum LogLevel {
     INFO = 1,
     WARN = 2,
     ERROR = 3,
@@ -24,7 +24,7 @@ export declare class Log {
      * init assigns tags a level or they default to INFO
      * _tagToLevel hash that maps tags to their level
      */
-    protected readonly _tagToLevel: Record<string, Level>;
+    protected readonly _tagToLevel: Record<string, LogLevel>;
     /**
      * callback that supports logging whatever way works best for you!
      */
