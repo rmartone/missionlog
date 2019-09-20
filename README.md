@@ -39,7 +39,7 @@ import { log, LogLevel } from 'missionlog';
  * @param callback? handle logging whichever way works best for you
  */
 log.init(
-  { loader: 'INFO', security: 'ERROR', system: 'OFF' },
+  { transporter: 'INFO', security: 'ERROR', system: 'OFF' },
   (level, tag, msg, params) => {
     const prefix = `${level}: [${tag}] `;
     switch(level) {
@@ -59,20 +59,23 @@ log.init(
 ```javascript
 import { log, tag } from 'missionlog';
 
+// after calling init the imported value "tag" is populated with the your tag values
 log.error(tag.security, 'not authorized', statusCode);
-log.warn(tag.transporter, 'Evil twin detected!');
 
-// filtered since security's log level ERROR is greater than INFO
+// but if you prefer simply use strings for your tags
+log.warn('transporter', 'Evil twin detected!');
+
+// gets filtered since security's log level ERROR is greater than INFO
 log.info(tag.security, 'login successful');
 
-// if you prefer to not use the generated tags pass a string
-log.info('security', 'login successful');
-
-// filtered since system's level is OFF
+// also filtered since system's level is OFF
 log.error(tag.system, 'eject the warp core', error);
 
-// updates tag levels
+// updates tag levels on the fly
 log.init({ loader: 'ERROR', system: 'INFO' });
+
+// or disable all logging
+log.init();
 ```
 ## Advanced Usage
 Create an instance with its own tags and callback.

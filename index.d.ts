@@ -2,11 +2,7 @@
  * @author Ray Martone
  * @copyright Copyright (c) 2019 Ray Martone
  * @license MIT
- * @description missionlog is an easy to use lightweight log adapter
- * that provides level based filtering and tagging.
- *
- * TLDR: Messages are logged when their level is greater than
- * or equal to their `tag`'s level.
+ * @description log adapter that provides level based filtering and tagging
  */
 /**
  * Useful for implementing a log event hadnelr
@@ -18,6 +14,10 @@ export declare const enum LogLevel {
     OFF = "OFF"
 }
 /**
+ * union
+ */
+declare type LevelStr = 'INFO' | 'WARN' | 'ERROR' | 'OFF';
+/**
  * Level where `ERROR > WARN > INFO`.
  */
 declare enum Level {
@@ -26,7 +26,7 @@ declare enum Level {
     ERROR = 3,
     OFF = 4
 }
-declare type Callback = (level: string, tag: string, message: unknown, optionalParams: unknown[]) => void;
+declare type Callback = (level: LevelStr, tag: string, message: unknown, optionalParams: unknown[]) => void;
 export declare const tag: Record<string, string>;
 export declare class Log {
     /**
@@ -40,7 +40,7 @@ export declare class Log {
     protected _callback?: Callback;
     /**
      * init
-     * @param config JSON that assigns tags levels. If uninitialized,
+     * @param config? JSON that assigns tags levels. If uninitialized,
      *    a tag's level defaults to INFO where ERROR > WARN > INFO.
      * @param callback? supports logging whatever way works best for you
      *  - style terminal output with chalk
@@ -49,7 +49,7 @@ export declare class Log {
      *  - combine any of the above based on your app's env
      * @return {this} supports chaining
      */
-    init(config: Record<string, string>, callback?: Callback): this;
+    init(config?: Record<string, string>, callback?: Callback): this;
     /**
      * Writes an error to the log
      * @param tag string categorizes a message
