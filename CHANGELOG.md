@@ -2,11 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-### [1.5.1](https://github.com/rmartone/missionlog/compare/v1.5.0...v1.5.1) (2019-09-20)
+## [1.5.1](https://github.com/rmartone/missionlog/compare/v1.5.0...v1.5.1) (2019-09-20)
+
+### * modified travis.yml to use npm
 
 ## [1.5.0](https://github.com/rmartone/missionlog/compare/v1.4.1...v1.5.0) (2019-09-20)
 
-### * support for a tag dictionary export and cleaned up build 
+### * support for a tag dictionary export and cleaned up build
 
 ## [1.4.0](https://github.com/rmartone/missionlog/compare/v1.3.5...v1.4.0) (2019-09-05)
 
