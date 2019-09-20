@@ -30,7 +30,7 @@ Tags typically refer to a subsystem or component like `'security'` or `FooBar.na
 
 ```javascript
 // var log = require('missionlog').log;
-import { log } from 'missionlog';
+import { log, LogLevel } from 'missionlog';
 
 /**
  * initialize missionlog
@@ -43,13 +43,13 @@ log.init(
   (level, tag, msg, params) => {
     const prefix = `${level}: [${tag}] `;
     switch(level) {
-      case 'ERROR':
+      case LogLevel.ERROR:
         console.error(prefix, msg, ...params);
         break;
-      case 'WARN':
+      case LogLevel.WARN:
         console.warn(prefix, msg, ...params);
         break;
-      case 'INFO':
+      case LogLevel.INFO:
         console.info(prefix, msg, ...params);
         break;
     }

@@ -9,9 +9,18 @@
  * or equal to their `tag`'s level.
  */
 /**
+ * Useful for implementing a log event hadnelr
+ */
+export declare const LogLevel: {
+    INFO: string;
+    WARN: string;
+    ERROR: string;
+    OFF: string;
+};
+/**
  * Level where `ERROR > WARN > INFO`.
  */
-export declare enum LogLevel {
+declare enum Level {
     INFO = 1,
     WARN = 2,
     ERROR = 3,
@@ -24,7 +33,7 @@ export declare class Log {
      * init assigns tags a level or they default to INFO
      * _tagToLevel hash that maps tags to their level
      */
-    protected readonly _tagToLevel: Record<string, LogLevel>;
+    protected readonly _tagToLevel: Record<string, Level>;
     /**
      * callback that supports logging whatever way works best for you!
      */
