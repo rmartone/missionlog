@@ -59,13 +59,13 @@ log.init(
 ```javascript
 import { log, tag } from 'missionlog';
 
-// after calling init the imported value "tag" is populated with the your tag values
+// the imported value "tag" is populated with YOUR tags!
 log.error(tag.security, 'not authorized', statusCode);
 
-// but if you prefer simply use strings for your tags
+// but if you prefer simply use strings
 log.warn('transporter', 'Evil twin detected!');
 
-// gets filtered since security's log level ERROR is greater than INFO
+// filtered since security's log level ERROR is greater than INFO
 log.info(tag.security, 'login successful');
 
 // also filtered since system's level is OFF
@@ -74,7 +74,7 @@ log.error(tag.system, 'eject the warp core', error);
 // updates tag levels on the fly
 log.init({ loader: 'ERROR', system: 'INFO' });
 
-// or disable all logging
+// disable logging by clearing the callback
 log.init();
 ```
 ## Advanced Usage
