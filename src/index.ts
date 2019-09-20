@@ -2,22 +2,23 @@
  * @author Ray Martone
  * @copyright Copyright (c) 2019 Ray Martone
  * @license MIT
- * @description missionlog is an easy to use lightweight log adapter
- * that provides level based filtering and tagging.
- *
- * TLDR: Messages are logged when their level is greater than
- * or equal to their `tag`'s level.
+ * @description log adapter that provides level based filtering and tagging
  */
 
- /**
-  * Useful for implementing a log event hadnelr
-  */
+/**
+ * Useful for implementing a log event hadnelr
+ */
 export const enum LogLevel {
   INFO = 'INFO',
   WARN = 'WARN',
   ERROR = 'ERROR',
-  OFF ='OFF'
-};
+  OFF = 'OFF',
+}
+
+/**
+ * union
+ */
+type LevelStr = 'INFO' | 'WARN' | 'ERROR' | 'OFF';
 
 /**
  * Level where `ERROR > WARN > INFO`.
@@ -29,7 +30,7 @@ enum Level {
   OFF,
 }
 
-type Callback = (level: string, tag: string, message: unknown, optionalParams: unknown[]) => void;
+type Callback = (level: LevelStr, tag: string, message: unknown, optionalParams: unknown[]) => void;
 
 export const tag: Record<string, string> = {};
 
@@ -47,7 +48,7 @@ export class Log {
 
   /**
    * init
-   * @param config JSON that assigns tags levels. If uninitialized,
+   * @param config? JSON that assigns tags levels. If uninitialized,
    *    a tag's level defaults to INFO where ERROR > WARN > INFO.
    * @param callback? supports logging whatever way works best for you
    *  - style terminal output with chalk
@@ -56,9 +57,9 @@ export class Log {
    *  - combine any of the above based on your app's env
    * @return {this} supports chaining
    */
-  public init(config: Record<string, string>, callback?: Callback): this {
+  init(config?: Record<string, string>, callback?: Callback): this {
     for (const k in config) {
-      this._tagToLevel[k] = Level[config[k] as ('OFF' | 'ERROR' | 'INFO' | 'WARN')] || 1;
+      this._tagToLevel[k] = Level[config[k] as LevelStr] || 1;
     }
 
     if (callback !== undefined) {
@@ -78,10 +79,10 @@ export class Log {
    * @param message object to log
    * @param optionalParams optional list of objects to log
    */
-  public error<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
+  error<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
     // avoid unnecessary arguments access in transpiled code
     if (Level.ERROR >= (this._tagToLevel[tag] || Level.INFO) && this._callback) {
-      this._callback(Level[Level.ERROR], tag, message, optionalParams);
+      this._callback(Level[Level.ERROR] as LevelStr, tag, message, optionalParams);
     }
   }
 
@@ -91,10 +92,10 @@ export class Log {
    * @param message object to log
    * @param optionalParams optional list of objects to log
    */
-  public warn<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
+  warn<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
     // avoid unnecessary arguments access...
     if (Level.WARN >= (this._tagToLevel[tag] || Level.INFO) && this._callback) {
-      this._callback(Level[Level.WARN], tag, message, optionalParams);
+      this._callback(Level[Level.WARN] as LevelStr, tag, message, optionalParams);
     }
   }
 
@@ -104,10 +105,10 @@ export class Log {
    * @param message object to log
    * @param optionalParams optional list of objects to log
    */
-  public info<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
+  info<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
     // avoid unnecessary arguments access...
     if (Level.INFO >= (this._tagToLevel[tag] || Level.INFO) && this._callback) {
-      this._callback(Level[Level.INFO], tag, message, optionalParams);
+      this._callback(Level[Level.INFO] as LevelStr, tag, message, optionalParams);
     }
   }
 }
