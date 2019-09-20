@@ -11,12 +11,12 @@
 /**
  * Useful for implementing a log event hadnelr
  */
-export declare const LogLevel: {
-    INFO: string;
-    WARN: string;
-    ERROR: string;
-    OFF: string;
-};
+export declare const enum LogLevel {
+    INFO = "INFO",
+    WARN = "WARN",
+    ERROR = "ERROR",
+    OFF = "OFF"
+}
 /**
  * Level where `ERROR > WARN > INFO`.
  */

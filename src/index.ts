@@ -12,11 +12,11 @@
  /**
   * Useful for implementing a log event hadnelr
   */
-export const LogLevel = {
-  INFO: 'INFO',
-  WARN: 'WARN',
-  ERROR: 'ERROR',
-  OFF: 'OFF'
+export const enum LogLevel {
+  INFO = 'INFO',
+  WARN = 'WARN',
+  ERROR = 'ERROR',
+  OFF ='OFF'
 };
 
 /**

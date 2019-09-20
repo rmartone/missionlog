@@ -2,9 +2,9 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-### [1.5.4](https://github.com/rmartone/missionlog/compare/v1.5.3...v1.5.4) (2019-09-20)
+## [1.5.4](https://github.com/rmartone/missionlog/compare/v1.5.3...v1.5.4) (2019-09-20)
 
-### [1.5.3](https://github.com/rmartone/missionlog/compare/v1.5.2...v1.5.3) (2019-09-20)
+### * exported LogLevel as a const enum so it can be used as type and value
 
 ## [1.5.2](https://github.com/rmartone/missionlog/compare/v1.5.1...v1.5.2) (2019-09-20)
 
