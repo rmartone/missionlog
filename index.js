@@ -19,7 +19,7 @@ var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/de
  * @license MIT
  * @description log adapter that provides level based filtering and tagging
  */
-const LogLevel = {
+var LogLevel = {
   INFO: "INFO",
   WARN: "WARN",
   ERROR: "ERROR",
