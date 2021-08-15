@@ -1,6 +1,6 @@
 {
   "name": "missionlog",
-  "version": "1.6.8",
+  "version": "1.6.9",
   "description": "🚀 lightweight logger • level based filtering and tagging • weighs in at 500 bytes",
   "main": "index.js",
   "types": "index.d.ts",
