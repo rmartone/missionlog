@@ -8,7 +8,7 @@
 /**
  * Useful for implementing a log event hadnelr
  */
-export const enum LogLevel {
+export enum LogLevel {
   INFO = 'INFO',
   WARN = 'WARN',
   ERROR = 'ERROR',

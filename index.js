@@ -1,5 +1,7 @@
 "use strict";
 
+require("core-js/modules/es.object.define-property.js");
+
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 
 Object.defineProperty(exports, "__esModule", {
@@ -19,13 +21,16 @@ var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/de
  * @license MIT
  * @description log adapter that provides level based filtering and tagging
  */
-var LogLevel = {
-  INFO: "INFO",
-  WARN: "WARN",
-  ERROR: "ERROR",
-  OFF: "OFF"
-};
+var LogLevel;
 exports.LogLevel = LogLevel;
+
+(function (LogLevel) {
+  LogLevel["INFO"] = "INFO";
+  LogLevel["WARN"] = "WARN";
+  LogLevel["ERROR"] = "ERROR";
+  LogLevel["OFF"] = "OFF";
+})(LogLevel || (exports.LogLevel = LogLevel = {}));
+
 var Level;
 
 (function (Level) {

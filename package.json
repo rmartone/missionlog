@@ -1,6 +1,6 @@
 {
   "name": "missionlog",
-  "version": "1.6.10",
+  "version": "1.7.0",
   "description": "🚀 lightweight logger • level based filtering and tagging • weighs in at 500 bytes",
   "main": "index.js",
   "types": "index.d.ts",
@@ -45,7 +45,7 @@
   "license": "MIT",
   "dependencies": {
     "@babel/runtime": "^7.16.7",
-    "core-js": "^3.20.1"
+    "core-js": "^3.20.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.16.7",
@@ -59,23 +59,22 @@
     "@babel/preset-typescript": "^7.16.7",
     "@babel/register": "^7.16.7",
     "@types/jest": "^27.4.0",
-    "@types/node": "^16.11.17",
-    "@typescript-eslint/eslint-plugin": "^4.33.0",
-    "@typescript-eslint/parser": "^4.33.0",
-    "babel-jest": "^27.4.5",
+    "@types/node": "^17.0.8",
+    "@typescript-eslint/eslint-plugin": "^5.9.0",
+    "@typescript-eslint/parser": "^5.9.0",
+    "babel-jest": "^27.4.6",
     "babel-plugin-const-enum": "^1.2.0",
-    "babel-plugin-module-resolver": "^4.0.0",
+    "babel-plugin-module-resolver": "^4.1.0",
     "babel-plugin-ts-optchain": "^1.1",
     "coveralls": "^3.1.1",
     "cross-env": "^7.0.3",
-    "eslint": "^7.32.0",
+    "eslint": "^8.6.0",
     "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-prettier": "^3.4.1",
-    "jest": "^27.4.5",
+    "eslint-plugin-prettier": "^4.0.0",
+    "jest": "^27.4.7",
     "prettier": "^2.5.1",
     "standard-version": "^9.3.2",
-    "ts-optchain": "^0.1.8",
-    "typescript": "4.3.5"
+    "typescript": "4.5.4"
   },
   "prettier": {
     "semi": true,
@@ -103,12 +102,11 @@
           "corejs": 3,
           "targets": {
             "browsers": [
-              ">1%",
-              "last 2 versions",
-              "not ie < 11",
-              "not dead"
+              ">0.25%",
+              "not ie 11",
+              "not op_mini all"
             ],
-            "node": "8"
+            "node": "12"
           }
         }
       ],
