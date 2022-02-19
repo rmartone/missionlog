@@ -1,6 +1,6 @@
 {
   "name": "missionlog",
-  "version": "1.7.4",
+  "version": "1.7.5",
   "description": "🚀 lightweight logger • level based filtering and tagging • weighs in at 500 bytes",
   "main": "index.js",
   "types": "index.d.ts",
@@ -10,6 +10,12 @@
     "tsconfig.json",
     "src/index.ts",
     "tests/log.test.ts"
+  ],
+  "browserslist": [
+    "> 0.2%",
+    "not dead",
+    "not op_mini all",
+    "node 12"
   ],
   "scripts": {
     "build": "npm run build:types && npm run build:js",
@@ -45,6 +51,7 @@
   "license": "MIT",
   "dependencies": {
     "@babel/runtime": "^7.17.2",
+    "@babel/runtime-corejs3": "^7.17.2",
     "core-js": "^3.21.1"
   },
   "devDependencies": {
@@ -99,17 +106,7 @@
         "@babel/preset-env",
         {
           "useBuiltIns": "usage",
-          "corejs": 3,
-          "targets": {
-            "browsers": [
-              "> 0.5%",
-              "last 2 versions",
-              "not dead",
-              "not ie 11",
-              "not op_mini all"
-            ],
-            "node": "12"
-          }
+          "corejs": 3
         }
       ],
       "@babel/preset-typescript"
