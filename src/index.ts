@@ -57,9 +57,9 @@ export class Log {
    *  - combine any of the above based on your app's env
    * @return {this} supports chaining
    */
-  init(config?: Record<string, string>, callback?: Callback): this {
+  init(config?: Record<string, LevelStr>, callback?: Callback): this {
     for (const k in config) {
-      this._tagToLevel[k] = Level[config[k] as LevelStr] || 1;
+      this._tagToLevel[k] = Level[config[k]] || 1;
     }
 
     if (callback !== undefined) {
@@ -69,7 +69,6 @@ export class Log {
     for (const key in this._tagToLevel) {
       tag[key] = key;
     }
-
     return this;
   }
 
@@ -81,7 +80,7 @@ export class Log {
    */
   error<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
     // avoid unnecessary arguments access in transpiled code
-    if (Level.ERROR >= (this._tagToLevel[tag] || Level.INFO) && this._callback) {
+    if (this._callback && Level.ERROR >= (this._tagToLevel[tag] || Level.INFO)) {
       this._callback(Level[Level.ERROR] as LevelStr, tag, message, optionalParams);
     }
   }
@@ -94,7 +93,7 @@ export class Log {
    */
   warn<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
     // avoid unnecessary arguments access...
-    if (Level.WARN >= (this._tagToLevel[tag] || Level.INFO) && this._callback) {
+    if (this._callback && Level.WARN >= (this._tagToLevel[tag] || Level.INFO)) {
       this._callback(Level[Level.WARN] as LevelStr, tag, message, optionalParams);
     }
   }
@@ -107,7 +106,7 @@ export class Log {
    */
   info<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
     // avoid unnecessary arguments access...
-    if (Level.INFO >= (this._tagToLevel[tag] || Level.INFO) && this._callback) {
+    if (this._callback && Level.INFO >= (this._tagToLevel[tag] || Level.INFO)) {
       this._callback(Level[Level.INFO] as LevelStr, tag, message, optionalParams);
     }
   }

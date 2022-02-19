@@ -49,7 +49,7 @@ export declare class Log {
      *  - combine any of the above based on your app's env
      * @return {this} supports chaining
      */
-    init(config?: Record<string, string>, callback?: Callback): this;
+    init(config?: Record<string, LevelStr>, callback?: Callback): this;
     /**
      * Writes an error to the log
      * @param tag string categorizes a message
