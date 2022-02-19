@@ -12,8 +12,10 @@
     "tests/log.test.ts"
   ],
   "browserslist": [
-    "> 0.2%",
+    "> 0.3%",
+    "last 2 versions",
     "not dead",
+    "not ie 11",
     "not op_mini all",
     "node 12"
   ],

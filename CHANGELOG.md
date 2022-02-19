@@ -2,7 +2,9 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-### [1.7.5](https://github.com/rmartone/missionlog/compare/v1.7.4...v1.7.5) (2022-02-19)
+## [1.7.5](https://github.com/rmartone/missionlog/compare/v1.7.4...v1.7.5) (2022-02-19)
+
+### loosening restrictive definition
 
 ## [1.7.4](https://github.com/rmartone/missionlog/compare/v1.7.1...v1.7.4) (2022-02-19)
 

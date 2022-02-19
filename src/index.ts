@@ -57,9 +57,9 @@ export class Log {
    *  - combine any of the above based on your app's env
    * @return {this} supports chaining
    */
-  init(config?: Record<string, LevelStr>, callback?: Callback): this {
+  init(config?: Record<string, string>, callback?: Callback): this {
     for (const k in config) {
-      this._tagToLevel[k] = Level[config[k]] || 1;
+      this._tagToLevel[k] = Level[config[k] as LevelStr] || 1;
     }
 
     if (callback !== undefined) {

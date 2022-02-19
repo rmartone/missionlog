@@ -1,6 +1,6 @@
 /**
  * @author Ray Martone
- * @copyright Copyright (c) 2019 Ray Martone
+ * @copyright Copyright (c) 2019-2022 Ray Martone
  * @license MIT
  * @description log adapter that provides level based filtering and tagging
  */
@@ -49,7 +49,7 @@ export declare class Log {
      *  - combine any of the above based on your app's env
      * @return {this} supports chaining
      */
-    init(config?: Record<string, LevelStr>, callback?: Callback): this;
+    init(config?: Record<string, string>, callback?: Callback): this;
     /**
      * Writes an error to the log
      * @param tag string categorizes a message
