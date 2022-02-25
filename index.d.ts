@@ -16,7 +16,7 @@ export declare enum LogLevel {
 /**
  * union
  */
-declare type LevelStr = 'INFO' | 'WARN' | 'ERROR' | 'OFF';
+export declare type LogLevelStr = 'INFO' | 'WARN' | 'ERROR' | 'OFF';
 /**
  * Level where `ERROR > WARN > INFO`.
  */
@@ -26,7 +26,7 @@ declare enum Level {
     ERROR = 3,
     OFF = 4
 }
-declare type Callback = (level: LevelStr, tag: string, message: unknown, optionalParams: unknown[]) => void;
+export declare type LogCallback = (level: LogLevelStr, tag: string, message: unknown, optionalParams: unknown[]) => void;
 export declare const tag: Record<string, string>;
 export declare class Log {
     /**
@@ -37,7 +37,7 @@ export declare class Log {
     /**
      * callback that supports logging whatever way works best for you!
      */
-    protected _callback?: Callback;
+    protected _callback?: LogCallback;
     /**
      * init
      * @param config? JSON that assigns tags levels. If uninitialized,
@@ -49,7 +49,7 @@ export declare class Log {
      *  - combine any of the above based on your app's env
      * @return {this} supports chaining
      */
-    init(config?: Record<string, string>, callback?: Callback): this;
+    init(config?: Record<string, string>, callback?: LogCallback): this;
     /**
      * Writes an error to the log
      * @param tag string categorizes a message
