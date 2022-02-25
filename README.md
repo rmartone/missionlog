@@ -68,7 +68,7 @@ const log = {
   [LogLevel.WARN]: (tag, msg, params) =>
     console.warn(`[${chalk.yellow(tag)}]`, msg, ...params),
   [LogLevel.INFO]: (tag, msg, params) =>
-    console.error(`[${chalk.cyan(tag)}]`, msg, ...params)
+    console.log(`[${chalk.cyan(tag)}]`, msg, ...params)
 } as Record<LogLevel, LogHandler>;
 
 const logger: LogCallback = (level, tag, msg, params) =>
