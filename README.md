@@ -71,7 +71,8 @@ const log = {
     console.error(`[${chalk.cyan(tag)}]`, msg, ...params)
 } as Record<LogLevel, LogHandler>;
 
-const logger: LogCallback = (level, tag, msg, params) => log[level as keyof typeof log](tag, msg, params);
+const logger: LogCallback = (level, tag, msg, params) =>
+  log[level as keyof typeof log](tag, msg, params);
 
 log.init({ transporter: 'INFO', security: 'ERROR', system: 'OFF' }, logger);
 
