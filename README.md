@@ -57,7 +57,7 @@ log.init(
 ```
 
 ``` javascript
-import { LogCallback, LogLevel } from 'missionlog';import { LogCallback, LogLevel } from 'missionlog';
+import { LogCallback, LogLevel } from 'missionlog';
 import chalk from 'chalk';
 
 type LogHandler = (tag: string, msg: unknown, params: unknown[]) => void;
