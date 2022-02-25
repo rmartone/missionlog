@@ -55,6 +55,28 @@ log.init(
     }
   });
 ```
+
+``` javascript
+import { LogCallback, LogLevel } from 'missionlog';import { LogCallback, LogLevel } from 'missionlog';
+import chalk from 'chalk';
+
+type LogHandler = (tag: string, msg: unknown, params: unknown[]) => void;
+
+const log = {
+  [LogLevel.ERROR]: (tag, msg, params) =>
+    console.error(`[${chalk.redBright(tag)}]`, msg, ...params),
+  [LogLevel.WARN]: (tag, msg, params) =>
+    console.warn(`[${chalk.yellow(tag)}]`, msg, ...params),
+  [LogLevel.INFO]: (tag, msg, params) =>
+    console.error(`[${chalk.cyan(tag)}]`, msg, ...params)
+} as Record<LogLevel, LogHandler>;
+
+const logger: LogCallback = (level, tag, msg, params) => log[level as keyof typeof log](tag, msg, params);
+
+log.init({ transporter: 'INFO', security: 'ERROR', system: 'OFF' }, logger);
+
+```
+
 ## Usage
 ```javascript
 import { log, tag } from 'missionlog';
