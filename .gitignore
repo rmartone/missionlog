@@ -3,6 +3,7 @@
 !.gitignore
 !.gitattributes
 !.travis.yml
+!.github/
 .*/
 coverage/
 node_modules/
