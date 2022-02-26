@@ -1,4 +1,4 @@
-# missionlog [![NPM version][npm-image]][npm-url] [![Coverage Status](https://coveralls.io/repos/github/rmartone/missionlog/badge.svg?branch=master)](https://coveralls.io/github/rmartone/missionlog?branch=master) 
+# missionlog [![NPM version][npm-image]][npm-url] [![Coverage Status](https://coveralls.io/repos/github/rmartone/missionlog/badge.svg?branch=master)](https://coveralls.io/github/rmartone/missionlog?branch=master)
 
 [npm-image]: https://img.shields.io/npm/v/missionlog.svg?style=flat
 [npm-url]: https://www.npmjs.com/package/missionlog
@@ -7,15 +7,15 @@ Lightweight logger with an extensible configuration. Supports level based filter
 
 ## Features
 * Small footprint, around 500 bytes with 0 dependencies
-* Filter by level, `ERROR > WARN > INFO`
+* Filter by level, `ERROR > WARN > INFO > TRACE > DEBUG`
 * Filter by tag, `'security' | 'whatever'`
 * Log callback is extensible from console to cloud
   * Style terminal output with chalk
   * Send JSON to a cloud service like [Loggly](https://www.loggly.com/)
   * Log strings and objects to the console
   * Combine any of the above based on env
-* API mirrors `console.log`, logs objects and supports rest parameters
-* Works reliably with node or any browser through a bundler
+* API mirrors `console`, logs objects and supports rest parameters
+* Works reliably with node or any browser
 * Includes **TypeScript definitions** so no need for external `@types`
 
 
@@ -26,7 +26,7 @@ npm install missionlog
 
 ## Initialize
 
-Tags typically refer to a subsystem or component like `'security'` or `FooBar.name`.When missionlog is initialized, tags can be assigned a level. A message is logged when its level is greater than or equal to its `tag`'s assigned level.
+Tags typically refer to a subsystem or component like `'security'` or `FooBar.name`. When missionlog is initialized, tags can be assigned a level. A message is logged when its level is greater than or equal to its `tag`'s assigned level.
 
 ``` javascript
 import { log, LogLevel } from 'missionlog';
@@ -36,7 +36,9 @@ import chalk from 'chalk';
 const logger = {
   [LogLevel.ERROR]: (tag, msg, params) => console.error(`[${chalk.red(tag)}]`, msg, ...params),
   [LogLevel.WARN]: (tag, msg, params) => console.warn(`[${chalk.yellow(tag)}]`, msg, ...params),
-  [LogLevel.INFO]: (tag, msg, params) => console.log(`[${chalk.cyan(tag)}]`, msg, ...params),
+  [LogLevel.INFO]: (tag, msg, params) => console.log(`[${chalk.brightGreen(tag)}]`, msg, ...params),
+  [LogLevel.TRACE]: (tag, msg, params) => console.log(`[${chalk.cyan(tag)}]`, msg, ...params),
+  [LogLevel.DEBUG]: (tag, msg, params) => console.log(`[${chalk.magenta(tag)}]`, msg, ...params),
 } as Record<LogLevel, (tag: string, msg: unknown, params: unknown[]) => void>;
 
 /**
@@ -63,6 +65,12 @@ log.warn('transporter', 'Evil twin detected!');
 
 // filtered since security's log level ERROR is greater than INFO
 log.info(tag.security, 'login successful');
+
+// trace
+log.trace(tag.system, 'entering engine room');
+
+// debug
+log.debug(tag.system, { warpFactor, starDate });
 
 // also filtered since system's level is OFF
 log.error(tag.system, 'eject the warp core', error);

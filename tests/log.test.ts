@@ -3,12 +3,42 @@ import { log, tag } from '../src';
 let buffer: string;
 
 // setup a handler
-log.init({ loader: 'INFO', security: 'ERROR', system: 'OFF' }, (level, component, msg, params): void => {
-  buffer += `${level}: [${component}] ${msg}`;
-  for (const param of params) {
-    buffer += `, ${param}`;
-  }
-  // console.log(`${level}: [${component}]`, msg, ...params);
+log.init(
+  { network: 'DEBUG', loader: 'INFO', security: 'ERROR', system: 'OFF' },
+  (level, component, msg, params): void => {
+    buffer += `${level}: [${component}] ${msg}`;
+    for (const param of params) {
+      buffer += `, ${param}`;
+    }
+    // console.log(`${level}: [${component}]`, msg, ...params);
+  },
+);
+
+test('log info', (): void => {
+  const component = tag.loader;
+  const msg = 'asset failed to load';
+  const url = 'image.png';
+  buffer = '';
+  log.info(component, msg, url);
+  expect(buffer).toBe(`INFO: [${component}] ${msg}, ${url}`);
+});
+
+test('log debug', (): void => {
+  const component = tag.network;
+  const msg = 'asset failed to load';
+  const url = 'image.png';
+  buffer = '';
+  log.debug(component, msg, url);
+  expect(buffer).toBe(`DEBUG: [${component}] ${msg}, ${url}`);
+});
+
+test('log trace', (): void => {
+  const component = tag.network;
+  const msg = 'asset failed to load';
+  const url = 'image.png';
+  buffer = '';
+  log.trace(component, msg, url);
+  expect(buffer).toBe(`TRACE: [${component}] ${msg}, ${url}`);
 });
 
 test('log info', (): void => {
@@ -111,6 +141,15 @@ test('bad config level set to INFO', (): void => {
   expect(buffer).toBe(`WARN: [${component}] ${msg}`);
 });
 
+test('uninitialized tag defaults to DEBUG', (): void => {
+  const component = tag.security2;
+  const msg = 'login failed';
+  buffer = '';
+  log.debug(component, msg, 401);
+  expect(buffer).toBe(`DEBUG: [undefined] ${msg}, 401`);
+});
+
+// WARNING: has to be the last test
 test('disable callback', (): void => {
   const component = 'system';
 

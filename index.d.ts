@@ -8,6 +8,8 @@
  * Useful for implementing a log event hadnelr
  */
 export declare enum LogLevel {
+    DEBUG = "DEBUG",
+    TRACE = "TRACE",
     INFO = "INFO",
     WARN = "WARN",
     ERROR = "ERROR",
@@ -16,15 +18,17 @@ export declare enum LogLevel {
 /**
  * union
  */
-export declare type LogLevelStr = 'INFO' | 'WARN' | 'ERROR' | 'OFF';
+export declare type LogLevelStr = 'DEBUG' | 'TRACE' | 'INFO' | 'WARN' | 'ERROR' | 'OFF';
 /**
  * Level where `ERROR > WARN > INFO`.
  */
 declare enum Level {
-    INFO = 1,
-    WARN = 2,
-    ERROR = 3,
-    OFF = 4
+    DEBUG = 1,
+    TRACE = 2,
+    INFO = 3,
+    WARN = 4,
+    ERROR = 5,
+    OFF = 6
 }
 export declare type LogCallback = (level: LogLevelStr, tag: string, message: unknown, optionalParams: unknown[]) => void;
 export declare const tag: Record<string, string>;
@@ -71,6 +75,21 @@ export declare class Log {
      * @param optionalParams optional list of objects to log
      */
     info<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void;
+    /**
+     * Writes trace to the log
+     * @param tag string categorizes a message
+     * @param message object to log
+     * @param optionalParams optional list of objects to log
+     */
+    trace<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void;
+    /**
+     * Writes debug to the log
+     * @param tag string categorizes a message
+     * @param message object to log
+     * @param optionalParams optional list of objects to log
+     */
+    debug<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void;
+    private log;
 }
 /** singleton Log instance */
 export declare const log: Log;

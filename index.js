@@ -19,6 +19,8 @@ let LogLevel;
 exports.LogLevel = LogLevel;
 
 (function (LogLevel) {
+  LogLevel["DEBUG"] = "DEBUG";
+  LogLevel["TRACE"] = "TRACE";
   LogLevel["INFO"] = "INFO";
   LogLevel["WARN"] = "WARN";
   LogLevel["ERROR"] = "ERROR";
@@ -28,10 +30,12 @@ exports.LogLevel = LogLevel;
 var Level;
 
 (function (Level) {
-  Level[Level["INFO"] = 1] = "INFO";
-  Level[Level["WARN"] = 2] = "WARN";
-  Level[Level["ERROR"] = 3] = "ERROR";
-  Level[Level["OFF"] = 4] = "OFF";
+  Level[Level["DEBUG"] = 1] = "DEBUG";
+  Level[Level["TRACE"] = 2] = "TRACE";
+  Level[Level["INFO"] = 3] = "INFO";
+  Level[Level["WARN"] = 4] = "WARN";
+  Level[Level["ERROR"] = 5] = "ERROR";
+  Level[Level["OFF"] = 6] = "OFF";
 })(Level || (Level = {}));
 
 const tag = {};
@@ -58,33 +62,31 @@ class Log {
     return this;
   }
 
-  error(tag, message) {
-    if (this._callback && Level.ERROR >= (this._tagToLevel[tag] || Level.INFO)) {
-      for (var _len = arguments.length, optionalParams = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-        optionalParams[_key - 2] = arguments[_key];
-      }
-
-      this._callback(Level[Level.ERROR], tag, message, optionalParams);
-    }
+  error(tag, message, ...optionalParams) {
+    this.log(Level.ERROR, tag, message, optionalParams);
   }
 
-  warn(tag, message) {
-    if (this._callback && Level.WARN >= (this._tagToLevel[tag] || Level.INFO)) {
-      for (var _len2 = arguments.length, optionalParams = new Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
-        optionalParams[_key2 - 2] = arguments[_key2];
-      }
-
-      this._callback(Level[Level.WARN], tag, message, optionalParams);
-    }
+  warn(tag, message, ...optionalParams) {
+    this.log(Level.WARN, tag, message, optionalParams);
   }
 
-  info(tag, message) {
-    if (this._callback && Level.INFO >= (this._tagToLevel[tag] || Level.INFO)) {
-      for (var _len3 = arguments.length, optionalParams = new Array(_len3 > 2 ? _len3 - 2 : 0), _key3 = 2; _key3 < _len3; _key3++) {
-        optionalParams[_key3 - 2] = arguments[_key3];
-      }
+  info(tag, message, ...optionalParams) {
+    this.log(Level.INFO, tag, message, optionalParams);
+  }
 
-      this._callback(Level[Level.INFO], tag, message, optionalParams);
+  trace(tag, message, ...optionalParams) {
+    this.log(Level.TRACE, tag, message, optionalParams);
+  }
+
+  debug(tag, message, ...optionalParams) {
+    this.log(Level.DEBUG, tag, message, optionalParams);
+  }
+
+  log(level, tag, message, optionalParams) {
+    var _this$_tagToLevel$tag;
+
+    if (this._callback && level >= ((_this$_tagToLevel$tag = this._tagToLevel[tag]) !== null && _this$_tagToLevel$tag !== void 0 ? _this$_tagToLevel$tag : Level.DEBUG)) {
+      this._callback(Level[level], tag, message, optionalParams);
     }
   }
 

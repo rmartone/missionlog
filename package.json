@@ -1,6 +1,6 @@
 {
   "name": "missionlog",
-  "version": "1.7.8",
+  "version": "1.8.0",
   "description": "🚀 lightweight logger • level based filtering and tagging • weighs in at 500 bytes",
   "main": "index.js",
   "types": "index.d.ts",
@@ -12,10 +12,11 @@
     "tests/log.test.ts"
   ],
   "browserslist": [
-    "> 0.3%",
-    "not dead",
-    "not ie 11",
+    ">0.5%",
+    "not ie <= 11",
     "not op_mini all",
+    "not ie_mob <= 11",
+    "not dead",
     "node 12"
   ],
   "scripts": {
@@ -46,7 +47,7 @@
     "minimal"
   ],
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=14.0.0"
   },
   "author": "Ray Martone <rmartone@gmail.com>",
   "license": "MIT",
@@ -101,6 +102,7 @@
       [
         "@babel/preset-env",
         {
+          "bugfixes": true,
           "useBuiltIns": "usage",
           "corejs": 3
         }

@@ -9,6 +9,8 @@
  * Useful for implementing a log event hadnelr
  */
 export enum LogLevel {
+  DEBUG = 'DEBUG',
+  TRACE = 'TRACE',
   INFO = 'INFO',
   WARN = 'WARN',
   ERROR = 'ERROR',
@@ -18,13 +20,15 @@ export enum LogLevel {
 /**
  * union
  */
-export type LogLevelStr = 'INFO' | 'WARN' | 'ERROR' | 'OFF';
+export type LogLevelStr = 'DEBUG' | 'TRACE' | 'INFO' | 'WARN' | 'ERROR' | 'OFF';
 
 /**
  * Level where `ERROR > WARN > INFO`.
  */
 enum Level {
-  INFO = 1,
+  DEBUG = 1,
+  TRACE,
+  INFO,
   WARN,
   ERROR,
   OFF,
@@ -79,10 +83,7 @@ export class Log {
    * @param optionalParams optional list of objects to log
    */
   error<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
-    // avoid unnecessary arguments access in transpiled code
-    if (this._callback && Level.ERROR >= (this._tagToLevel[tag] || Level.INFO)) {
-      this._callback(Level[Level.ERROR] as LogLevelStr, tag, message, optionalParams);
-    }
+    this.log(Level.ERROR, tag, message, optionalParams);
   }
 
   /**
@@ -92,10 +93,7 @@ export class Log {
    * @param optionalParams optional list of objects to log
    */
   warn<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
-    // avoid unnecessary arguments access...
-    if (this._callback && Level.WARN >= (this._tagToLevel[tag] || Level.INFO)) {
-      this._callback(Level[Level.WARN] as LogLevelStr, tag, message, optionalParams);
-    }
+    this.log(Level.WARN, tag, message, optionalParams);
   }
 
   /**
@@ -105,9 +103,32 @@ export class Log {
    * @param optionalParams optional list of objects to log
    */
   info<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
-    // avoid unnecessary arguments access...
-    if (this._callback && Level.INFO >= (this._tagToLevel[tag] || Level.INFO)) {
-      this._callback(Level[Level.INFO] as LogLevelStr, tag, message, optionalParams);
+    this.log(Level.INFO, tag, message, optionalParams);
+  }
+
+  /**
+   * Writes trace to the log
+   * @param tag string categorizes a message
+   * @param message object to log
+   * @param optionalParams optional list of objects to log
+   */
+  trace<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
+    this.log(Level.TRACE, tag, message, optionalParams);
+  }
+
+  /**
+   * Writes debug to the log
+   * @param tag string categorizes a message
+   * @param message object to log
+   * @param optionalParams optional list of objects to log
+   */
+  debug<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
+    this.log(Level.DEBUG, tag, message, optionalParams);
+  }
+
+  private log<T extends string>(level: Level, tag: T, message: unknown, optionalParams: unknown[]): void {
+    if (this._callback && level >= (this._tagToLevel[tag] ?? Level.DEBUG)) {
+      this._callback(<LogLevelStr>Level[level], tag, message, optionalParams);
     }
   }
 }
