@@ -28,9 +28,16 @@ npm install missionlog
 
 Tags typically refer to a subsystem or component like `'security'` or `FooBar.name`.When missionlog is initialized, tags can be assigned a level. A message is logged when its level is greater than or equal to its `tag`'s assigned level.
 
-```javascript
-// var log = require('missionlog').log;
+``` javascript
 import { log, LogLevel } from 'missionlog';
+import chalk from 'chalk';
+
+// handler which does the logging to the console or anything
+const logger = {
+  [LogLevel.ERROR]: (tag, msg, params) => console.error(`[${chalk.red(tag)}]`, msg, ...params),
+  [LogLevel.WARN]: (tag, msg, params) => console.warn(`[${chalk.yellow(tag)}]`, msg, ...params),
+  [LogLevel.INFO]: (tag, msg, params) => console.log(`[${chalk.cyan(tag)}]`, msg, ...params),
+} as Record<LogLevel, (tag: string, msg: unknown, params: unknown[]) => void>;
 
 /**
  * initialize missionlog
@@ -38,43 +45,9 @@ import { log, LogLevel } from 'missionlog';
  *    tag's level defaults to INFO.
  * @param callback? handle logging whichever way works best for you
  */
-log.init(
-  { transporter: 'INFO', security: 'ERROR', system: 'OFF' },
-  (level, tag, msg, params) => {
-    const prefix = `${level}: [${tag}] `;
-    switch(level) {
-      case LogLevel.ERROR:
-        console.error(prefix, msg, ...params);
-        break;
-      case LogLevel.WARN:
-        console.warn(prefix, msg, ...params);
-        break;
-      case LogLevel.INFO:
-        console.info(prefix, msg, ...params);
-        break;
-    }
-  });
-```
-
-``` javascript
-import { LogCallback, LogLevel } from 'missionlog';
-import chalk from 'chalk';
-
-type LogHandler = (tag: string, msg: unknown, params: unknown[]) => void;
-
-const log = {
-  [LogLevel.ERROR]: (tag, msg, params) =>
-    console.error(`[${chalk.redBright(tag)}]`, msg, ...params),
-  [LogLevel.WARN]: (tag, msg, params) =>
-    console.warn(`[${chalk.yellow(tag)}]`, msg, ...params),
-  [LogLevel.INFO]: (tag, msg, params) =>
-    console.log(`[${chalk.cyan(tag)}]`, msg, ...params)
-} as Record<LogLevel, LogHandler>;
-
-const logger: LogCallback = (level, tag, msg, params) =>
-  log[level as keyof typeof log](tag, msg, params);
-
-log.init({ transporter: 'INFO', security: 'ERROR', system: 'OFF' }, logger);
+log.init( transporter: 'INFO', security: 'ERROR', system: 'OFF' }, (level, tag, msg, params) => {
+  logger[level as keyof typeof logger](tag, msg, params);
+});
 
 ```
 
