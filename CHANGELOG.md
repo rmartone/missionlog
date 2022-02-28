@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [1.8.2](https://github.com/rmartone/missionlog/compare/v1.8.1...v1.8.2) (2022-02-28)
 
+  ## updating README.md
+
 ### [1.8.1](https://github.com/rmartone/missionlog/compare/v1.7.8...v1.8.1) (2022-02-26)
 
 ## Supprot for DEBUG & TRACE and modified babel settings to avoid using arguments

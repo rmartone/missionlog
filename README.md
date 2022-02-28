@@ -3,21 +3,18 @@
 [npm-image]: https://img.shields.io/npm/v/missionlog.svg?style=flat
 [npm-url]: https://www.npmjs.com/package/missionlog
 
-Lightweight logger with an extensible configuration. Supports level based filtering and tagging. Filtering keeps your logs readable and uncluttered while tagging makes them searchable.
+Lightweight logger with an easy configuration. Supports level based filtering and tagging that keeps your logs readable and uncluttered!
 
 ## Features
-* Small footprint, around 500 bytes with 0 dependencies
+* Small footprint, around 500 bytes
 * Filter by level, `ERROR > WARN > INFO > TRACE > DEBUG`
-* Filter by tag, `'security' | 'whatever'`
+* Filter by tag, `'security' | 'anything'`
 * Log callback is extensible from console to cloud
-  * Style terminal output with chalk
+  * Style terminal output with chalk and log to the console
   * Send JSON to a cloud service like [Loggly](https://www.loggly.com/)
-  * Log strings and objects to the console
-  * Combine any of the above based on env
 * API mirrors `console`, logs objects and supports rest parameters
 * Works reliably with node or any browser
 * Includes **TypeScript definitions** so no need for external `@types`
-
 
 ## Install
 ```shell
@@ -44,10 +41,10 @@ const logger = {
 /**
  * initialize missionlog
  * @param config JSON which assigns tags levels. An uninitialized,
- *    tag's level defaults to INFO.
+ *    tag's level defaults to DEBUG.
  * @param callback? handle logging whichever way works best for you
  */
-log.init( transporter: 'INFO', security: 'ERROR', system: 'OFF' }, (level, tag, msg, params) => {
+log.init({ transporter: 'INFO', security: 'ERROR', system: 'OFF' }, (level, tag, msg, params) => {
   logger[level as keyof typeof logger](tag, msg, params);
 });
 
