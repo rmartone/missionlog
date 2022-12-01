@@ -18,7 +18,7 @@ export declare enum LogLevel {
 /**
  * union
  */
-export declare type LogLevelStr = 'DEBUG' | 'TRACE' | 'INFO' | 'WARN' | 'ERROR' | 'OFF';
+export type LogLevelStr = 'DEBUG' | 'TRACE' | 'INFO' | 'WARN' | 'ERROR' | 'OFF';
 /**
  * Level where `ERROR > WARN > INFO`.
  */
@@ -30,7 +30,7 @@ declare enum Level {
     ERROR = 5,
     OFF = 6
 }
-export declare type LogCallback = (level: LogLevelStr, tag: string, message: unknown, optionalParams: unknown[]) => void;
+export type LogCallback = (level: LogLevelStr, tag: string, message: unknown, optionalParams: unknown[]) => void;
 export declare const tag: Record<string, string>;
 export declare class Log {
     /**
