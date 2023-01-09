@@ -68,7 +68,7 @@
     "@typescript-eslint/parser": "^5.12.1",
     "babel-jest": "^29.2.3",
     "babel-plugin-const-enum": "^1.2.0",
-    "babel-plugin-module-resolver": "^4.1.0",
+    "babel-plugin-module-resolver": "^5.0.0",
     "babel-plugin-ts-optchain": "^1.1",
     "coveralls": "^3.1.1",
     "cross-env": "^7.0.3",
