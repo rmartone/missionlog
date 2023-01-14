@@ -34,11 +34,16 @@ enum Level {
   OFF,
 }
 
-export type LogCallback = (level: LogLevelStr, tag: string, message: unknown, optionalParams: unknown[]) => void;
+export type LogCallback<Tags extends string = string> = (
+  level: LogLevelStr,
+  tag: Tags,
+  message: unknown,
+  optionalParams: unknown[],
+) => void;
 
 export const tag: Record<string, string> = {};
 
-export class Log {
+export class Log<Tags extends string = string> {
   /**
    * init assigns tags a level or they default to INFO
    * _tagToLevel hash that maps tags to their level
@@ -48,7 +53,7 @@ export class Log {
   /**
    * callback that supports logging whatever way works best for you!
    */
-  protected _callback?: LogCallback;
+  protected _callback?: LogCallback<Tags>;
 
   /**
    * init
@@ -61,7 +66,7 @@ export class Log {
    *  - combine any of the above based on your app's env
    * @return {this} supports chaining
    */
-  init(config?: Record<string, string>, callback?: LogCallback): this {
+  init(config?: Partial<Record<Tags, LogLevel>>, callback?: LogCallback<Tags>): this {
     for (const k in config) {
       this._tagToLevel[k] = Level[config[k] as LogLevelStr] || 1;
     }
@@ -82,7 +87,7 @@ export class Log {
    * @param message object to log
    * @param optionalParams optional list of objects to log
    */
-  error<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
+  error<T extends Tags>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
     this.log(Level.ERROR, tag, message, optionalParams);
   }
 
@@ -92,7 +97,7 @@ export class Log {
    * @param message object to log
    * @param optionalParams optional list of objects to log
    */
-  warn<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
+  warn<T extends Tags>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
     this.log(Level.WARN, tag, message, optionalParams);
   }
 
@@ -102,7 +107,7 @@ export class Log {
    * @param message object to log
    * @param optionalParams optional list of objects to log
    */
-  info<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
+  info<T extends Tags>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
     this.log(Level.INFO, tag, message, optionalParams);
   }
 
@@ -112,7 +117,7 @@ export class Log {
    * @param message object to log
    * @param optionalParams optional list of objects to log
    */
-  trace<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
+  trace<T extends Tags>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
     this.log(Level.TRACE, tag, message, optionalParams);
   }
 
@@ -122,11 +127,11 @@ export class Log {
    * @param message object to log
    * @param optionalParams optional list of objects to log
    */
-  debug<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
+  debug<T extends Tags>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
     this.log(Level.DEBUG, tag, message, optionalParams);
   }
 
-  private log<T extends string>(level: Level, tag: T, message: unknown, optionalParams: unknown[]): void {
+  private log<T extends Tags>(level: Level, tag: T, message: unknown, optionalParams: unknown[]): void {
     if (this._callback && level >= (this._tagToLevel[tag] ?? Level.DEBUG)) {
       this._callback(<LogLevelStr>Level[level], tag, message, optionalParams);
     }

@@ -30,9 +30,9 @@ declare enum Level {
     ERROR = 5,
     OFF = 6
 }
-export type LogCallback = (level: LogLevelStr, tag: string, message: unknown, optionalParams: unknown[]) => void;
+export type LogCallback<Tags extends string = string> = (level: LogLevelStr, tag: Tags, message: unknown, optionalParams: unknown[]) => void;
 export declare const tag: Record<string, string>;
-export declare class Log {
+export declare class Log<Tags extends string = string> {
     /**
      * init assigns tags a level or they default to INFO
      * _tagToLevel hash that maps tags to their level
@@ -41,7 +41,7 @@ export declare class Log {
     /**
      * callback that supports logging whatever way works best for you!
      */
-    protected _callback?: LogCallback;
+    protected _callback?: LogCallback<Tags>;
     /**
      * init
      * @param config? JSON that assigns tags levels. If uninitialized,
@@ -53,44 +53,44 @@ export declare class Log {
      *  - combine any of the above based on your app's env
      * @return {this} supports chaining
      */
-    init(config?: Record<string, string>, callback?: LogCallback): this;
+    init(config?: Partial<Record<Tags, LogLevel>>, callback?: LogCallback<Tags>): this;
     /**
      * Writes an error to the log
      * @param tag string categorizes a message
      * @param message object to log
      * @param optionalParams optional list of objects to log
      */
-    error<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void;
+    error<T extends Tags>(tag: T, message: unknown, ...optionalParams: unknown[]): void;
     /**
      * Writes a warning to the log
      * @param tag string categorizes a message
      * @param message object to log
      * @param optionalParams optional list of objects to log
      */
-    warn<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void;
+    warn<T extends Tags>(tag: T, message: unknown, ...optionalParams: unknown[]): void;
     /**
      * Writes info to the log
      * @param tag string categorizes a message
      * @param message object to log
      * @param optionalParams optional list of objects to log
      */
-    info<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void;
+    info<T extends Tags>(tag: T, message: unknown, ...optionalParams: unknown[]): void;
     /**
      * Writes trace to the log
      * @param tag string categorizes a message
      * @param message object to log
      * @param optionalParams optional list of objects to log
      */
-    trace<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void;
+    trace<T extends Tags>(tag: T, message: unknown, ...optionalParams: unknown[]): void;
     /**
      * Writes debug to the log
      * @param tag string categorizes a message
      * @param message object to log
      * @param optionalParams optional list of objects to log
      */
-    debug<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void;
+    debug<T extends Tags>(tag: T, message: unknown, ...optionalParams: unknown[]): void;
     private log;
 }
 /** singleton Log instance */
-export declare const log: Log;
+export declare const log: Log<string>;
 export {};
