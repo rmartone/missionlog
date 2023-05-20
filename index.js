@@ -12,25 +12,25 @@ var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/de
  * @license MIT
  * @description log adapter that provides level based filtering and tagging
  */
-let LogLevel;
-exports.LogLevel = LogLevel;
-(function (LogLevel) {
+let LogLevel = function (LogLevel) {
   LogLevel["DEBUG"] = "DEBUG";
   LogLevel["TRACE"] = "TRACE";
   LogLevel["INFO"] = "INFO";
   LogLevel["WARN"] = "WARN";
   LogLevel["ERROR"] = "ERROR";
   LogLevel["OFF"] = "OFF";
-})(LogLevel || (exports.LogLevel = LogLevel = {}));
-var Level;
-(function (Level) {
+  return LogLevel;
+}({});
+exports.LogLevel = LogLevel;
+var Level = function (Level) {
   Level[Level["DEBUG"] = 1] = "DEBUG";
   Level[Level["TRACE"] = 2] = "TRACE";
   Level[Level["INFO"] = 3] = "INFO";
   Level[Level["WARN"] = 4] = "WARN";
   Level[Level["ERROR"] = 5] = "ERROR";
   Level[Level["OFF"] = 6] = "OFF";
-})(Level || (Level = {}));
+  return Level;
+}(Level || {});
 const tag = {};
 exports.tag = tag;
 class Log {
