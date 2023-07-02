@@ -1,11 +1,9 @@
 "use strict";
 
-var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.tag = exports.log = exports.LogLevel = exports.Log = void 0;
-var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 /**
  * @author Ray Martone
  * @copyright Copyright (c) 2019-2022 Ray Martone
@@ -34,9 +32,7 @@ var Level = function (Level) {
 const tag = {};
 exports.tag = tag;
 class Log {
-  constructor() {
-    (0, _defineProperty2.default)(this, "_tagToLevel", {});
-  }
+  _tagToLevel = {};
   init(config, callback) {
     for (const k in config) {
       this._tagToLevel[k] = Level[config[k]] || 1;
@@ -65,8 +61,7 @@ class Log {
     this.log(Level.DEBUG, tag, message, optionalParams);
   }
   log(level, tag, message, optionalParams) {
-    var _this$_tagToLevel$tag;
-    if (this._callback && level >= ((_this$_tagToLevel$tag = this._tagToLevel[tag]) !== null && _this$_tagToLevel$tag !== void 0 ? _this$_tagToLevel$tag : Level.DEBUG)) {
+    if (this._callback && level >= (this._tagToLevel[tag] ?? Level.DEBUG)) {
       this._callback(Level[level], tag, message, optionalParams);
     }
   }

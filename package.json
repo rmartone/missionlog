@@ -1,6 +1,6 @@
 {
   "name": "missionlog",
-  "version": "1.8.6",
+  "version": "1.8.7",
   "description": "🚀 lightweight TypeScript logger • level based filtering and tagging • weighs in at 500 bytes",
   "main": "index.js",
   "types": "index.d.ts",
@@ -17,7 +17,7 @@
     "not op_mini all",
     "not ie_mob <= 11",
     "not dead",
-    "node 12"
+    "node 16"
   ],
   "scripts": {
     "build": "npm run build:types && npm run build:js",
@@ -47,38 +47,38 @@
     "minimal"
   ],
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=16.0.0"
   },
   "author": "Ray Martone <rmartone@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@babel/runtime": "^7.21.5",
-    "core-js": "^3.30.2"
+    "@babel/runtime": "^7.22.5",
+    "core-js": "^3.31.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.21.5",
-    "@babel/core": "^7.21.8",
-    "@babel/plugin-transform-runtime": "^7.21.4",
-    "@babel/preset-env": "^7.21.5",
-    "@babel/preset-typescript": "^7.21.5",
-    "@babel/register": "^7.21.0",
-    "@types/jest": "^29.5.1",
-    "@types/node": "^20.2.1",
-    "@typescript-eslint/eslint-plugin": "^5.59.6",
-    "@typescript-eslint/parser": "^5.59.6",
+    "@babel/cli": "^7.22.5",
+    "@babel/core": "^7.22.5",
+    "@babel/plugin-transform-runtime": "^7.22.5",
+    "@babel/preset-env": "^7.22.5",
+    "@babel/preset-typescript": "^7.22.5",
+    "@babel/register": "^7.22.5",
+    "@types/jest": "^29.5.2",
+    "@types/node": "^20.3.3",
+    "@typescript-eslint/eslint-plugin": "^5.60.1",
+    "@typescript-eslint/parser": "^5.60.1",
     "babel-jest": "^29.5.0",
     "babel-plugin-const-enum": "^1.2.0",
     "babel-plugin-module-resolver": "^5.0.0",
     "babel-plugin-ts-optchain": "^1.1",
     "coveralls": "^3.1.1",
     "cross-env": "^7.0.3",
-    "eslint": "^8.41.0",
+    "eslint": "^8.44.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",
     "jest": "^29.5.0",
     "prettier": "^2.8.8",
     "standard-version": "^9.5.0",
-    "typescript": "5.0.4"
+    "typescript": "5.1.6"
   },
   "prettier": {
     "semi": true,
