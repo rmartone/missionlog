@@ -3,6 +3,7 @@
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
 ### [1.8.9](https://github.com/rmartone/missionlog/compare/v1.8.6...v1.8.9) (2025-01-13)
+  ## updating dependencies
 
 ### [1.8.8](https://github.com/rmartone/missionlog/compare/v1.8.6...v1.8.8) (2023-07-02)
   ## updating dependencies

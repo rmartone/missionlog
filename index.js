@@ -10,7 +10,7 @@ exports.tag = exports.log = exports.LogLevel = exports.Log = void 0;
  * @license MIT
  * @description log adapter that provides level based filtering and tagging
  */
-let LogLevel = function (LogLevel) {
+let LogLevel = exports.LogLevel = function (LogLevel) {
   LogLevel["DEBUG"] = "DEBUG";
   LogLevel["TRACE"] = "TRACE";
   LogLevel["INFO"] = "INFO";
@@ -19,7 +19,6 @@ let LogLevel = function (LogLevel) {
   LogLevel["OFF"] = "OFF";
   return LogLevel;
 }({});
-exports.LogLevel = LogLevel;
 var Level = function (Level) {
   Level[Level["DEBUG"] = 1] = "DEBUG";
   Level[Level["TRACE"] = 2] = "TRACE";
@@ -29,8 +28,7 @@ var Level = function (Level) {
   Level[Level["OFF"] = 6] = "OFF";
   return Level;
 }(Level || {});
-const tag = {};
-exports.tag = tag;
+const tag = exports.tag = {};
 class Log {
   _tagToLevel = {};
   init(config, callback) {
@@ -67,5 +65,4 @@ class Log {
   }
 }
 exports.Log = Log;
-const log = new Log();
-exports.log = log;
+const log = exports.log = new Log();
