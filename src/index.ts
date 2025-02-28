@@ -2,10 +2,8 @@
  * @author Ray Martone
  * @copyright Copyright (c) 2019-2022 Ray Martone
  * @license MIT
- * @description log adapter that provides level-based filtering and tagging
+ * @description Log adapter providing level-based filtering and tagging.
  */
-
-// missionlog
 
 /**
  * Numeric representation of log levels, where ERROR > WARN > INFO.
@@ -20,7 +18,7 @@ enum Level {
 }
 
 /**
- * Log levels for event handling.
+ * Log levels as strings for event handling.
  */
 export enum LogLevel {
   TRACE = 'TRACE',
@@ -32,22 +30,22 @@ export enum LogLevel {
 }
 
 /**
- * Log callback function type.
+ * Callback function type for handling log events.
  */
 export type LogCallback = (level: LogLevelStr, tag: string, message: unknown, optionalParams: unknown[]) => void;
 
 /**
- * Union type for log level strings.
+ * Allowed log level strings.
  */
-export type LogLevelStr = 'DEBUG' | 'TRACE' | 'INFO' | 'WARN' | 'ERROR' | 'OFF';
+export type LogLevelStr = 'TRACE' | 'DEBUG' | 'INFO' | 'WARN' | 'ERROR' | 'OFF';
 
 /**
- * Internal Set for fast tag lookups.
+ * Internal registry of known log tags.
  */
 const tagRegistry = new Set<string>();
 
 /**
- * Exported tag dictionary that mirrors the Set.
+ * Proxy-based dictionary that allows dynamic tag access (`tag.system`).
  */
 export const tag: Record<string, string> = new Proxy({}, {
   get(target, prop: string) {
@@ -95,49 +93,38 @@ const LEVEL_STR_MAP = new Map<Level, LogLevelStr>([
  * Log class for level-based filtering and tagging.
  */
 export class Log {
-  /**
-   * Default log level if not specified in tag config.
-   */
+  /** Default log level if not specified. */
   private readonly _defaultLevel: Level = Level.TRACE;
 
-  /**
-   * Tag to level mapping (Now a `Map` instead of an object).
-   */
+  /** Mapping of tags to their assigned log levels. */
   protected readonly _tagToLevel = new Map<string, Level>();
 
-  /**
-   * Log callback function.
-   */
+  /** Optional callback function for handling log events. */
   protected _callback?: LogCallback | null;
 
   /**
    * Converts a log level string to its corresponding numeric Level.
-   * Optimized to avoid enum reverse lookups.
-   *
-   * @param levelStr Log level as a string.
-   * @returns Numeric log level.
+   * @param levelStr The log level string.
+   * @returns The corresponding numeric log level.
    */
   protected parseLevel(levelStr: LogLevelStr): Level {
     return LEVEL_MAP.get(levelStr) ?? this._defaultLevel;
   }
 
   /**
-   * Converts a numeric log level to its corresponding log level string.
-   * Optimized to avoid enum reverse lookups.
-   *
-   * @param level Numeric log level.
-   * @returns Log level as a string.
+   * Converts a numeric log level to its corresponding string representation.
+   * @param level The numeric log level.
+   * @returns The corresponding log level string.
    */
   protected levelToString(level: Level): LogLevelStr {
     return LEVEL_STR_MAP.get(level) ?? LEVEL_STR_MAP.get(this._defaultLevel)!;
   }
 
   /**
-   * Initializes the logger.
-   *
-   * @param config Optional configuration object mapping tags to log levels. Defaults to TRACE if not specified.
-   * @param callback Optional callback function for log events.
-   * @returns The Log instance for chaining.
+   * Initializes the logger with optional tag configurations.
+   * @param config An object mapping tags to log levels.
+   * @param callback A function to handle log messages.
+   * @returns The Log instance for method chaining.
    */
   init(config?: Record<string, string>, callback?: LogCallback | null): this {
     if (config) {
@@ -157,7 +144,11 @@ export class Log {
   }
 
   /**
-   * Logs a message at the specified level.
+   * Internal log method that processes log messages.
+   * @param level The numeric log level.
+   * @param tag The category or tag for the log message.
+   * @param message The message content.
+   * @param optionalParams Additional parameters to log.
    */
   private log<T extends string>(level: Level, tag: T, message: unknown, optionalParams: unknown[]): void {
     if (!tagRegistry.has(tag)) {
@@ -183,22 +174,52 @@ export class Log {
     }
   }
 
+  /**
+   * Logs a message at the DEBUG level.
+   * @param tag The category or tag for the log message.
+   * @param message The message content.
+   * @param optionalParams Additional parameters to log.
+   */
   debug<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
     this.log(Level.DEBUG, tag, message, optionalParams);
   }
 
+  /**
+   * Logs a message at the ERROR level.
+   * @param tag The category or tag for the log message.
+   * @param message The message content.
+   * @param optionalParams Additional parameters to log.
+   */
   error<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
     this.log(Level.ERROR, tag, message, optionalParams);
   }
 
+  /**
+   * Logs a message at the INFO level.
+   * @param tag The category or tag for the log message.
+   * @param message The message content.
+   * @param optionalParams Additional parameters to log.
+   */
   info<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
     this.log(Level.INFO, tag, message, optionalParams);
   }
 
+  /**
+   * Logs a message at the TRACE level.
+   * @param tag The category or tag for the log message.
+   * @param message The message content.
+   * @param optionalParams Additional parameters to log.
+   */
   trace<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
     this.log(Level.TRACE, tag, message, optionalParams);
   }
 
+  /**
+   * Logs a message at the WARN level.
+   * @param tag The category or tag for the log message.
+   * @param message The message content.
+   * @param optionalParams Additional parameters to log.
+   */
   warn<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
     this.log(Level.WARN, tag, message, optionalParams);
   }
