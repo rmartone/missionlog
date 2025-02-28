@@ -146,7 +146,7 @@ test('uninitialized tag defaults to TRACE', (): void => {
   const msg = 'login failed';
   buffer = '';
   log.trace(component, msg, 401);
-  expect(buffer).toBe(`TRACE: [undefined] ${msg}, 401`);
+  expect(buffer).toBe(`TRACE: [security42] ${msg}, 401`);
 });
 
 // WARNING: has to be the last test

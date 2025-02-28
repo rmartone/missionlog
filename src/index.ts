@@ -42,9 +42,30 @@ export type LogCallback = (level: LogLevelStr, tag: string, message: unknown, op
 export type LogLevelStr = 'DEBUG' | 'TRACE' | 'INFO' | 'WARN' | 'ERROR' | 'OFF';
 
 /**
- * Tag registry.
+ * Internal Set for fast tag lookups.
  */
-export const tagRegistry: Record<string, string> = {};
+const tagRegistry = new Set<string>();
+
+/**
+ * Exported tag dictionary that mirrors the Set.
+ */
+export const tag: Record<string, string> = new Proxy({}, {
+  get(target, prop: string) {
+    if (typeof prop === 'string') {
+      if (!tagRegistry.has(prop)) {
+        tagRegistry.add(prop);
+        console.debug(`logger: unregistered tag, "${prop}"`);
+      }
+      return prop;
+    }
+  },
+  ownKeys() {
+    return Array.from(tagRegistry);
+  },
+  getOwnPropertyDescriptor() {
+    return { enumerable: true, configurable: true };
+  }
+});
 
 /**
  * Log class for level-based filtering and tagging.
@@ -106,7 +127,7 @@ export class Log {
           this._tagToLevel[key] = this._defaultLevel;
         }
 
-        tagRegistry[key] = key;
+        tagRegistry.add(key);
       }
     }
 
@@ -119,10 +140,6 @@ export class Log {
 
   /**
    * Logs a debug message.
-   *
-   * @param tag Message category.
-   * @param message Message to log.
-   * @param optionalParams Optional parameters to log.
    */
   debug<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
     this.log(Level.DEBUG, tag, message, optionalParams);
@@ -130,10 +147,6 @@ export class Log {
 
   /**
    * Logs an error message.
-   *
-   * @param tag Message category.
-   * @param message Message to log.
-   * @param optionalParams Optional parameters to log.
    */
   error<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
     this.log(Level.ERROR, tag, message, optionalParams);
@@ -141,10 +154,6 @@ export class Log {
 
   /**
    * Logs an informational message.
-   *
-   * @param tag Message category.
-   * @param message Message to log.
-   * @param optionalParams Optional parameters to log.
    */
   info<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
     this.log(Level.INFO, tag, message, optionalParams);
@@ -152,10 +161,6 @@ export class Log {
 
   /**
    * Logs a trace message.
-   *
-   * @param tag Message category.
-   * @param message Message to log.
-   * @param optionalParams Optional parameters to log.
    */
   trace<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
     this.log(Level.TRACE, tag, message, optionalParams);
@@ -163,10 +168,6 @@ export class Log {
 
   /**
    * Logs a warning message.
-   *
-   * @param tag Message category.
-   * @param message Message to log.
-   * @param optionalParams Optional parameters to log.
    */
   warn<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
     this.log(Level.WARN, tag, message, optionalParams);
@@ -174,16 +175,10 @@ export class Log {
 
   /**
    * Internal log method.
-   *
-   * @param level Numeric log level.
-   * @param tag Message category.
-   * @param message Message to log.
-   * @param optionalParams Optional parameters to log.
    */
   private log<T extends string>(level: Level, tag: T, message: unknown, optionalParams: unknown[]): void {
-    // Register the tag if not already present using the 'in' operator
-    if (!(tag in tagRegistry)) {
-      tagRegistry[tag] = tag;
+    // Ensure tag is registered (Proxy auto-populates it)
+    if (!tagRegistry.has(tag)) {
       console.debug(`logger: unregistered tag, "${tag}"`);
     }
 
@@ -215,8 +210,3 @@ export class Log {
  * Singleton Log instance.
  */
 export const log = new Log();
-
-/**
- * Tag registry.
- */
-export const tag = tagRegistry;
