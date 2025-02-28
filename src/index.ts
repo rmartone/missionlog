@@ -117,8 +117,8 @@ export class Log {
    * @param levelStr Log level as a string.
    * @returns Numeric log level.
    */
-  protected parseLevel(levelStr: LogLevelStr): Level | undefined {
-    return LEVEL_MAP.get(levelStr);
+  protected parseLevel(levelStr: LogLevelStr): Level {
+    return LEVEL_MAP.get(levelStr) ?? this._defaultLevel;
   }
 
   /**
@@ -129,13 +129,13 @@ export class Log {
    * @returns Log level as a string.
    */
   protected levelToString(level: Level): LogLevelStr {
-    return LEVEL_STR_MAP.get(level)!;
+    return LEVEL_STR_MAP.get(level) ?? LEVEL_STR_MAP.get(this._defaultLevel)!;
   }
 
   /**
    * Initializes the logger.
    *
-   * @param config Optional configuration object mapping tags to log levels. Defaults to INFO if not specified.
+   * @param config Optional configuration object mapping tags to log levels. Defaults to TRACE if not specified.
    * @param callback Optional callback function for log events.
    * @returns The Log instance for chaining.
    */
@@ -144,13 +144,7 @@ export class Log {
       for (const key in config) {
         const levelStr = config[key] as LogLevelStr;
         const level = this.parseLevel(levelStr);
-        if (level !== undefined) {
-          this._tagToLevel.set(key, level);
-        } else {
-          console.warn(`Invalid log level "${levelStr}" for tag "${key}". Using INFO.`);
-          this._tagToLevel.set(key, this._defaultLevel);
-        }
-
+        this._tagToLevel.set(key, level);
         tagRegistry.add(key);
       }
     }
@@ -163,70 +157,50 @@ export class Log {
   }
 
   /**
-   * Logs a debug message.
-   */
-  debug<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
-    this.log(Level.DEBUG, tag, message, optionalParams);
-  }
-
-  /**
-   * Logs an error message.
-   */
-  error<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
-    this.log(Level.ERROR, tag, message, optionalParams);
-  }
-
-  /**
-   * Logs an informational message.
-   */
-  info<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
-    this.log(Level.INFO, tag, message, optionalParams);
-  }
-
-  /**
-   * Logs a trace message.
-   */
-  trace<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
-    this.log(Level.TRACE, tag, message, optionalParams);
-  }
-
-  /**
-   * Logs a warning message.
-   */
-  warn<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
-    this.log(Level.WARN, tag, message, optionalParams);
-  }
-
-  /**
-   * Internal log method.
+   * Logs a message at the specified level.
    */
   private log<T extends string>(level: Level, tag: T, message: unknown, optionalParams: unknown[]): void {
-    // Ensure tag is registered (Proxy auto-populates it)
     if (!tagRegistry.has(tag)) {
       console.debug(`logger: unregistered tag, "${tag}"`);
     }
 
-    // Early exit if no callback is defined
     if (!this._callback) {
       return;
     }
 
-    // Determine the effective log level for the tag
     const effectiveLevel = this._tagToLevel.get(tag) ?? this._defaultLevel;
 
     if (level < effectiveLevel) {
       return;
     }
 
-    // Convert numeric level to string for the callback
     const levelStr = this.levelToString(level);
 
-    // Execute the callback within a try-catch block to safeguard against errors
     try {
       this._callback(levelStr, tag, message, optionalParams);
     } catch (err) {
       console.error(`Error in log callback for tag "${tag}":`, err);
     }
+  }
+
+  debug<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
+    this.log(Level.DEBUG, tag, message, optionalParams);
+  }
+
+  error<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
+    this.log(Level.ERROR, tag, message, optionalParams);
+  }
+
+  info<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
+    this.log(Level.INFO, tag, message, optionalParams);
+  }
+
+  trace<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
+    this.log(Level.TRACE, tag, message, optionalParams);
+  }
+
+  warn<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
+    this.log(Level.WARN, tag, message, optionalParams);
   }
 }
 
