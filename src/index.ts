@@ -144,6 +144,23 @@ export class Log {
   }
 
   /**
+   * Retrieves the effective log level for a tag.
+   * Logs a warning if the tag is unregistered.
+   * @param tag The log tag.
+   * @returns The numeric log level for the tag.
+   */
+  private getEffectiveLogLevel(tag: string): Level {
+    const level = this._tagToLevel.get(tag);
+
+    if (level === undefined) {
+      console.debug(`logger: unregistered tag, "${tag}"`);
+      return this._defaultLevel;
+    }
+
+    return level;
+  }
+
+  /**
    * Internal log method that processes log messages.
    * @param level The numeric log level.
    * @param tag The category or tag for the log message.
@@ -151,15 +168,11 @@ export class Log {
    * @param optionalParams Additional parameters to log.
    */
   private log<T extends string>(level: Level, tag: T, message: unknown, optionalParams: unknown[]): void {
-    if (!tagRegistry.has(tag)) {
-      console.debug(`logger: unregistered tag, "${tag}"`);
-    }
-
     if (!this._callback) {
       return;
     }
 
-    const effectiveLevel = this._tagToLevel.get(tag) ?? this._defaultLevel;
+    const effectiveLevel = this.getEffectiveLogLevel(tag);
 
     if (level < effectiveLevel) {
       return;
