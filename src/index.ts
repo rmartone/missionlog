@@ -5,12 +5,26 @@
  * @description log adapter that provides level based filtering and tagging
  */
 
+// missionlog
+
 /**
- * Useful for implementing a log event hadnelr
+ * Numeric representation of log levels, where ERROR > WARN > INFO.
+ */
+enum Level {
+  TRACE = 1,
+  DEBUG,
+  INFO,
+  WARN,
+  ERROR,
+  OFF,
+}
+
+/**
+ * Log levels for event handling.
  */
 export enum LogLevel {
-  DEBUG = 'DEBUG',
   TRACE = 'TRACE',
+  DEBUG = 'DEBUG',
   INFO = 'INFO',
   WARN = 'WARN',
   ERROR = 'ERROR',
@@ -18,120 +32,191 @@ export enum LogLevel {
 }
 
 /**
- * union
+ * Log callback function type.
+ */
+export type LogCallback = (level: LogLevelStr, tag: string, message: unknown, optionalParams: unknown[]) => void;
+
+/**
+ * Union type for log level strings.
  */
 export type LogLevelStr = 'DEBUG' | 'TRACE' | 'INFO' | 'WARN' | 'ERROR' | 'OFF';
 
 /**
- * Level where `ERROR > WARN > INFO`.
+ * Tag registry.
  */
-enum Level {
-  DEBUG = 1,
-  TRACE,
-  INFO,
-  WARN,
-  ERROR,
-  OFF,
-}
+export const tagRegistry: Record<string, string> = {};
 
-export type LogCallback = (level: LogLevelStr, tag: string, message: unknown, optionalParams: unknown[]) => void;
-
-export const tag: Record<string, string> = {};
-
+/**
+ * Log class for level-based filtering and tagging.
+ */
 export class Log {
   /**
-   * init assigns tags a level or they default to INFO
-   * _tagToLevel hash that maps tags to their level
+   * Default log level if not specified in tag config.
+   */
+  private readonly _defaultLevel: Level = Level.TRACE;
+
+  /**
+   * Tag to level mapping.
    */
   protected readonly _tagToLevel: Record<string, Level> = {};
 
   /**
-   * callback that supports logging whatever way works best for you!
+   * Log callback function.
    */
-  protected _callback?: LogCallback;
+  protected _callback?: LogCallback | null;
 
   /**
-   * init
-   * @param config? JSON that assigns tags levels. If uninitialized,
-   *    a tag's level defaults to INFO where ERROR > WARN > INFO.
-   * @param callback? supports logging whatever way works best for you
-   *  - style terminal output with chalk
-   *  - send JSON to a cloud logging service like Splunk
-   *  - log strings and objects to the browser console
-   *  - combine any of the above based on your app's env
-   * @return {this} supports chaining
+   * Converts a log level string to its corresponding numeric Level.
+   * Marked as protected so that it’s available on the instance.
+   *
+   * @param levelStr Log level as a string.
+   * @returns Numeric log level.
    */
-  init(config?: Record<string, string>, callback?: LogCallback): this {
-    for (const k in config) {
-      this._tagToLevel[k] = Level[config[k] as LogLevelStr] || 1;
+  protected parseLevel(levelStr: LogLevelStr): Level | undefined {
+    return Level[levelStr];
+  }
+
+  /**
+   * Converts a numeric log level to its corresponding log level string.
+   * Marked as protected so that it’s available on the instance.
+   *
+   * @param level Numeric log level.
+   * @returns Log level as a string.
+   */
+  protected levelToString(level: Level): LogLevelStr {
+    return Level[level] as LogLevelStr;
+  }
+
+  /**
+   * Initializes the logger.
+   *
+   * @param config Optional configuration object mapping tags to log levels. Defaults to INFO if not specified.
+   * @param callback Optional callback function for log events.
+   * @returns The Log instance for chaining.
+   */
+  init(config?: Record<string, string>, callback?: LogCallback | null): this {
+    if (config) {
+      for (const key in config) {
+        const levelStr = config[key] as LogLevelStr;
+        const level = this.parseLevel(levelStr);
+        if (level !== undefined) {
+          this._tagToLevel[key] = level;
+        } else {
+          console.warn(`Invalid log level "${levelStr}" for tag "${key}". Using INFO.`);
+          this._tagToLevel[key] = this._defaultLevel;
+        }
+
+        tagRegistry[key] = key;
+      }
     }
 
     if (callback !== undefined) {
       this._callback = callback;
     }
 
-    for (const key in this._tagToLevel) {
-      tag[key] = key;
-    }
     return this;
   }
 
   /**
-   * Writes an error to the log
-   * @param tag string categorizes a message
-   * @param message object to log
-   * @param optionalParams optional list of objects to log
+   * Logs a debug message.
+   *
+   * @param tag Message category.
+   * @param message Message to log.
+   * @param optionalParams Optional parameters to log.
+   */
+  debug<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
+    this.log(Level.DEBUG, tag, message, optionalParams);
+  }
+
+  /**
+   * Logs an error message.
+   *
+   * @param tag Message category.
+   * @param message Message to log.
+   * @param optionalParams Optional parameters to log.
    */
   error<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
     this.log(Level.ERROR, tag, message, optionalParams);
   }
 
   /**
-   * Writes a warning to the log
-   * @param tag string categorizes a message
-   * @param message object to log
-   * @param optionalParams optional list of objects to log
-   */
-  warn<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
-    this.log(Level.WARN, tag, message, optionalParams);
-  }
-
-  /**
-   * Writes info to the log
-   * @param tag string categorizes a message
-   * @param message object to log
-   * @param optionalParams optional list of objects to log
+   * Logs an informational message.
+   *
+   * @param tag Message category.
+   * @param message Message to log.
+   * @param optionalParams Optional parameters to log.
    */
   info<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
     this.log(Level.INFO, tag, message, optionalParams);
   }
 
   /**
-   * Writes trace to the log
-   * @param tag string categorizes a message
-   * @param message object to log
-   * @param optionalParams optional list of objects to log
+   * Logs a trace message.
+   *
+   * @param tag Message category.
+   * @param message Message to log.
+   * @param optionalParams Optional parameters to log.
    */
   trace<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
     this.log(Level.TRACE, tag, message, optionalParams);
   }
 
   /**
-   * Writes debug to the log
-   * @param tag string categorizes a message
-   * @param message object to log
-   * @param optionalParams optional list of objects to log
+   * Logs a warning message.
+   *
+   * @param tag Message category.
+   * @param message Message to log.
+   * @param optionalParams Optional parameters to log.
    */
-  debug<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
-    this.log(Level.DEBUG, tag, message, optionalParams);
+  warn<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
+    this.log(Level.WARN, tag, message, optionalParams);
   }
 
+  /**
+   * Internal log method.
+   *
+   * @param level Numeric log level.
+   * @param tag Message category.
+   * @param message Message to log.
+   * @param optionalParams Optional parameters to log.
+   */
   private log<T extends string>(level: Level, tag: T, message: unknown, optionalParams: unknown[]): void {
-    if (this._callback && level >= (this._tagToLevel[tag] ?? Level.DEBUG)) {
-      this._callback(<LogLevelStr>Level[level], tag, message, optionalParams);
+    // Register the tag if not already present using the 'in' operator
+    if (!(tag in tagRegistry)) {
+      tagRegistry[tag] = tag;
+      console.debug(`logger: unregistered tag, "${tag}"`);
+    }
+
+    // Early exit if no callback is defined
+    if (!this._callback) {
+      return;
+    }
+
+    // Determine the effective log level for the tag
+    const effectiveLevel = this._tagToLevel[tag] ?? this._defaultLevel;
+
+    if (level < effectiveLevel) {
+      return;
+    }
+
+    // Convert numeric level to string for the callback
+    const levelStr = this.levelToString(level);
+
+    // Execute the callback within a try-catch block to safeguard against errors
+    try {
+      this._callback(levelStr, tag, message, optionalParams);
+    } catch (err) {
+      console.error(`Error in log callback for tag "${tag}":`, err);
     }
   }
 }
 
-/** singleton Log instance */
+/**
+ * Singleton Log instance.
+ */
 export const log = new Log();
+
+/**
+ * Tag registry.
+ */
+export const tag = tagRegistry;

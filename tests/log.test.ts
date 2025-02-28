@@ -4,7 +4,7 @@ let buffer: string;
 
 // setup a handler
 log.init(
-  { network: 'DEBUG', loader: 'INFO', security: 'ERROR', system: 'OFF' },
+  { network: 'TRACE', loader: 'INFO', security: 'ERROR', system: 'OFF' },
   (level, component, msg, params): void => {
     buffer += `${level}: [${component}] ${msg}`;
     for (const param of params) {
@@ -141,12 +141,12 @@ test('bad config level set to INFO', (): void => {
   expect(buffer).toBe(`WARN: [${component}] ${msg}`);
 });
 
-test('uninitialized tag defaults to DEBUG', (): void => {
-  const component = tag.security2;
+test('uninitialized tag defaults to TRACE', (): void => {
+  const component = tag.security42;
   const msg = 'login failed';
   buffer = '';
-  log.debug(component, msg, 401);
-  expect(buffer).toBe(`DEBUG: [undefined] ${msg}, 401`);
+  log.trace(component, msg, 401);
+  expect(buffer).toBe(`TRACE: [undefined] ${msg}, 401`);
 });
 
 // WARNING: has to be the last test
