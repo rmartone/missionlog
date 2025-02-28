@@ -2,7 +2,7 @@
  * @author Ray Martone
  * @copyright Copyright (c) 2019-2022 Ray Martone
  * @license MIT
- * @description log adapter that provides level based filtering and tagging
+ * @description log adapter that provides level-based filtering and tagging
  */
 
 // missionlog
@@ -68,6 +68,18 @@ export const tag: Record<string, string> = new Proxy({}, {
 });
 
 /**
+ * Direct mapping from log level strings to numeric values.
+ */
+const LEVEL_MAP = new Map<LogLevelStr, Level>([
+  ['TRACE', Level.TRACE],
+  ['DEBUG', Level.DEBUG],
+  ['INFO', Level.INFO],
+  ['WARN', Level.WARN],
+  ['ERROR', Level.ERROR],
+  ['OFF', Level.OFF],
+]);
+
+/**
  * Log class for level-based filtering and tagging.
  */
 export class Log {
@@ -77,9 +89,9 @@ export class Log {
   private readonly _defaultLevel: Level = Level.TRACE;
 
   /**
-   * Tag to level mapping.
+   * Tag to level mapping (Now a `Map` instead of an object).
    */
-  protected readonly _tagToLevel: Record<string, Level> = {};
+  protected readonly _tagToLevel = new Map<string, Level>();
 
   /**
    * Log callback function.
@@ -88,13 +100,13 @@ export class Log {
 
   /**
    * Converts a log level string to its corresponding numeric Level.
-   * Marked as protected so that it’s available on the instance.
+   * Optimized to avoid enum reverse lookups.
    *
    * @param levelStr Log level as a string.
    * @returns Numeric log level.
    */
   protected parseLevel(levelStr: LogLevelStr): Level | undefined {
-    return Level[levelStr];
+    return LEVEL_MAP.get(levelStr);
   }
 
   /**
@@ -121,10 +133,10 @@ export class Log {
         const levelStr = config[key] as LogLevelStr;
         const level = this.parseLevel(levelStr);
         if (level !== undefined) {
-          this._tagToLevel[key] = level;
+          this._tagToLevel.set(key, level);
         } else {
           console.warn(`Invalid log level "${levelStr}" for tag "${key}". Using INFO.`);
-          this._tagToLevel[key] = this._defaultLevel;
+          this._tagToLevel.set(key, this._defaultLevel);
         }
 
         tagRegistry.add(key);
@@ -188,7 +200,7 @@ export class Log {
     }
 
     // Determine the effective log level for the tag
-    const effectiveLevel = this._tagToLevel[tag] ?? this._defaultLevel;
+    const effectiveLevel = this._tagToLevel.get(tag) ?? this._defaultLevel;
 
     if (level < effectiveLevel) {
       return;
