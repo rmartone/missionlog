@@ -80,6 +80,18 @@ const LEVEL_MAP = new Map<LogLevelStr, Level>([
 ]);
 
 /**
+ * Direct mapping from numeric levels to string levels.
+ */
+const LEVEL_STR_MAP = new Map<Level, LogLevelStr>([
+  [Level.TRACE, 'TRACE'],
+  [Level.DEBUG, 'DEBUG'],
+  [Level.INFO, 'INFO'],
+  [Level.WARN, 'WARN'],
+  [Level.ERROR, 'ERROR'],
+  [Level.OFF, 'OFF'],
+]);
+
+/**
  * Log class for level-based filtering and tagging.
  */
 export class Log {
@@ -111,13 +123,13 @@ export class Log {
 
   /**
    * Converts a numeric log level to its corresponding log level string.
-   * Marked as protected so that it’s available on the instance.
+   * Optimized to avoid enum reverse lookups.
    *
    * @param level Numeric log level.
    * @returns Log level as a string.
    */
   protected levelToString(level: Level): LogLevelStr {
-    return Level[level] as LogLevelStr;
+    return LEVEL_STR_MAP.get(level)!;
   }
 
   /**
