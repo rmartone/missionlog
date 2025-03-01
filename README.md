@@ -1,94 +1,124 @@
-# missionlog [![NPM version][npm-image]][npm-url] [![Coverage Status](https://coveralls.io/repos/github/rmartone/missionlog/badge.svg?branch=master)](https://coveralls.io/github/rmartone/missionlog?branch=master)
+# missionlog  
+[![NPM version][npm-image]][npm-url]  
+[![Coverage Status](https://coveralls.io/repos/github/rmartone/missionlog/badge.svg?branch=master)](https://coveralls.io/github/rmartone/missionlog?branch=master)  
 
-[npm-image]: https://img.shields.io/npm/v/missionlog.svg?style=flat
-[npm-url]: https://www.npmjs.com/package/missionlog
+[npm-image]: https://img.shields.io/npm/v/missionlog.svg?style=flat  
+[npm-url]: https://www.npmjs.com/package/missionlog  
 
-Lightweight logger with an easy configuration. Supports level based filtering and tagging that keeps your logs readable and uncluttered!
+**Lightweight, configurable logging library** with **level-based filtering** and **tagging** to keep logs structured and readable.
 
-## Features
-* Small footprint, around 500 bytes
-* Filter by level, `ERROR > WARN > INFO > TRACE > DEBUG`
-* Filter by tag, `'security' | 'anything'`
-* Log callback is extensible from console to cloud
-  * Style terminal output with chalk and log to the console
-  * Send JSON to a cloud service like [Loggly](https://www.loggly.com/)
-* API mirrors `console`, logs objects and supports rest parameters
-* Works reliably with node or any browser
-* Includes **TypeScript definitions** so no need for external `@types`
+---
 
-## Install
-```shell
+## **✨ Features**
+✔️ **Small footprint (~1KB)**  
+✔️ **Filter logs by level:** `ERROR > WARN > INFO > DEBUG > TRACE`  
+✔️ **Tag-based filtering:** Assign log levels per **subsystem** (`'security'`, `'transporter'`, etc.)  
+✔️ **Customizable log output:**  
+   - Style logs with **chalk**  
+   - Send logs to a cloud service like **[Loggly](https://www.loggly.com/)**  
+   - **Integrate seamlessly with Firebase Functions**  
+   - **Styled console output in the browser**  
+✔️ **API mirrors `console`**, supports objects & rest parameters  
+✔️ **Works in both Node.js & browsers**  
+✔️ **TypeScript-ready** – No need for `@types`  
+
+---
+
+## **📚 Installation**
+```sh
 npm install missionlog
 ```
 
-## Initialize
+---
 
-Tags typically refer to a subsystem or component like `'security'` or `FooBar.name`. When missionlog is initialized, tags can be assigned a level. A message is logged when its level is greater than or equal to its `tag`'s assigned level.
-
-``` javascript
+## **🚀 Getting Started**
+### **1⃣ Initialize the Logger**
+```typescript
 import { log, LogLevel } from 'missionlog';
 import chalk from 'chalk';
 
-// handler which does the logging to the console or anything
+// Define how each log level should be handled
 const logger = {
   [LogLevel.ERROR]: (tag, msg, params) => console.error(`[${chalk.red(tag)}]`, msg, ...params),
   [LogLevel.WARN]: (tag, msg, params) => console.warn(`[${chalk.yellow(tag)}]`, msg, ...params),
-  [LogLevel.INFO]: (tag, msg, params) => console.log(`[${chalk.brightGreen(tag)}]`, msg, ...params),
-  [LogLevel.TRACE]: (tag, msg, params) => console.log(`[${chalk.cyan(tag)}]`, msg, ...params),
+  [LogLevel.INFO]: (tag, msg, params) => console.log(`[${chalk.green(tag)}]`, msg, ...params),
   [LogLevel.DEBUG]: (tag, msg, params) => console.log(`[${chalk.magenta(tag)}]`, msg, ...params),
+  [LogLevel.TRACE]: (tag, msg, params) => console.log(`[${chalk.cyan(tag)}]`, msg, ...params),
 } as Record<LogLevel, (tag: string, msg: unknown, params: unknown[]) => void>;
 
-/**
- * initialize missionlog
- * @param config JSON which assigns tags levels. An uninitialized,
- *    tag's level defaults to DEBUG.
- * @param callback? handle logging whichever way works best for you
- */
-log.init({ transporter: 'INFO', security: 'ERROR', system: 'OFF' }, (level, tag, msg, params) => {
-  logger[level as keyof typeof logger](tag, msg, params);
-});
-
+// Initialize missionlog with tag levels & a custom handler
+log.init(
+  { transporter: 'INFO', security: 'ERROR', system: 'OFF' },
+  (level, tag, msg, params) => logger[level](tag, msg, params)
+);
 ```
 
-## Usage
-```javascript
+---
+
+## **🗒 Basic Usage**
+```typescript
 import { log, tag } from 'missionlog';
 
-// the imported value "tag" is populated with YOUR tags!
-log.error(tag.security, 'not authorized', statusCode);
+// Use predefined tags (auto-populated)
+log.error(tag.security, 'Access denied', statusCode);
 
-// but if you prefer simply use strings
+// Or use string-based tags
 log.warn('transporter', 'Evil twin detected!');
 
-// filtered since security's log level ERROR is greater than INFO
-log.info(tag.security, 'login successful');
+// Filtered: security level is ERROR (INFO won't log)
+log.info(tag.security, 'User logged in');
 
-// trace
-log.trace(tag.system, 'entering engine room');
-
-// debug
+// DEBUG message
 log.debug(tag.system, { warpFactor, starDate });
 
-// also filtered since system's level is OFF
-log.error(tag.system, 'eject the warp core', error);
+// TRACE message
+log.trace(tag.system, 'Entering warp core');
 
-// updates tag levels on the fly
+// Filtered: system's level is OFF
+log.error(tag.system, 'Ejecting warp core', error);
+
+// Dynamically update log levels
 log.init({ loader: 'ERROR', system: 'INFO' });
 
-// disable logging by clearing the callback
+// Disable logging completely
 log.init();
 ```
-## Advanced Usage
-Create an instance with its own tags and callback.
-```javascript
 
-import { Log, tag } from 'missionlog';
+---
 
-const myLog = new Log().init(
-  { loader: 'INFO', security: 'ERROR' },
-  (level, tag, msg, params) => {
-    console.log(`${level}: [${tag}] `, msg, ...params);
+## **💡 Advanced Usage**
+### **🔹 Firebase Functions Integration**
+```typescript
+import { debug, error, info, warn } from 'firebase-functions/logger';
+import { log, LogLevel, tag } from 'missionlog';
+
+// import from a settings
+const logOptiosn = { 
+    "functions": "DEBUG",
+    "system": "INFO",
+    "firestore": "WARN"
+};
+
+const firebaseLogger = {
+  [LogLevel.ERROR]: (tag, payload) => error({ tag, ...payload }),
+  [LogLevel.WARN]: (tag, payload) => warn({ tag, ...payload }),
+  [LogLevel.INFO]: (tag, payload) => info({ tag, ...payload }),
+  [LogLevel.TRACE]: (tag, payload) => debug({ tag, ...payload }),
+  [LogLevel.DEBUG]: (tag, payload) => debug({ tag, ...payload }),
+  [LogLevel.OFF]: () => void 0,
+};
+
+log.init(settings.logOptions, (level, tag, msg, params) => {
+  firebaseLogger[level](tag, { ...params, message: msg });
 });
 
-myLog.info(tag.security, 'login successful');
 ```
+
+---
+
+## **📞 License**
+**MIT License**  
+**© 2019-2025 Ray Martone**  
+
+---
+
