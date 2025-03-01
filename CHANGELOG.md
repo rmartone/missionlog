@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.0](https://github.com/rmartone/missionlog/compare/v1.8.9...v2.0.0) (2025-03-01)
+
+We've significantly improved MissionLog by adding support for both ES Modules (ESM) and CommonJS (CJS), whereas previously it only supported CJS. This makes MissionLog more versatile and compatible with modern JavaScript environments, including frontend applications and tools that prefer native ESM. Additionally, we've optimized the logging system by removing unnecessary error handling around user-defined callbacks, ensuring errors are surfaced in the caller's code rather than being caught internally. We've also enhanced the efficiency of our tag management by improving proxy handling and ensuring that log level assignments default correctly when invalid configurations are provided. These refinements make MissionLog more lightweight, flexible, and robust while maintaining its ease of use.
+
 ### [1.8.9](https://github.com/rmartone/missionlog/compare/v1.8.6...v1.8.9) (2025-01-13)
   ## updating dependencies
 

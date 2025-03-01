@@ -1,137 +1,152 @@
 /**
  * @author Ray Martone
- * @copyright Copyright (c) 2019-2022 Ray Martone
+ * @copyright Copyright (c) 2019-2025 Ray Martone
  * @license MIT
- * @description log adapter that provides level based filtering and tagging
+ * @description Log adapter providing level-based filtering and tagging.
  */
 
-/**
- * Useful for implementing a log event hadnelr
- */
-export enum LogLevel {
-  DEBUG = 'DEBUG',
-  TRACE = 'TRACE',
-  INFO = 'INFO',
-  WARN = 'WARN',
-  ERROR = 'ERROR',
-  OFF = 'OFF',
-}
-
-/**
- * union
- */
-export type LogLevelStr = 'DEBUG' | 'TRACE' | 'INFO' | 'WARN' | 'ERROR' | 'OFF';
-
-/**
- * Level where `ERROR > WARN > INFO`.
- */
 enum Level {
-  DEBUG = 1,
-  TRACE,
+  TRACE = 1,
+  DEBUG,
   INFO,
   WARN,
   ERROR,
   OFF,
 }
 
+export enum LogLevel {
+  TRACE = 'TRACE',
+  DEBUG = 'DEBUG',
+  INFO = 'INFO',
+  WARN = 'WARN',
+  ERROR = 'ERROR',
+  OFF = 'OFF',
+}
+
 export type LogCallback = (level: LogLevelStr, tag: string, message: unknown, optionalParams: unknown[]) => void;
 
-export const tag: Record<string, string> = {};
+export type LogLevelStr = 'TRACE' | 'DEBUG' | 'INFO' | 'WARN' | 'ERROR' | 'OFF';
+
+const tagRegistry = new Set<string>();
+
+export const tag: Record<string, string> = new Proxy(
+  {},
+  {
+    get(_, prop: string) {
+      if (typeof prop === 'string') {
+        if (!tagRegistry.has(prop)) {
+          tagRegistry.add(prop);
+          console.debug(`logger: unregistered tag, "${prop}"`);
+        }
+        return prop;
+      }
+    },
+    ownKeys() {
+      return Array.from(tagRegistry);
+    },
+    getOwnPropertyDescriptor() {
+      return { enumerable: true, configurable: true };
+    },
+  },
+);
+
+const LEVEL_MAP = new Map<LogLevelStr, Level>([
+  ['TRACE', Level.TRACE],
+  ['DEBUG', Level.DEBUG],
+  ['INFO', Level.INFO],
+  ['WARN', Level.WARN],
+  ['ERROR', Level.ERROR],
+  ['OFF', Level.OFF],
+]);
+
+const LEVEL_STR_MAP = new Map<Level, LogLevelStr>([
+  [Level.TRACE, 'TRACE'],
+  [Level.DEBUG, 'DEBUG'],
+  [Level.INFO, 'INFO'],
+  [Level.WARN, 'WARN'],
+  [Level.ERROR, 'ERROR'],
+  [Level.OFF, 'OFF'],
+]);
 
 export class Log {
-  /**
-   * init assigns tags a level or they default to INFO
-   * _tagToLevel hash that maps tags to their level
-   */
-  protected readonly _tagToLevel: Record<string, Level> = {};
+  private readonly _defaultLevel: Level = Level.TRACE;
+  protected readonly _tagToLevel = new Map<string, Level>();
+  protected _callback?: LogCallback | null;
 
-  /**
-   * callback that supports logging whatever way works best for you!
-   */
-  protected _callback?: LogCallback;
+  protected levelToString(level: Level): LogLevelStr {
+    return LEVEL_STR_MAP.get(level)!;
+  }
 
-  /**
-   * init
-   * @param config? JSON that assigns tags levels. If uninitialized,
-   *    a tag's level defaults to INFO where ERROR > WARN > INFO.
-   * @param callback? supports logging whatever way works best for you
-   *  - style terminal output with chalk
-   *  - send JSON to a cloud logging service like Splunk
-   *  - log strings and objects to the browser console
-   *  - combine any of the above based on your app's env
-   * @return {this} supports chaining
-   */
-  init(config?: Record<string, string>, callback?: LogCallback): this {
-    for (const k in config) {
-      this._tagToLevel[k] = Level[config[k] as LogLevelStr] || 1;
+  init(config?: Record<string, string>, callback?: LogCallback | null): this {
+    if (config) {
+      for (const key in config) {
+        const levelStr = config[key] as LogLevelStr;
+
+        if (LEVEL_MAP.has(levelStr)) {
+          this._tagToLevel.set(key, LEVEL_MAP.get(levelStr)!);
+        } else {
+          console.warn(
+            `Invalid log level "${levelStr}" for tag "${key}". Using default (${this.levelToString(this._defaultLevel)}).`,
+          );
+          this._tagToLevel.set(key, this._defaultLevel);
+        }
+
+        tagRegistry.add(key);
+      }
     }
 
+    // Preserve undefined behavior unless explicitly setting null
     if (callback !== undefined) {
       this._callback = callback;
     }
 
-    for (const key in this._tagToLevel) {
-      tag[key] = key;
-    }
     return this;
   }
 
-  /**
-   * Writes an error to the log
-   * @param tag string categorizes a message
-   * @param message object to log
-   * @param optionalParams optional list of objects to log
-   */
-  error<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
-    this.log(Level.ERROR, tag, message, optionalParams);
+  private getEffectiveLogLevel(tag: string): Level {
+    if (!this._tagToLevel.has(tag)) {
+      if (!tagRegistry.has(tag)) {
+        console.debug(`logger: unregistered tag, "${tag}"`);
+      }
+      return this._defaultLevel;
+    }
+    return this._tagToLevel.get(tag)!;
   }
 
-  /**
-   * Writes a warning to the log
-   * @param tag string categorizes a message
-   * @param message object to log
-   * @param optionalParams optional list of objects to log
-   */
-  warn<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
-    this.log(Level.WARN, tag, message, optionalParams);
+  private log<T extends string>(level: Level, tag: T, message: unknown, optionalParams: unknown[]): void {
+    if (!this._callback) {
+      return;
+    }
+
+    const effectiveLevel = this.getEffectiveLogLevel(tag);
+
+    if (level < effectiveLevel) {
+      return;
+    }
+
+    const levelStr = this.levelToString(level);
+    this._callback(levelStr, tag, message, optionalParams);
   }
 
-  /**
-   * Writes info to the log
-   * @param tag string categorizes a message
-   * @param message object to log
-   * @param optionalParams optional list of objects to log
-   */
-  info<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
-    this.log(Level.INFO, tag, message, optionalParams);
-  }
-
-  /**
-   * Writes trace to the log
-   * @param tag string categorizes a message
-   * @param message object to log
-   * @param optionalParams optional list of objects to log
-   */
-  trace<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
-    this.log(Level.TRACE, tag, message, optionalParams);
-  }
-
-  /**
-   * Writes debug to the log
-   * @param tag string categorizes a message
-   * @param message object to log
-   * @param optionalParams optional list of objects to log
-   */
   debug<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
     this.log(Level.DEBUG, tag, message, optionalParams);
   }
 
-  private log<T extends string>(level: Level, tag: T, message: unknown, optionalParams: unknown[]): void {
-    if (this._callback && level >= (this._tagToLevel[tag] ?? Level.DEBUG)) {
-      this._callback(<LogLevelStr>Level[level], tag, message, optionalParams);
-    }
+  error<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
+    this.log(Level.ERROR, tag, message, optionalParams);
+  }
+
+  info<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
+    this.log(Level.INFO, tag, message, optionalParams);
+  }
+
+  trace<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
+    this.log(Level.TRACE, tag, message, optionalParams);
+  }
+
+  warn<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
+    this.log(Level.WARN, tag, message, optionalParams);
   }
 }
 
-/** singleton Log instance */
 export const log = new Log();
