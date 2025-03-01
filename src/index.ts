@@ -73,7 +73,7 @@ export class Log {
         const levelStr = config[key] as LogLevelStr;
 
         if (Object.values(LogLevel).includes(levelStr as LogLevel)) {
-          const level = (Level as unknown as Record<string, Level>)[levelStr] ?? Level.DEBUG;
+          const level = (Level as unknown as Record<string, Level>)[levelStr];
 
           if (key === DEFAULT_TAG) {
             this._defaultLevel = level;
@@ -113,6 +113,8 @@ export class Log {
       message = messageOrTag;
     }
 
+    if (!message) return;
+
     const effectiveLevel = this._tagToLevel.get(tag || DEFAULT_TAG) ?? this._defaultLevel;
     if (level < effectiveLevel) return;
 
@@ -124,23 +126,8 @@ export class Log {
     );
   }
 
-  public log(
-    levelOrMessage: unknown,
-    messageOrParams?: unknown,
-    ...optionalParams: unknown[]
-  ): void {
-    if (
-      typeof levelOrMessage === 'string' &&
-      Object.values(LogLevel).includes(levelOrMessage as LogLevel)
-    ) {
-      this._log(
-        (Level as unknown as Record<string, Level>)[levelOrMessage] ?? Level.INFO,
-        messageOrParams,
-        ...optionalParams,
-      );
-    } else {
-      this._log(Level.INFO, levelOrMessage, messageOrParams, ...optionalParams);
-    }
+  public log(messageOrTag: unknown, ...optionalParams: unknown[]): void {
+    this._log(Level.INFO, messageOrTag, ...optionalParams);
   }
 
   public debug(messageOrTag: unknown, ...optionalParams: unknown[]): void {
