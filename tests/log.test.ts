@@ -215,7 +215,7 @@ describe('Object logging and invalid levels', () => {
 
 describe('Callback error handling and disabling', () => {
   test('throws error in callback', (): void => {
-    log.init({}, () => {
+    log.init({ default: 'DEBUG'}, () => {
       throw new Error('Test Error');
     });
 

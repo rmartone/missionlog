@@ -98,8 +98,8 @@ export class Log {
     return this;
   }
 
-  private _log(level: Level, messageOrTag: unknown, ...optionalParams: unknown[]): void {
-    if (!this._callback) return;
+  private _log(level: Level, messageOrTag?: unknown, ...optionalParams: unknown[]): void {
+    if (!this._callback || !messageOrTag) return;
 
     let tag: string;
     let message: unknown;
@@ -113,6 +113,7 @@ export class Log {
       message = messageOrTag;
     }
 
+    // no message nothing to log...
     if (!message) return;
 
     const effectiveLevel = this._tagToLevel.get(tag || DEFAULT_TAG) ?? this._defaultLevel;
@@ -126,27 +127,27 @@ export class Log {
     );
   }
 
-  public log(messageOrTag: unknown, ...optionalParams: unknown[]): void {
-    this._log(Level.INFO, messageOrTag, ...optionalParams);
-  }
-
-  public debug(messageOrTag: unknown, ...optionalParams: unknown[]): void {
+  public debug(messageOrTag?: unknown, ...optionalParams: unknown[]): void {
     this._log(Level.DEBUG, messageOrTag, ...optionalParams);
   }
 
-  public error(messageOrTag: unknown, ...optionalParams: unknown[]): void {
+  public error(messageOrTag?: unknown, ...optionalParams: unknown[]): void {
     this._log(Level.ERROR, messageOrTag, ...optionalParams);
   }
 
-  public info(messageOrTag: unknown, ...optionalParams: unknown[]): void {
+  public info(messageOrTag?: unknown, ...optionalParams: unknown[]): void {
     this._log(Level.INFO, messageOrTag, ...optionalParams);
   }
 
-  public trace(messageOrTag: unknown, ...optionalParams: unknown[]): void {
+  public log(messageOrTag?: unknown, ...optionalParams: unknown[]): void {
+    this._log(Level.INFO, messageOrTag, ...optionalParams);
+  }
+
+  public trace(messageOrTag?: unknown, ...optionalParams: unknown[]): void {
     this._log(Level.TRACE, messageOrTag, ...optionalParams);
   }
 
-  public warn(messageOrTag: unknown, ...optionalParams: unknown[]): void {
+  public warn(messageOrTag?: unknown, ...optionalParams: unknown[]): void {
     this._log(Level.WARN, messageOrTag, ...optionalParams);
   }
 }
