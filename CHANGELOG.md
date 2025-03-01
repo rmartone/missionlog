@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.1](https://github.com/rmartone/missionlog/compare/v1.8.9...v2.0.1) (2025-03-01)
+
 ### [1.8.9](https://github.com/rmartone/missionlog/compare/v1.8.6...v1.8.9) (2025-01-13)
   ## updating dependencies
 
