@@ -1,6 +1,6 @@
 /**
  * @author Ray Martone
- * @copyright Copyright (c) 2019-2022 Ray Martone
+ * @copyright Copyright (c) 2019-2025 Ray Martone
  * @license MIT
  * @description Log adapter providing level-based filtering and tagging.
  */

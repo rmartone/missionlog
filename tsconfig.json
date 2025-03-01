@@ -15,6 +15,7 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUncheckedSideEffectImports": true,
+    "removeComments": true,
     "outDir": "./dist",
     "rootDir": "./src",
     "baseUrl": ".",

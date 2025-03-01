@@ -1,23 +1,38 @@
-const esbuild = require('esbuild');
+import esbuild from 'esbuild';
 
-esbuild.build({
+const commonConfig = {
   entryPoints: ['src/index.ts'],
-  outdir: 'dist',
-  format: 'cjs',
-  outfile: 'dist/index.cjs.js',
   platform: 'node',
+  minify: true,
   bundle: true,
   sourcemap: true,
   tsconfig: 'tsconfig.json',
-}).catch(() => process.exit(1));
+  legalComments: "inline",
+};
 
-esbuild.build({
-  entryPoints: ['src/index.ts'],
-  outdir: 'dist',
-  format: 'esm',
-  outfile: 'dist/index.esm.js',
-  platform: 'node',
-  bundle: true,
-  sourcemap: true,
-  tsconfig: 'tsconfig.json',
-}).catch(() => process.exit(1));
+// Async function to run builds
+async function build() {
+  try {
+    // Build CommonJS
+    await esbuild.build({
+      ...commonConfig,
+      format: 'cjs',
+      outfile: 'dist/index.cjs.js',
+    });
+
+    // Build ESM
+    await esbuild.build({
+      ...commonConfig,
+      format: 'esm',
+      outfile: 'dist/index.esm.js',
+    });
+
+    console.log("✅ Build completed successfully.");
+  } catch (error) {
+    console.error("❌ Build failed:", error);
+    process.exit(1);
+  }
+}
+
+// Run the build function
+build();
