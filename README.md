@@ -9,6 +9,15 @@
 
 ---
 
+## New in Version 2.0 🚀
+
+- **ESM & CJS Support** – Now works seamlessly with both **ES Modules (ESM)** and **CommonJS (CJS)**.
+- **More Efficient Logging** – Removed unnecessary internal error handling to improve performance.
+- **Improved Tag Handling** – Optimized proxy behavior for dynamic tag registration.
+- **Better Config Defaults** – Invalid log levels now correctly default to TRACE with a warning.
+
+---
+
 ## **✨ Features**
 ✔️ **Small footprint (~1KB)**  
 ✔️ **Filter logs by level:** `ERROR > WARN > INFO > DEBUG > TRACE`  
