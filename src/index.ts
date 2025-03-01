@@ -47,23 +47,26 @@ const tagRegistry = new Set<string>();
 /**
  * Proxy-based dictionary that allows dynamic tag access (`tag.system`).
  */
-export const tag: Record<string, string> = new Proxy({}, {
-  get(target, prop: string) {
-    if (typeof prop === 'string') {
-      if (!tagRegistry.has(prop)) {
-        tagRegistry.add(prop);
-        console.debug(`logger: unregistered tag, "${prop}"`);
+export const tag: Record<string, string> = new Proxy(
+  {},
+  {
+    get(target, prop: string) {
+      if (typeof prop === 'string') {
+        if (!tagRegistry.has(prop)) {
+          tagRegistry.add(prop);
+          console.debug(`logger: unregistered tag, "${prop}"`);
+        }
+        return prop;
       }
-      return prop;
-    }
+    },
+    ownKeys() {
+      return Array.from(tagRegistry);
+    },
+    getOwnPropertyDescriptor() {
+      return { enumerable: true, configurable: true };
+    },
   },
-  ownKeys() {
-    return Array.from(tagRegistry);
-  },
-  getOwnPropertyDescriptor() {
-    return { enumerable: true, configurable: true };
-  }
-});
+);
 
 /**
  * Direct mapping from log level strings to numeric values.
@@ -130,8 +133,16 @@ export class Log {
     if (config) {
       for (const key in config) {
         const levelStr = config[key] as LogLevelStr;
-        const level = this.parseLevel(levelStr);
-        this._tagToLevel.set(key, level);
+
+        if (LEVEL_MAP.has(levelStr)) {
+          this._tagToLevel.set(key, LEVEL_MAP.get(levelStr)!);
+        } else {
+          console.warn(
+            `Invalid log level "${levelStr}" for tag "${key}". Using default (${this.levelToString(this._defaultLevel)}).`,
+          );
+          this._tagToLevel.set(key, this._defaultLevel);
+        }
+
         tagRegistry.add(key);
       }
     }
