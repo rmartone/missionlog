@@ -1,9 +1,10 @@
 {
   "name": "missionlog",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "type": "module",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.esm.js",
       "require": "./dist/index.cjs.js"
     }
@@ -17,10 +18,7 @@
     "dist/index.cjs.js",
     "dist/index.cjs.js.map",
     "dist/index.esm.js",
-    "dist/index.esm.js.map",
-    "tsconfig.json",
-    "src/index.ts",
-    "tests/log.test.ts"
+    "dist/index.esm.js.map"
   ],
   "scripts": {
     "build": "npm run build:types && npm run build:js",
