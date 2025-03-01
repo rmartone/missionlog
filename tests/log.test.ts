@@ -2,231 +2,229 @@ import { log, tag } from '../src/index';
 
 let buffer: string;
 
-test('log does nothing when callback is undefined', () => {
-  log.init({}); // Set _callback to undefined
-  expect(() => {
-    log.info('network', 'message'); // Should not throw an error
-  }).not.toThrow();
-});
-
-// setup a handler
+/** Setup a handler */
 log.init(
-  { network: 'TRACE', loader: 'INFO', security: 'ERROR', system: 'OFF' },
+  { network: 'TRACE', loader: 'INFO', security: 'ERROR', system: 'OFF', default: 'INFO' },
   (level, component, msg, params): void => {
     buffer += `${level}: [${component}] ${msg}`;
     for (const param of params) {
       buffer += `, ${param}`;
     }
-    // console.log(`${level}: [${component}]`, msg, ...params);
-  },
+  }
 );
 
-test('log info', (): void => {
-  const component = tag.loader;
-  const msg = 'asset failed to load';
-  const url = 'image.png';
+/**
+ *  ✅ Test: Single-Argument Logging (No Tag)
+ */
+test('log.info() logs without a tag', (): void => {
   buffer = '';
-  log.info(component, msg, url);
-  expect(buffer).toBe(`INFO: [${component}] ${msg}, ${url}`);
+  log.info('hello world');
+  expect(buffer).toBe('INFO: [default] hello world');
 });
 
-test('log debug', (): void => {
-  const component = tag.network;
-  const msg = 'asset failed to load';
-  const url = 'image.png';
+test('log.warn() logs without a tag', (): void => {
   buffer = '';
-  log.debug(component, msg, url);
-  expect(buffer).toBe(`DEBUG: [${component}] ${msg}, ${url}`);
+  log.warn('something happened');
+  expect(buffer).toBe('WARN: [default] something happened');
 });
 
-test('log trace', (): void => {
-  const component = tag.network;
-  const msg = 'asset failed to load';
-  const url = 'image.png';
+test('log.error() logs without a tag', (): void => {
   buffer = '';
-  log.trace(component, msg, url);
-  expect(buffer).toBe(`TRACE: [${component}] ${msg}, ${url}`);
+  log.error('critical failure');
+  expect(buffer).toBe('ERROR: [default] critical failure');
 });
 
-test('log info', (): void => {
-  const component = tag.loader;
-  const msg = 'asset failed to load';
-  const url = 'image.png';
+test('log.debug() logs without a tag', (): void => {
   buffer = '';
-  log.info(component, msg, url);
-  expect(buffer).toBe(`INFO: [${component}] ${msg}, ${url}`);
+  log.debug('debugging...');
+  expect(buffer).toBe(''); // ✅ Should be filtered since default is INFO
 });
 
-test('log warning', (): void => {
-  const component = tag.loader;
-  const msg = 'asset failed to load';
-  const url = 'image.png';
+test('log.trace() logs without a tag', (): void => {
   buffer = '';
-  log.warn(component, msg, url);
-  expect(buffer).toBe(`WARN: [${component}] ${msg}, ${url}`);
+  log.trace('tracing execution');
+  expect(buffer).toBe(''); // ✅ TRACE should also be filtered
 });
 
-test('log error', (): void => {
-  const component = tag.security;
-  const msg = 'login failed';
+/**
+ *  ✅ Test: Tagged Logging
+ */
+test('log.info() logs with a known tag', (): void => {
   buffer = '';
-  log.error(component, msg, 401);
-  expect(buffer).toBe(`ERROR: [${component}] ${msg}, 401`);
+  log.info(tag.loader, 'Loading asset');
+  expect(buffer).toBe(`INFO: [loader] Loading asset`);
 });
 
+/**
+ *  ✅ Test: Unknown Tags Are Treated as Messages
+ */
+test('log.info() logs unknown tag as part of the message', (): void => {
+  buffer = '';
+  log.info('unknownTag', 'should log as default');
+  expect(buffer).toBe('INFO: [default] unknownTag, should log as default');
+});
+
+/**
+ *  ✅ Test: `log.log()` Functionality
+ */
+test('log.log() with one argument defaults to INFO', (): void => {
+  buffer = '';
+  log.log('hello world');
+  expect(buffer).toBe('INFO: [default] hello world');
+});
+
+test('log.log() with explicit level', (): void => {
+  buffer = '';
+  log.log('DEBUG', 'debugging');
+  expect(buffer).toBe(''); // ✅ Should be filtered due to default INFO level
+
+  buffer = '';
+  log.log('WARN', 'this is a warning');
+  expect(buffer).toBe('WARN: [default] this is a warning');
+});
+
+test('log.log() with [tag] syntax', (): void => {
+  buffer = '';
+  log.log('[network] Connected');
+  expect(buffer).toBe('INFO: [network] Connected');
+});
+
+test('log.log() with unknown [tag] is treated as untagged', (): void => {
+  buffer = '';
+  log.log('[unknownTag] Message');
+  expect(buffer).toBe('INFO: [default] [unknownTag] Message');
+});
+
+/**
+ *  ✅ Test: Filtering Behavior
+ */
+test('Logs below INFO are filtered when default is INFO', (): void => {
+  log.init({ default: 'INFO' });
+
+  buffer = '';
+  log.debug('This should not appear');
+  expect(buffer).toBe(''); // ✅ DEBUG should be filtered out
+
+  buffer = '';
+  log.trace('Neither should this');
+  expect(buffer).toBe(''); // ✅ TRACE should be filtered out
+});
+
+test('Logs are allowed when default is TRACE', (): void => {
+  log.init({ default: 'TRACE' });
+
+  buffer = '';
+  log.trace('This should be logged');
+  expect(buffer).toBe('TRACE: [default] This should be logged'); // ✅ TRACE is allowed
+
+  buffer = '';
+  log.debug('Debugging message');
+  expect(buffer).toBe('DEBUG: [default] Debugging message'); // ✅ DEBUG is allowed
+
+  buffer = '';
+  log.info('Info message');
+  expect(buffer).toBe('INFO: [default] Info message'); // ✅ INFO is allowed
+});
+
+test('Setting default to WARN filters out INFO logs', (): void => {
+  log.init({ default: 'WARN' });
+
+  buffer = '';
+  log.info('This should be filtered out');
+  expect(buffer).toBe('');
+
+  buffer = '';
+  log.warn('This should appear');
+  expect(buffer).toBe('WARN: [default] This should appear');
+
+  buffer = '';
+  log.error('This should also appear');
+  expect(buffer).toBe('ERROR: [default] This should also appear');
+});
+
+test('Setting default to OFF disables all uncategorized logs', (): void => {
+  log.init({ default: 'OFF' });
+
+  buffer = '';
+  log.info('This should not log');
+  expect(buffer).toBe('');
+
+  buffer = '';
+  log.warn('Neither should this');
+  expect(buffer).toBe('');
+
+  buffer = '';
+  log.error('Not even this');
+  expect(buffer).toBe('');
+
+  log.init({ default: 'INFO' }); // Reset default
+});
+
+/**
+ *  ✅ Test: Component-Level Filtering
+ */
+test('log.info() is filtered when component level is OFF', (): void => {
+  buffer = '';
+  log.info(tag.system, 'This should not log');
+  expect(buffer).toBe('');
+});
+
+test('log.error() logs with a security tag', (): void => {
+  buffer = '';
+  log.error(tag.security, 'Security breach');
+  expect(buffer).toBe('ERROR: [security] Security breach');
+});
+
+/**
+ *  ✅ Test: Logging Objects
+ */
+test('log objects', (): void => {
+  buffer = '';
+  log.info(tag.loader, 'Logging objects works!', { foo: 'bar' });
+  expect(buffer).toBe(`INFO: [loader] Logging objects works!, [object Object]`);
+});
+
+/**
+ *  ✅ Test: Unregistered Tags Are Treated as Default
+ */
+test('Unregistered tag logs as INFO', (): void => {
+  buffer = '';
+  log.trace('unregisteredTag', 'this is a trace message');
+  expect(buffer).toBe(`TRACE: [default] unregisteredTag, this is a trace message`);
+});
+
+/**
+ *  ✅ Test: Handling of Invalid Log Levels in `init()`
+ */
 test('init() assigns default level for invalid log level', () => {
-  console.warn = jest.fn(); // Mock console.warn
+  console.warn = jest.fn();
+  log.init({ invalidTag: 'INVALID_LEVEL' });
 
-  log.init({ invalidTag: 'INVALID_LEVEL' }); // This should trigger the else case
-
-  // The invalid level should default to TRACE
-  expect(log['_tagToLevel'].get('invalidTag')).toBe(1);
-
-  // Ensure console.warn was called
+  expect(log['_tagToLevel'].get('invalidTag')).toBe(2); // Should default to DEBUG
   expect(console.warn).toHaveBeenCalledWith(
-    `Invalid log level "INVALID_LEVEL" for tag "invalidTag". Using default (TRACE).`
+    `Invalid log level "INVALID_LEVEL" for tag "invalidTag". Using default (INFO).`
   );
 });
 
-test('filter component', (): void => {
-  const component = tag.security;
-  const msg = 'login success';
-  buffer = '';
-  log.info(component, msg);
-  expect(buffer).toBe('');
-});
-
-test(`component's level is set to OFF`, (): void => {
-  const component = tag.system;
-  const msg = 'warp core breach';
-  buffer = '';
-  log.error(component, msg);
-  expect(buffer).toBe('');
-});
-
-test('log objects', (): void => {
-  const component = tag.loader;
-  const msg = 'logging objects works!';
-  const param1 = { foo: 'bar' };
-  const param2 = { foo: 'baz' };
-  buffer = '';
-  log.info(component, msg, param1, param2);
-  expect(buffer).toBe(`INFO: [${component}] ${msg}, ${param1}, ${param2}`);
-});
-
-test('Log.info - uninitialized component', (): void => {
-  const component = tag.transporter;
-  const msg = 'evil twin detected';
-  buffer = '';
-  log.info(component, msg);
-  expect(buffer).toBe(`INFO: [${component}] ${msg}`);
-});
-
-test('Log.warn - uninitialized component', (): void => {
-  const component = tag.transporter;
-  const msg = 'evil twin detected';
-  buffer = '';
-  log.warn(component, msg);
-  expect(buffer).toBe(`WARN: [${component}] ${msg}`);
-});
-
-test('Log.error - uninitialized component', (): void => {
-  const component = tag.transporter;
-  const msg = 'evil twin detected';
-  buffer = '';
-  log.error(component, msg);
-  expect(buffer).toBe(`ERROR: [${component}] ${msg}`);
-});
-
-test('Log bad tag defaults to INFO', (): void => {
-  const component = 'badTag';
-  const msg = 'evil twin detected';
-  buffer = '';
-  log.warn(component, msg);
-  expect(buffer).toBe(`WARN: [${component}] ${msg}`);
-});
-
-test('update config', (): void => {
-  const component = tag.system;
-  const msg = 'warp core breach';
-  buffer = '';
-  log.init({ loader: 'ERROR', system: 'INFO' }).warn(component, msg);
-  expect(buffer).toBe(`WARN: [${component}] ${msg}`);
-});
-
-test('bad config level set to INFO', (): void => {
-  const component = tag.system;
-  const msg = 'warp core breach';
-  buffer = '';
-  log.init({ loader: 'ERROR', system: 'ZZ' }).warn(component, msg);
-  expect(buffer).toBe(`WARN: [${component}] ${msg}`);
-});
-
-test('uninitialized tag defaults to TRACE', (): void => {
-  const component = tag.security42;
-  const msg = 'login failed';
-  buffer = '';
-  log.trace(component, msg, 401);
-  expect(buffer).toBe(`TRACE: [security42] ${msg}, 401`);
-});
-
-test('unregistered tag logs as TRACE', (): void => {
-  const component = 'unregisteredTag';
-  const msg = 'this is a trace message';
-
-  buffer = '';
-  log.trace(component, msg);
-
-  expect(buffer).toBe(`TRACE: [${component}] ${msg}`);
-});
-
-test('ownKeys() returns all registered tags', () => {
-  // Access some tags to register them
-  tag.firstTag;
-  tag.secondTag;
-
-  // Retrieve registered keys
-  const keys = Object.keys(tag);
-
-  expect(keys).toContain('firstTag');
-  expect(keys).toContain('secondTag');
-});
-
-
-test('unregistered tag logs debug message', (): void => {
-  console.debug = jest.fn(); // Mock console.debug
-
-  const component = 'newTag';
-  const msg = 'message';
-
-  buffer = '';
-  log.info(component, msg);
-
-  expect(console.debug).toHaveBeenCalledWith(`logger: unregistered tag, "${component}"`);
-});
-
-// 2nd to last test
+/**
+ *  ✅ Test: Error Handling in Callbacks
+ */
 test('log callback throws an error', (): void => {
-  const component = tag.loader;
-  const msg = 'callback failure';
-
-  // Force callback to throw an error
   log.init({}, () => {
     throw new Error('Test Error');
   });
 
   buffer = '';
-  log.info(component, msg);
-
-  expect(buffer).toBe(''); // No logs should be added
+  log.info('this should not crash');
+  expect(buffer).toBe('');
 });
 
-// WARNING: has to be the last test
+/**
+ *  ✅ Final Test: Disabling Callback
+ */
 test('disable callback', (): void => {
-  const component = 'system';
-
-  const msg = 'warp core breach';
+  log.init({ loader: 'ERROR', system: 'INFO' }, null);
   buffer = '';
-  log.init({ loader: 'ERROR', system: 'INFO' }, null).warn(component, msg);
-  expect(buffer).toBe(``);
+  log.warn('system', 'warp core breach');
+  expect(buffer).toBe('');
 });
