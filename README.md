@@ -26,7 +26,7 @@
 
 ## **📚 Installation**
 ```sh
-npm install missionlog
+npm i missionlog
 ```
 
 ---
