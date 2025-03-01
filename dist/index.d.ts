@@ -21,7 +21,6 @@ export declare class Log {
     private readonly _defaultLevel;
     protected readonly _tagToLevel: Map<string, Level>;
     protected _callback?: LogCallback | null;
-    protected parseLevel(levelStr: LogLevelStr): Level;
     protected levelToString(level: Level): LogLevelStr;
     init(config?: Record<string, string>, callback?: LogCallback | null): this;
     private getEffectiveLogLevel;
