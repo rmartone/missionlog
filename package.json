@@ -1,6 +1,6 @@
 {
   "name": "missionlog",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "type": "module",
   "exports": {
     ".": {
@@ -10,14 +10,14 @@
   },
   "main": "./dist/index.cjs.js",
   "module": "./dist/index.esm.js",
-  "types": "index.d.ts",
+  "types": "./dist/index.d.ts",
   "description": "🚀 lightweight TypeScript logger • level based filtering and tagging • weighs in at 500 bytes",
   "files": [
     "dist/index.d.ts",
     "dist/index.cjs.js",
-    "dist/index.cjs.map",
+    "dist/index.cjs.js.map",
     "dist/index.esm.js",
-    "dist/index.esm.map",
+    "dist/index.esm.js.map",
     "tsconfig.json",
     "src/index.ts",
     "tests/log.test.ts"
