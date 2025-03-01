@@ -1,6 +1,13 @@
-import { log, tag } from '../src';
+import { log, tag } from '../src/index';
 
 let buffer: string;
+
+test('log does nothing when callback is undefined', () => {
+  log.init({}); // Set _callback to undefined
+  expect(() => {
+    log.info('network', 'message'); // Should not throw an error
+  }).not.toThrow();
+});
 
 // setup a handler
 log.init(
@@ -65,6 +72,20 @@ test('log error', (): void => {
   buffer = '';
   log.error(component, msg, 401);
   expect(buffer).toBe(`ERROR: [${component}] ${msg}, 401`);
+});
+
+test('init() assigns default level for invalid log level', () => {
+  console.warn = jest.fn(); // Mock console.warn
+
+  log.init({ invalidTag: 'INVALID_LEVEL' }); // This should trigger the else case
+
+  // The invalid level should default to TRACE
+  expect(log['_tagToLevel'].get('invalidTag')).toBe(1);
+
+  // Ensure console.warn was called
+  expect(console.warn).toHaveBeenCalledWith(
+    `Invalid log level "INVALID_LEVEL" for tag "invalidTag". Using default (TRACE).`
+  );
 });
 
 test('filter component', (): void => {
@@ -147,6 +168,57 @@ test('uninitialized tag defaults to TRACE', (): void => {
   buffer = '';
   log.trace(component, msg, 401);
   expect(buffer).toBe(`TRACE: [security42] ${msg}, 401`);
+});
+
+test('unregistered tag logs as TRACE', (): void => {
+  const component = 'unregisteredTag';
+  const msg = 'this is a trace message';
+
+  buffer = '';
+  log.trace(component, msg);
+
+  expect(buffer).toBe(`TRACE: [${component}] ${msg}`);
+});
+
+test('ownKeys() returns all registered tags', () => {
+  // Access some tags to register them
+  tag.firstTag;
+  tag.secondTag;
+
+  // Retrieve registered keys
+  const keys = Object.keys(tag);
+
+  expect(keys).toContain('firstTag');
+  expect(keys).toContain('secondTag');
+});
+
+
+test('unregistered tag logs debug message', (): void => {
+  console.debug = jest.fn(); // Mock console.debug
+
+  const component = 'newTag';
+  const msg = 'message';
+
+  buffer = '';
+  log.info(component, msg);
+
+  expect(console.debug).toHaveBeenCalledWith(`logger: unregistered tag, "${component}"`);
+});
+
+// 2nd to last test
+test('log callback throws an error', (): void => {
+  const component = tag.loader;
+  const msg = 'callback failure';
+
+  // Force callback to throw an error
+  log.init({}, () => {
+    throw new Error('Test Error');
+  });
+
+  buffer = '';
+  log.info(component, msg);
+
+  expect(buffer).toBe(''); // No logs should be added
 });
 
 // WARNING: has to be the last test

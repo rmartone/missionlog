@@ -26,7 +26,7 @@
     "build": "npm run build:types && npm run build:js",
     "build:types": "tsc --emitDeclarationOnly",
     "build:js": "node build.js",
-    "coverage": "jest --coverage && coveralls < coverage/lcov.info",
+    "coverage": "jest --coverage ./tests && coveralls < coverage/lcov.info",
     "lint": "tsc --noEmit",
     "release": "standard-version",
     "test": "jest --no-cache ./tests"

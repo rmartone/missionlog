@@ -73,12 +73,8 @@ export class Log {
   protected readonly _tagToLevel = new Map<string, Level>();
   protected _callback?: LogCallback | null;
 
-  protected parseLevel(levelStr: LogLevelStr): Level {
-    return LEVEL_MAP.get(levelStr) ?? this._defaultLevel;
-  }
-
   protected levelToString(level: Level): LogLevelStr {
-    return LEVEL_STR_MAP.get(level) ?? LEVEL_STR_MAP.get(this._defaultLevel)!;
+    return LEVEL_STR_MAP.get(level)!;
   }
 
   init(config?: Record<string, string>, callback?: LogCallback | null): this {
@@ -129,12 +125,7 @@ export class Log {
     }
 
     const levelStr = this.levelToString(level);
-
-    try {
-      this._callback(levelStr, tag, message, optionalParams);
-    } catch (err) {
-      console.error(`Error in log callback for tag "${tag}":`, err);
-    }
+    this._callback(levelStr, tag, message, optionalParams);
   }
 
   debug<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
