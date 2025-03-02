@@ -29,25 +29,15 @@ Compared to other logging libraries like `ts-log`, `missionlog` offers:
 ```sh  
 npm i missionlog  
 ```
-
 ```sh  
 yarn add missionlog  
 ```
-
----
-
-## **🔧 Works with TypeScript, ESM & CJS**  
-✅ Fully typed API with **zero dependencies**.  
-✅ Works seamlessly with both **ES Modules (ESM)** and **CommonJS (CJS)**.  
-
 ---
 
 ## 🎯 **Focus on What Matters, When It Matters**  
 `missionlog` lets you **filter logs dynamically** to avoid clutter and focus on what's important—without forcing you to use tags.  
 
----
-
-### **🚀 Example Usage**
+### **🚀 Example**
 
 ```typescript
 import { DEFAULT_TAG, log, LogLevel, LogLevelStr, tag } from "missionlog";
