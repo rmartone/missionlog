@@ -4,8 +4,7 @@
 [npm-image]: https://img.shields.io/npm/v/missionlog.svg?style=flat  
 [npm-url]: https://www.npmjs.com/package/missionlog  
 
-🚀 **missionlog** is a **lightweight, structured logging library** designed for **performance, flexibility, and ease of use**.  
-It works as a **drop-in replacement for `console.log` or `ts-log`**, featuring **tag-based organization**, **log level filtering**, and **customizable output handling**—all in a tiny (~1KB) package.  
+🚀 **missionlog** is a **lightweight, structured logging library** designed for **performance, flexibility, and ease of use**. It works as a **drop-in replacement for `console.log` or `ts-log`**, featuring **tag-based organization**, **log level filtering**, and **customizable output handling**—all in a tiny (~1KB) package.  
 
 ✔ **Fully Typed (TypeScript)** • ✔ **ESM & CJS Support** • ✔ **Zero Dependencies**  
 
