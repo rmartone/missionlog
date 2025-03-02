@@ -1,8 +1,6 @@
 # missionlog  
 [![NPM version][npm-image]][npm-url]  
-[![Coverage Status](https://coveralls.io/repos/github/rmartone/missionlog/badge.svg?branch=master)](https://coveralls.io/github/rmartone/missionlog?branch=master)  
-
-[npm-image]: https://img.shields.io/npm/v/missionlog.svg?style=flat  
+[![Coverage Status](https://coveralls.io/repos/github/rmartone/missionlog/badge.svg?branch=master)](https://coveralls.io/github/rmartone/missionlog?branch=master)  [npm-image]: https://img.shields.io/npm/v/missionlog.svg?style=flat  
 [npm-url]: https://www.npmjs.com/package/missionlog  
 
 🚀 **missionlog** is a **lightweight, structured logging library** designed for **performance, flexibility, and ease of use**.  
@@ -32,12 +30,11 @@ npm i missionlog
 ```sh  
 yarn add missionlog  
 ```
----
 
 ## 🎯 **Focus on What Matters, When It Matters**  
 `missionlog` lets you **filter logs dynamically** to avoid clutter and focus on what's important—without forcing you to use tags.  
 
-### **🚀 Example**
+## **🚀 Example**
 
 ```typescript
 import { DEFAULT_TAG, log, LogLevel, LogLevelStr, tag } from "missionlog";
