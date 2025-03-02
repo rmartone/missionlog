@@ -50,46 +50,48 @@ yarn add missionlog
 ### **🚀 Example Usage**
 
 ```typescript
-import { log, LogLevel, LogLevelStr, tag } from 'missionlog.js';
-import chalk from 'chalk';
+import { DEFAULT_TAG, log, LogLevel, LogLevelStr, tag } from "missionlog";
+import chalk from "chalk";
 
 // Use the built-in dummy logger so becomes a no-op
-log.info(tag.engineering, 'Engaging warp drive! Destination: The Final Frontier.');
+log.info(tag.engineering, "Engaging warp drive! Destination: The Final Frontier.");
 
 // Let's set some tags
-log.init({ engineering: LogLevel.INFO, transporter: LogLevel.DEBUG });
+log.init({ Engineering: LogLevel.INFO, Transporter: LogLevel.DEBUG });
 
 // Log with a tag
-log.info(tag.engineering, 'Warp Factor 9!'); 
+log.info(tag.Engineering, "Warp Factor 9!");
 
 // Override the built-in dummy with custom behavior
-log.init({ engineering: LogLevel.INFO }, createLogHandler());
+log.init({ Engineering: LogLevel.INFO }, createLogHandler());
 
-// engineering's level is INFO+ so this gets logged!
-log.info(tag.engineering, 'Warp Factor 5.'); 
+// Engineering's level is INFO+ so this gets logged!
+log.info(tag.Engineering, "Warp Factor 5.");
 
 // No tag so works like console and uses the default level
-log.warn('Alert! Evil twin detected!'); 
+log.error("Alert! Evil twin detected!");
 
-// Gets filtered since engineering is INFO+
-log.debug(tag.engineering, 'Warp Factor 9!'); 
+// Gets filtered since Engineering is INFO+
+log.debug(tag.Engineering, "Warp Factor 9!");
 
-// Set specific log levels for tags and override the default ('*') level from INFO to ERROR
-log.init({ engineering: LogLevel.TRACE, '*': LogLevel.ERROR, transporter: LogLevel.DEBUG });
+// Update tag levels and override default (INFO)
+log.init({
+  Engineering: LogLevel.TRACE,
+  [DEFAULT_TAG]: LogLevel.ERROR,
+  Transporter: LogLevel.DEBUG,
+});
 
 // Log an error
-const error = new Error('Warp core breach!')
-log.error(tag.engineering, '🚨 Red Alert!', error.message); 
+const error = new Error("Warp core breach!");
+log.error(tag.Engineering, "🚨 Red Alert!", error.message);
 
-// Show some color! 
-log.debug( tag.transporter, '✨ Beam me up, Scotty!');
+// Show some color!
+log.debug(tag.Transporter, "✨ Beam me up, Scotty!");
 
-// Log objects
-log.warn(tag.transporter, 'Transporter anomaly detected,', { evilTwin: true });
+// Log objects properly
+log.warn(tag.Transporter, "Transporter anomaly detected,", { evilTwin: true });
 
-log.info()
-
-// replace dummy logger with custom behavior
+// Replace dummy logger with custom behavior
 function createLogHandler() {
   const logConfig: Record<
     LogLevelStr,
@@ -100,12 +102,13 @@ function createLogHandler() {
     INFO: { color: chalk.green, method: console.log },
     DEBUG: { color: chalk.magenta, method: console.log },
     TRACE: { color: chalk.cyan, method: console.log },
-    OFF: { color: chalk.white, method: () => { /* no-op */ } }, 
+    OFF: { color: () => '', method: () => {} }, // No-op
   };
 
   return (level: LogLevelStr, tag: string, message: unknown, params: unknown[]) => {
-    const config = logConfig[level];
-    config.method(tag ? `[${config.color(tag)}] ${message}` : message, ...params, '\n');
+    const { method, color } = logConfig[level];  
+    const logLine = `[${color(level)}] ${tag ? tag + ' - ' : ''}${message}`;
+    method(logLine, ...params);
   };
 }
 ```
