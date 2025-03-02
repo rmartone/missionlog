@@ -13,10 +13,10 @@
 ## **✨ Why Use `missionlog`?**  
 Compared to other logging libraries like `ts-log`, `missionlog` offers:  
 
-✅ **Drop-in Replacement for `console.log` & `ts-log`** – Start using it instantly!  
+✅ **Drop-in Replacement for `console.log` & `ts-log`** – Start using it instantly.  
 ✅ **Seamless Upgrade to Tag-Based Logging** – Reduce log clutter by dynamically focusing on what's important.  
-✅ **Configurable Log Levels – Adjust visibility for each tag at runtime to filter noise.**
-✅ **Customizable Output – Send logs anywhere: console, JSON, cloud services.**
+✅ **Configurable Log Levels** – Adjust visibility for each tag at runtime to filter noise.  
+✅ **Customizable Output** – Send logs anywhere: console, JSON, cloud services.  
 ✅ **Blazing Fast Performance** – O(1) log level lookups for minimal overhead.  
 ✅ **TypeScript-First** – Full type safety, no need for `@types`.  
 ✅ **Works Everywhere** – Browser, Node.js, Firebase, AWS Lambda etc.  
