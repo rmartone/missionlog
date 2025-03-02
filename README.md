@@ -34,8 +34,11 @@ npm i missionlog
 import { DEFAULT_TAG, log, LogLevel, LogLevelStr, tag } from "missionlog";
 import chalk from "chalk";
 
-// Uses the built-in **"Dummy"** logger and becomes a no-op
-log.info(tag.engineering, "Engaging warp drive! Destination: The Final Frontier.");
+// Tags aren't required., This works just like console
+log.error("Alert! Evil twin detected!");
+
+// Use the built-in **"Dummy"** logger and becomes a no-op
+log.info(tag.Engineering, "Engaging warp drive! Destination: The Final Frontier.");
 
 // Assign tags levels, (TRACE < DEBUG < INFO < WARN < ERROR < OFF)
 log.init({ Engineering: LogLevel.INFO, Transporter: LogLevel.DEBUG });
@@ -48,9 +51,6 @@ log.init({ Engineering: LogLevel.INFO }, createLogHandler());
 
 // Engineering's level is INFO+ so this gets logged!
 log.info(tag.Engineering, "Warp Factor 5.");
-
-// Tags aren't required., This works just like console
-log.error("Alert! Evil twin detected!");
 
 // Gets filtered since Engineering is INFO+
 log.debug(tag.Engineering, "Warp Factor 9!");
