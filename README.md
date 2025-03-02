@@ -1,118 +1,114 @@
 # missionlog  
-[![NPM version][npm-image]][npm-url]  
-[![Coverage Status](https://coveralls.io/repos/github/rmartone/missionlog/badge.svg?branch=master)](https://coveralls.io/github/rmartone/missionlog?branch=master)  
+[![NPM version][npm-image]][npm-url] [![Coverage Status](https://coveralls.io/repos/github/rmartone/missionlog/badge.svg?branch=master)](https://coveralls.io/github/rmartone/missionlog?branch=master)
 
 [npm-image]: https://img.shields.io/npm/v/missionlog.svg?style=flat  
 [npm-url]: https://www.npmjs.com/package/missionlog  
 
-**A lightweight, highly configurable logging library** with **level-based filtering** and **tag-based organization** for **structured, readable logs**—ideal for both **browser and server environments**.  
+🚀 **missionlog** is a **lightweight, structured logging library** designed for **performance, flexibility, and ease of use**.  
+It works as a **drop-in replacement for `console.log` or `ts-log`**, featuring **tag-based organization**, **log level filtering**, and **customizable output handling**—all in a tiny (~1KB) package.  
+
+✔ **Fully Typed (TypeScript)** • ✔ **ESM & CJS Support** • ✔ **Zero Dependencies**  
 
 ---
 
-## **🚀 What's New in Version 2.0 + Key Features**
+## **✨ Why Use `missionlog`?**  
+Compared to other logging libraries like `ts-log`, `missionlog` offers:  
 
-✔️ **Lightweight & Dependency-Free** – Small (~1KB) with zero dependencies for fast, efficient logging.  
-✔️ **Seamless ESM & CJS Support** – Works effortlessly with both **ES Modules (ESM)** and **CommonJS (CJS)**.  
-✔️ **Optimized Performance** – O(1) log level lookups ensure minimal overhead.  
-✔️ **Level-Based Filtering** – Control log visibility with levels: `ERROR > WARN > INFO > DEBUG > TRACE`.  
-✔️ **Tag-Based Logging** – Assign log levels per **subsystem** (e.g., `'security'`, `'transporter'`).  
-✔️ **Smarter Tag Handling** – Enhanced proxy-based system for dynamic, intuitive tag registration.  
-✔️ **Flexible Output** – Log to the console, **style with chalk**, or stream logs to **Firebase, AWS, or other services**.  
-✔️ **Seamless Integration** – Works in **Node.js**, browsers, and **Firebase Functions**.  
-✔️ **Improved Defaults & Error Handling** – Invalid log levels now gracefully default to **TRACE**.  
-✔️ **Console-Like API** – Supports objects, rest parameters, and mirrors native `console` methods.  
-✔️ **TypeScript-Ready** – Built-in types, no need for `@types`.  
+✅ **Drop-in Replacement for `console.log` & `ts-log`** – Start using it instantly.  
+✅ **Seamless Upgrade to Tag-Based Logging** – Reduce log clutter by dynamically focusing on what's important.  
+✅ **Configurable Log Levels** – Adjust visibility for each tag at runtime to filter noise.  
+✅ **Customizable Output** – Send logs anywhere: console, JSON, cloud services.  
+✅ **Blazing Fast Performance** – O(1) log level lookups for minimal overhead.  
+✅ **TypeScript-First** – Full type safety, no need for `@types`.  
+✅ **Works Everywhere** – Browser, Node.js, Firebase, AWS Lambda etc.  
 
 ---
 
-## **📚 Installation**
-```sh
-npm i missionlog
+## **📦 Installation**  
+```sh  
+npm i missionlog  
+```
+```sh  
+yarn add missionlog  
 ```
 
----
+## 🎯 **Focus on What Matters, When It Matters**  
+`missionlog` lets you **filter logs dynamically** to avoid clutter and focus on what's important—without forcing you to use tags.  
 
-## **🚀 Getting Started**
+## **🚀 Example**
 
-## **🗒 Basic Usage**
 ```typescript
-import { log, tag } from 'missionlog';
+import { DEFAULT_TAG, log, LogLevel, LogLevelStr, tag } from "missionlog";
+import chalk from "chalk";
 
-// Use predefined tags (auto-populated)
-log.error(tag.security, 'Access denied', statusCode);
+// Use the built-in dummy logger so becomes a no-op
+log.info(tag.engineering, "Engaging warp drive! Destination: The Final Frontier.");
 
-// Or use string-based tags
-log.warn('transporter', 'Evil twin detected!');
+// Let's set some tags
+log.init({ Engineering: LogLevel.INFO, Transporter: LogLevel.DEBUG });
 
-// Filtered: security level is ERROR (INFO won't log)
-log.info(tag.security, 'User logged in');
+// Log with a tag
+log.info(tag.Engineering, "Warp Factor 9!");
 
-// DEBUG message
-log.debug(tag.system, { warpFactor, starDate });
+// Override the built-in dummy with custom behavior
+log.init({ Engineering: LogLevel.INFO }, createLogHandler());
 
-// TRACE message
-log.trace(tag.system, 'Entering warp core');
+// Engineering's level is INFO+ so this gets logged!
+log.info(tag.Engineering, "Warp Factor 5.");
 
-// Filtered: system's level is OFF
-log.error(tag.system, 'Ejecting warp core', error);
+// No tag so works like console and uses the default level
+log.error("Alert! Evil twin detected!");
 
-// Dynamically update log levels
-log.init({ loader: 'ERROR', system: 'INFO' });
+// Gets filtered since Engineering is INFO+
+log.debug(tag.Engineering, "Warp Factor 9!");
 
-// Disable logging completely
-log.init();
+// Update tag levels and override default (INFO)
+log.init({
+  Engineering: LogLevel.TRACE,
+  [DEFAULT_TAG]: LogLevel.ERROR,
+  Transporter: LogLevel.DEBUG,
+});
+
+// Log an error
+const error = new Error("Warp core breach!");
+log.error(tag.Engineering, "🚨 Red Alert!", error.message);
+
+// Show some color!
+log.debug(tag.Transporter, "✨ Beam me up, Scotty!");
+
+// Log objects properly
+log.warn(tag.Transporter, "Transporter anomaly detected,", { evilTwin: true });
+
+// Replace dummy logger with custom behavior
+function createLogHandler() {
+  const logConfig: Record<
+    LogLevelStr,
+    { color: (text: string) => string; method: (...args: unknown[]) => void }
+  > = {
+    ERROR: { color: chalk.red, method: console.error },
+    WARN: { color: chalk.yellow, method: console.warn },
+    INFO: { color: chalk.green, method: console.log },
+    DEBUG: { color: chalk.magenta, method: console.log },
+    TRACE: { color: chalk.cyan, method: console.log },
+    OFF: { color: () => '', method: () => {} }, // No-op
+  };
+
+  return (level: LogLevelStr, tag: string, message: unknown, params: unknown[]) => {
+    const { method, color } = logConfig[level];  
+    const logLine = `[${color(level)}] ${tag ? tag + ' - ' : ''}${message}`;
+    method(logLine, ...params);
+  };
+}
 ```
+
+![Example Image](example.jpg)
 
 ---
 
-
-### **1⃣ Example Browser Initialization**
-```typescript
-import { log, LogLevel } from 'missionlog';
-import chalk from 'chalk';
-
-// Define how each log level should be handled
-const logger = {
-  [LogLevel.ERROR]: (tag, msg, params) => console.error(`[${chalk.red(tag)}]`, msg, ...params),
-  [LogLevel.WARN]: (tag, msg, params) => console.warn(`[${chalk.yellow(tag)}]`, msg, ...params),
-  [LogLevel.INFO]: (tag, msg, params) => console.log(`[${chalk.green(tag)}]`, msg, ...params),
-  [LogLevel.DEBUG]: (tag, msg, params) => console.log(`[${chalk.magenta(tag)}]`, msg, ...params),
-  [LogLevel.TRACE]: (tag, msg, params) => console.log(`[${chalk.cyan(tag)}]`, msg, ...params),
-} as Record<LogLevel, (tag: string, msg: unknown, params: unknown[]) => void>;
-
-// Initialize missionlog with tag levels & a custom handler
-log.init(
-  { transporter: 'INFO', security: 'ERROR', system: 'OFF' },
-  (level, tag, msg, params) => logger[level](tag, msg, params)
-);
-```
-
----
-
-### **🔹 Example Firebase Functions Integration**
-```typescript
-import { debug, error, info, warn } from 'firebase-functions/logger';
-import { log, LogLevel, tag } from 'missionlog';
-
-const firebaseLogger = {
-  [LogLevel.ERROR]: (tag, payload) => error({ tag, ...payload }),
-  [LogLevel.WARN]: (tag, payload) => warn({ tag, ...payload }),
-  [LogLevel.INFO]: (tag, payload) => info({ tag, ...payload }),
-  [LogLevel.TRACE]: (tag, payload) => debug({ tag, ...payload }),
-  [LogLevel.DEBUG]: (tag, payload) => debug({ tag, ...payload }),
-  [LogLevel.OFF]: () => void 0,
-};
-
-log.init({ transporter: 'INFO', security: 'ERROR', system: 'OFF' },
-  (level, tag, msg, params) => firebaseLogger[level](tag, { ...params, message: msg })
-);
-```
-
----
-
-## **📞 License**
+## **📄 License**  
 **MIT License**  
 **© 2019-2025 Ray Martone**  
 
 ---
 
+🚀 **Install `missionlog` today and make logging clean, structured, and powerful!**

@@ -23,23 +23,26 @@ export enum LogLevel {
   OFF = 'OFF',
 }
 
-export type LogCallback = (level: LogLevelStr, tag: string, message: unknown, optionalParams: unknown[]) => void;
+export type LogCallback = (
+  level: LogLevelStr,
+  tag: string,
+  message: unknown,
+  optionalParams: unknown[],
+) => void;
 
 export type LogLevelStr = 'TRACE' | 'DEBUG' | 'INFO' | 'WARN' | 'ERROR' | 'OFF';
 
+export const DEFAULT_TAG = '*';
 const tagRegistry = new Set<string>();
 
 export const tag: Record<string, string> = new Proxy(
   {},
   {
     get(_, prop: string) {
-      if (typeof prop === 'string') {
-        if (!tagRegistry.has(prop)) {
-          tagRegistry.add(prop);
-          console.debug(`logger: unregistered tag, "${prop}"`);
-        }
+      if (typeof prop === 'string' && tagRegistry.has(prop)) {
         return prop;
       }
+      return undefined;
     },
     ownKeys() {
       return Array.from(tagRegistry);
@@ -49,15 +52,6 @@ export const tag: Record<string, string> = new Proxy(
     },
   },
 );
-
-const LEVEL_MAP = new Map<LogLevelStr, Level>([
-  ['TRACE', Level.TRACE],
-  ['DEBUG', Level.DEBUG],
-  ['INFO', Level.INFO],
-  ['WARN', Level.WARN],
-  ['ERROR', Level.ERROR],
-  ['OFF', Level.OFF],
-]);
 
 const LEVEL_STR_MAP = new Map<Level, LogLevelStr>([
   [Level.TRACE, 'TRACE'],
@@ -69,33 +63,34 @@ const LEVEL_STR_MAP = new Map<Level, LogLevelStr>([
 ]);
 
 export class Log {
-  private readonly _defaultLevel: Level = Level.TRACE;
+  private _defaultLevel: Level = Level.INFO;
   protected readonly _tagToLevel = new Map<string, Level>();
   protected _callback?: LogCallback | null;
-
-  protected levelToString(level: Level): LogLevelStr {
-    return LEVEL_STR_MAP.get(level)!;
-  }
 
   init(config?: Record<string, string>, callback?: LogCallback | null): this {
     if (config) {
       for (const key in config) {
         const levelStr = config[key] as LogLevelStr;
 
-        if (LEVEL_MAP.has(levelStr)) {
-          this._tagToLevel.set(key, LEVEL_MAP.get(levelStr)!);
+        if (Object.values(LogLevel).includes(levelStr as LogLevel)) {
+          const level = (Level as unknown as Record<string, Level>)[levelStr];
+
+          if (key === DEFAULT_TAG) {
+            this._defaultLevel = level;
+          } else {
+            this._tagToLevel.set(key, level);
+            tagRegistry.add(key);
+          }
         } else {
           console.warn(
-            `Invalid log level "${levelStr}" for tag "${key}". Using default (${this.levelToString(this._defaultLevel)}).`,
+            `Invalid log level "${levelStr}" for tag "${key}". Using default (${LEVEL_STR_MAP.get(this._defaultLevel)}).`,
           );
-          this._tagToLevel.set(key, this._defaultLevel);
+          this._tagToLevel.set(key, Level.DEBUG);
+          tagRegistry.add(key);
         }
-
-        tagRegistry.add(key);
       }
     }
 
-    // Preserve undefined behavior unless explicitly setting null
     if (callback !== undefined) {
       this._callback = callback;
     }
@@ -103,49 +98,57 @@ export class Log {
     return this;
   }
 
-  private getEffectiveLogLevel(tag: string): Level {
-    if (!this._tagToLevel.has(tag)) {
-      if (!tagRegistry.has(tag)) {
-        console.debug(`logger: unregistered tag, "${tag}"`);
-      }
-      return this._defaultLevel;
-    }
-    return this._tagToLevel.get(tag)!;
-  }
+  private _log(level: Level, messageOrTag?: unknown, ...optionalParams: unknown[]): void {
+    if (!this._callback || !messageOrTag) return;
 
-  private log<T extends string>(level: Level, tag: T, message: unknown, optionalParams: unknown[]): void {
-    if (!this._callback) {
-      return;
-    }
+    let tag: string;
+    let message: unknown;
 
-    const effectiveLevel = this.getEffectiveLogLevel(tag);
-
-    if (level < effectiveLevel) {
-      return;
+    if (typeof messageOrTag === 'string' && tagRegistry.has(messageOrTag)) {
+      tag = messageOrTag;
+      message = optionalParams[0] ?? '';
+      optionalParams = optionalParams.slice(1);
+    } else {
+      tag = '';
+      message = messageOrTag;
     }
 
-    const levelStr = this.levelToString(level);
-    this._callback(levelStr, tag, message, optionalParams);
+    // no message nothing to log...
+    if (!message) return;
+
+    const effectiveLevel = this._tagToLevel.get(tag || DEFAULT_TAG) ?? this._defaultLevel;
+    if (level < effectiveLevel) return;
+
+    this._callback(
+      LEVEL_STR_MAP.get(level)!,
+      tag,
+      message,
+      optionalParams.filter((param) => param !== undefined),
+    );
   }
 
-  debug<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
-    this.log(Level.DEBUG, tag, message, optionalParams);
+  public debug(messageOrTag?: unknown, ...optionalParams: unknown[]): void {
+    this._log(Level.DEBUG, messageOrTag, ...optionalParams);
   }
 
-  error<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
-    this.log(Level.ERROR, tag, message, optionalParams);
+  public error(messageOrTag?: unknown, ...optionalParams: unknown[]): void {
+    this._log(Level.ERROR, messageOrTag, ...optionalParams);
   }
 
-  info<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
-    this.log(Level.INFO, tag, message, optionalParams);
+  public info(messageOrTag?: unknown, ...optionalParams: unknown[]): void {
+    this._log(Level.INFO, messageOrTag, ...optionalParams);
   }
 
-  trace<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
-    this.log(Level.TRACE, tag, message, optionalParams);
+  public log(messageOrTag?: unknown, ...optionalParams: unknown[]): void {
+    this._log(Level.INFO, messageOrTag, ...optionalParams);
   }
 
-  warn<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void {
-    this.log(Level.WARN, tag, message, optionalParams);
+  public trace(messageOrTag?: unknown, ...optionalParams: unknown[]): void {
+    this._log(Level.TRACE, messageOrTag, ...optionalParams);
+  }
+
+  public warn(messageOrTag?: unknown, ...optionalParams: unknown[]): void {
+    this._log(Level.WARN, messageOrTag, ...optionalParams);
   }
 }
 

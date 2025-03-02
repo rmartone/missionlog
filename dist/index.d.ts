@@ -16,20 +16,20 @@ export declare enum LogLevel {
 }
 export type LogCallback = (level: LogLevelStr, tag: string, message: unknown, optionalParams: unknown[]) => void;
 export type LogLevelStr = 'TRACE' | 'DEBUG' | 'INFO' | 'WARN' | 'ERROR' | 'OFF';
+export declare const DEFAULT_TAG = "*";
 export declare const tag: Record<string, string>;
 export declare class Log {
-    private readonly _defaultLevel;
+    private _defaultLevel;
     protected readonly _tagToLevel: Map<string, Level>;
     protected _callback?: LogCallback | null;
-    protected levelToString(level: Level): LogLevelStr;
     init(config?: Record<string, string>, callback?: LogCallback | null): this;
-    private getEffectiveLogLevel;
-    private log;
-    debug<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void;
-    error<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void;
-    info<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void;
-    trace<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void;
-    warn<T extends string>(tag: T, message: unknown, ...optionalParams: unknown[]): void;
+    private _log;
+    debug(messageOrTag?: unknown, ...optionalParams: unknown[]): void;
+    error(messageOrTag?: unknown, ...optionalParams: unknown[]): void;
+    info(messageOrTag?: unknown, ...optionalParams: unknown[]): void;
+    log(messageOrTag?: unknown, ...optionalParams: unknown[]): void;
+    trace(messageOrTag?: unknown, ...optionalParams: unknown[]): void;
+    warn(messageOrTag?: unknown, ...optionalParams: unknown[]): void;
 }
 export declare const log: Log;
 export {};

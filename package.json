@@ -1,6 +1,6 @@
 {
   "name": "missionlog",
-  "version": "2.0.3",
+  "version": "3.0.0",
   "type": "module",
   "exports": {
     ".": {
@@ -39,11 +39,16 @@
     "logger",
     "logging",
     "lightweight",
+    "ts-log",
+    "abstract",
     "typescript",
     "esm",
     "cjs",
+    "console",
     "structured-logging",
     "configurable",
+    "tags",
+    "categories",
     "filtering",
     "log-levels"
   ],
