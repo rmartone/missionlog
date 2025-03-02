@@ -34,6 +34,8 @@ npm i missionlog
 yarn add missionlog  
 ```
 
+---
+
 ## **🔧 Works with TypeScript, ESM & CJS**  
 ✅ Fully typed API with **zero dependencies**.  
 ✅ Works seamlessly with both **ES Modules (ESM)** and **CommonJS (CJS)**.  
@@ -89,7 +91,10 @@ log.info()
 
 // replace dummy logger with custom behavior
 function createLogHandler() {
-  const logConfig: Record<LogLevelStr, { color: (text: string) => string; method: (...args: unknown[]) => void }> = {
+  const logConfig: Record<
+    LogLevelStr,
+    { color: (text: string) => string; method: (...args: unknown[]) => void }
+  > = {
     ERROR: { color: chalk.red, method: console.error },
     WARN: { color: chalk.yellow, method: console.warn },
     INFO: { color: chalk.green, method: console.log },
@@ -106,12 +111,6 @@ function createLogHandler() {
 ```
 
 ![Example Image](example.jpg)
-
----
-
-## **🔧 Works with TypeScript, ESM & CJS**  
-✅ Fully typed API with **zero dependencies**.  
-✅ Works seamlessly with both **ES Modules (ESM)** and **CommonJS (CJS)**.  
 
 ---
 
