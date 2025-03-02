@@ -20,8 +20,6 @@
 ✅ **TypeScript-First** – Full type safety, no need for `@types`.  
 ✅ **Works Everywhere** – Browser, Node.js, Firebase, AWS Lambda etc.  
 
----
-
 ## **📦 Installing**  
 ```sh  
 npm i missionlog  
