@@ -4,18 +4,17 @@
 [npm-image]: https://img.shields.io/npm/v/missionlog.svg?style=flat  
 [npm-url]: https://www.npmjs.com/package/missionlog  
 
-🚀 **missionlog** is a **lightweight, structured logging library** designed for **performance, flexibility, and ease of use**. It works as a **drop-in replacement for `console.log` or `ts-log`**, featuring **tag-based organization**, **log level filtering**, and **customizable output handling**—all in a tiny (~1KB) package.  
+🚀 **missionlog** is a **lightweight, structured logging package** designed for **performance, flexibility, and ease of use**. It works as a **drop-in replacement for `console.log` or `ts-log`**, and offers both **log level** filtering, optional **tag** filtering, and **customizable output handling**—all in a tiny (~1KB) package.  
 
 ✔ **Fully Typed (TypeScript)** • ✔ **ESM & CJS Support** • ✔ **Zero Dependencies** • ✔ **100% Coverage**   
 
 ---
 
 ## **✨ Why Use `missionlog`?**  
-Compared to other logging libraries like `ts-log`, `missionlog` offers:  
 
 ✅ **Drop-in Replacement for `console.log` & `ts-log`** – Start using it instantly!  
-✅ **Seamless Upgrade to Tag-Based Logging** – Reduce log clutter by dynamically focusing on what's important.  
-✅ **Configurable Log Levels** – Adjust visibility for each tag at runtime to filter noise.  
+✅ **Seamless Upgrade to Tagged Logging** – Reduce log clutter and focus on what's important.  
+✅ **Configurable Log Levels** – Adjust visibility for log level and tags at runtime.  
 ✅ **Customizable Output** – Send logs anywhere: console, JSON, cloud services.  
 ✅ **Blazing Fast Performance** – O(1) log level lookups for minimal overhead.  
 ✅ **TypeScript-First** – Full type safety, no need for `@types`.  
@@ -23,16 +22,13 @@ Compared to other logging libraries like `ts-log`, `missionlog` offers:
 
 ---
 
-## **📦 Installation**  
+## **📦 Installing**  
 ```sh  
 npm i missionlog  
 ```
-```sh  
-yarn add missionlog  
-```
 
 ## 🎯 **Focus on What Matters, When It Matters**  
-`missionlog` lets you **filter logs dynamically** to avoid clutter and focus on what's important—without forcing you to use tags.  
+`missionlog` lets you **filter logs dynamically** by level or tag (optional) to avoid clutter and help you focus on what's important. 
 
 ## **🚀 Example**
 
@@ -40,16 +36,16 @@ yarn add missionlog
 import { DEFAULT_TAG, log, LogLevel, LogLevelStr, tag } from "missionlog";
 import chalk from "chalk";
 
-// Use the built-in dummy logger so becomes a no-op
+// Uses the built-in **"Dummy"** logger and becomes a no-op
 log.info(tag.engineering, "Engaging warp drive! Destination: The Final Frontier.");
 
-// Let's set some tags
+// Assing tags levels, (TRACE < DEBUG < INFO < WARN < ERROR < OFF)
 log.init({ Engineering: LogLevel.INFO, Transporter: LogLevel.DEBUG });
 
 // Log with a tag
 log.info(tag.Engineering, "Warp Factor 9!");
 
-// Override the built-in dummy with custom behavior
+// Override the built-in **Dummy** logger with a custom behavior
 log.init({ Engineering: LogLevel.INFO }, createLogHandler());
 
 // Engineering's level is INFO+ so this gets logged!
