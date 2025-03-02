@@ -16,6 +16,7 @@ export declare enum LogLevel {
 }
 export type LogCallback = (level: LogLevelStr, tag: string, message: unknown, optionalParams: unknown[]) => void;
 export type LogLevelStr = 'TRACE' | 'DEBUG' | 'INFO' | 'WARN' | 'ERROR' | 'OFF';
+export declare const DEFAULT_TAG = "*";
 export declare const tag: Record<string, string>;
 export declare class Log {
     private _defaultLevel;

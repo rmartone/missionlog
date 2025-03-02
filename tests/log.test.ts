@@ -1,4 +1,4 @@
-import { log, tag } from '../src/index';
+import { log, tag, DEFAULT_TAG } from '../src/index';
 
 let buffer: string;
 
@@ -7,7 +7,7 @@ beforeEach(() => {
 });
 
 log.init(
-  { network: 'TRACE', loader: 'INFO', security: 'ERROR', system: 'OFF', default: 'INFO' },
+  { network: 'TRACE', loader: 'INFO', security: 'ERROR', system: 'OFF', [DEFAULT_TAG]: 'INFO' },
   (level, component, msg, params): void => {
     buffer += `${level}: [${component}] ${msg}`;
     for (const param of params) {
@@ -50,7 +50,7 @@ describe('Logging with tags', () => {
       loader: 'INFO',
       security: 'ERROR',
       system: 'OFF',
-      default: 'INFO',
+      [DEFAULT_TAG]: 'INFO',
     });
   });
 
@@ -65,26 +65,18 @@ describe('Logging with tags', () => {
   });
 
   test('log.info() with valid tag but no other arguments', () => {
-    // Initialize the logger with valid tag settings
-    log.init({ system: 'INFO', default: 'INFO' });
+    log.init({ system: 'INFO', [DEFAULT_TAG]: 'INFO' });
 
-    // Call log.info with a valid tag but no other arguments
     buffer = ''; // Reset the buffer
     log.info(tag.system);
 
-    // Since no message is provided, the output should be empty (no message logged)
     expect(buffer).toBe('');
   });
 
   test('logs with valid tag but no message', () => {
     buffer = '';
     log.info(tag.system);
-    expect(buffer).toBe(''); // No message should be logged.
-  });
-
-  test('log with one argument defaults to INFO', (): void => {
-    log.log('hello world');
-    expect(buffer).toBe('INFO: [] hello world');
+    expect(buffer).toBe('');
   });
 
   test('log with one argument defaults to INFO', (): void => {
@@ -100,7 +92,7 @@ describe('Logging with tags', () => {
 
 describe('Log filtering', () => {
   test('logs below INFO are filtered when default is INFO', (): void => {
-    log.init({ default: 'INFO' });
+    log.init({ [DEFAULT_TAG]: 'INFO' });
 
     log.debug('This should not appear');
     expect(buffer).toBe('');
@@ -110,7 +102,7 @@ describe('Log filtering', () => {
   });
 
   test('logs allowed when default is TRACE', (): void => {
-    log.init({ default: 'TRACE' });
+    log.init({ [DEFAULT_TAG]: 'TRACE' });
 
     log.trace('This should be logged');
     expect(buffer).toBe('TRACE: [] This should be logged');
@@ -124,8 +116,8 @@ describe('Log filtering', () => {
     expect(buffer).toBe('INFO: [] Info message');
   });
 
-  test('default to WARN filters out INFO logs', (): void => {
-    log.init({ default: 'WARN' });
+  test('default level to WARN filters out INFO logs', (): void => {
+    log.init({ [DEFAULT_TAG]: 'WARN' });
 
     log.info('This should be filtered out');
     expect(buffer).toBe('');
@@ -139,8 +131,8 @@ describe('Log filtering', () => {
     expect(buffer).toBe('ERROR: [] This should also appear');
   });
 
-  test('default to OFF disables all uncategorized logs', (): void => {
-    log.init({ default: 'OFF' });
+  test('default level to OFF disables all uncategorized logs', (): void => {
+    log.init({ [DEFAULT_TAG]: 'OFF' });
 
     log.info('This should not log');
     expect(buffer).toBe('');
@@ -151,7 +143,7 @@ describe('Log filtering', () => {
     log.error('Not even this');
     expect(buffer).toBe('');
 
-    log.init({ default: 'INFO' });
+    log.init({ [DEFAULT_TAG]: 'INFO' });
   });
 });
 
@@ -162,13 +154,13 @@ describe('Tag Proxy Behavior', () => {
       loader: 'INFO',
       security: 'ERROR',
       system: 'OFF',
-      default: 'INFO',
+      [DEFAULT_TAG]: 'INFO',
     });
   });
 
   test('accessing an unregistered tag returns undefined', () => {
-    const unknownTag = tag.unknownTag; // This should return undefined
-    expect(unknownTag).toBeUndefined(); // Verifies the return value is undefined
+    const unknownTag = tag.unknownTag;
+    expect(unknownTag).toBeUndefined();
   });
 });
 
@@ -193,20 +185,15 @@ describe('Object logging and invalid levels', () => {
   });
 
   test('handles invalid log levels in init()', () => {
-    // Mock the console.warn method to check if the warning is triggered
     console.warn = jest.fn();
 
-    // Initialize with an invalid log level for a tag
-    log.init({ invalidTag: 'INVALID_LEVEL', default: 'INFO' });
+    log.init({ invalidTag: 'INVALID_LEVEL', [DEFAULT_TAG]: 'INFO' });
 
-    // Test logging with the invalid tag
-    buffer = ''; // Reset the buffer
+    buffer = '';
     log.info('This should use the default level', 'Test message');
 
-    // Since the invalid level was ignored, it should use the default level, which is INFO
     expect(buffer).toBe('INFO: [] This should use the default level, Test message');
 
-    // Verify that a warning message is logged about the invalid log level
     expect(console.warn).toHaveBeenCalledWith(
       'Invalid log level "INVALID_LEVEL" for tag "invalidTag". Using default (INFO).',
     );
@@ -215,7 +202,7 @@ describe('Object logging and invalid levels', () => {
 
 describe('Callback error handling and disabling', () => {
   test('throws error in callback', (): void => {
-    log.init({ default: 'DEBUG'}, () => {
+    log.init({ [DEFAULT_TAG]: 'DEBUG' }, () => {
       throw new Error('Test Error');
     });
 
@@ -237,7 +224,7 @@ describe('Tag registration and reflection', () => {
       loader: 'INFO',
       security: 'ERROR',
       system: 'OFF',
-      default: 'INFO',
+      [DEFAULT_TAG]: 'INFO',
     });
   });
 
