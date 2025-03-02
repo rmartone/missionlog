@@ -36,21 +36,17 @@
   },
   "keywords": [
     "log",
-    "logger",
     "logging",
-    "lightweight",
-    "ts-log",
-    "abstract",
     "typescript",
-    "esm",
-    "cjs",
     "console",
     "structured-logging",
+    "log-levels",
     "configurable",
+    "filtering",
     "tags",
     "categories",
-    "filtering",
-    "log-levels"
+    "esm",
+    "cjs"
   ],
   "engines": {
     "node": ">=18.0.0"
