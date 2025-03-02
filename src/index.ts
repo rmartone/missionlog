@@ -32,7 +32,7 @@ export type LogCallback = (
 
 export type LogLevelStr = 'TRACE' | 'DEBUG' | 'INFO' | 'WARN' | 'ERROR' | 'OFF';
 
-const DEFAULT_TAG = 'default';
+const DEFAULT_TAG = '*';
 const tagRegistry = new Set<string>();
 
 export const tag: Record<string, string> = new Proxy(
