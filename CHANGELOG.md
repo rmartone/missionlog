@@ -2,10 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## [3.0.0](https://github.com/rmartone/missionlog/compare/v2.1.0...v3.0.0) (2025-03-02)
+## [3.0.0](https://github.com/rmartone/missionlog/compare/v2.0.3...v2.1.0) (2025-03-02)
+  
+# MissionLog v3.0.0 Release Notes
+* Date: (Today's Date)
 
-## [2.1.0](https://github.com/rmartone/missionlog/compare/v2.0.3...v2.1.0) (2025-03-02)
-  * 
+## 💥 Breaking Changes
+Unregistered Tags Are No Longer Automatically Added
+Previously, using an unregistered tag would implicitly add it to the system.
+New Behavior: Logs using unregistered tags will now default to the global level (DEFAULT_TAG) instead of being registered.
+Migration: If you rely on dynamic tag creation, ensure you explicitly register your tags before logging.
+
+## 🚀 New Features & Enhancements
+Console-Compatible Output
+Improved logging format to be more compatible with standard console.log() behavior.
+Optional Tagging System
+Logging now works without requiring tags, allowing a simpler logging approach when desired.
+
+## 🛠 Internal Improvements
+Refactored Default Logging Behavior
+Replaced hardcoded '*' wildcard with DEFAULT_TAG, improving maintainability and clarity in log filtering.
+Updated Test Suite
+Ensured consistency by replacing hardcoded wildcard values with DEFAULT_TAG.
 
 ### [2.0.3](https://github.com/rmartone/missionlog/compare/v2.0.2...v2.0.3) (2025-03-01)
   * Updated README.md and keywords
