@@ -1,6 +1,7 @@
 # missionlog  
 [![NPM version][npm-image]][npm-url]  
-[![Coverage Status](https://coveralls.io/repos/github/rmartone/missionlog/badge.svg?branch=master)](https://coveralls.io/github/rmartone/missionlog?branch=master)  [npm-image]: https://img.shields.io/npm/v/missionlog.svg?style=flat  
+[![Coverage Status](https://coveralls.io/repos/github/rmartone/missionlog/badge.svg?branch=master)](https://coveralls.io/github/rmartone/missionlog?branch=master)  
+[npm-image]: https://img.shields.io/npm/v/missionlog.svg?style=flat  
 [npm-url]: https://www.npmjs.com/package/missionlog  
 
 🚀 **missionlog** is a **lightweight, structured logging library** designed for **performance, flexibility, and ease of use**.  
