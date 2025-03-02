@@ -28,7 +28,7 @@ npm i missionlog
 ```
 
 ## 🎯 **Focus on What Matters, When It Matters**  
-`missionlog` lets you **filter logs dynamically** by level or tag (optional) to avoid clutter and help you focus on what's important. 
+`missionlog` can **filter logs dynamically** by level or tag to avoid clutter and help you focus on what's important. 
 
 ## **🚀 Example**
 
@@ -39,7 +39,7 @@ import chalk from "chalk";
 // Uses the built-in **"Dummy"** logger and becomes a no-op
 log.info(tag.engineering, "Engaging warp drive! Destination: The Final Frontier.");
 
-// Assing tags levels, (TRACE < DEBUG < INFO < WARN < ERROR < OFF)
+// Assign tags levels, (TRACE < DEBUG < INFO < WARN < ERROR < OFF)
 log.init({ Engineering: LogLevel.INFO, Transporter: LogLevel.DEBUG });
 
 // Log with a tag
@@ -51,7 +51,7 @@ log.init({ Engineering: LogLevel.INFO }, createLogHandler());
 // Engineering's level is INFO+ so this gets logged!
 log.info(tag.Engineering, "Warp Factor 5.");
 
-// No tag so works like console and uses the default level
+// Tags aren't required., This works just like console
 log.error("Alert! Evil twin detected!");
 
 // Gets filtered since Engineering is INFO+
@@ -60,7 +60,7 @@ log.debug(tag.Engineering, "Warp Factor 9!");
 // Update tag levels and override default (INFO)
 log.init({
   Engineering: LogLevel.TRACE,
-  [DEFAULT_TAG]: LogLevel.ERROR,
+  [DEFAULT_TAG]: LogLevel.ERROR, // used for logs without a tag
   Transporter: LogLevel.DEBUG,
 });
 
