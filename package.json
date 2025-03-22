@@ -21,12 +21,12 @@
     "dist/index.esm.js.map"
   ],
   "scripts": {
-    "clean": "shx rm -rf dist, tsconfig.tsbuildinfo",
+    "clean": "shx rm -rf dist tsconfig.tsbuildinfo",
     "build": "npm run clean && npm run build:js && npm run build:types",
     "build:types": "tsc --emitDeclarationOnly",
     "build:js": "node build.js",
-    "format": "prettier -c src/**",
-    "lint": "tsc && eslint ./src --ext .ts,.tsx --fix",
+    "format": "prettier -c src/**/*.ts",
+    "lint": "eslint ./src --ext .ts,.tsx --fix",
     "pub": "npm version patch --no-git-tag-version && npm run build && npm publish",
     "coverage": "vitest run --coverage",
     "test": "vitest --config vitest.config.ts --run"
@@ -52,20 +52,15 @@
   "engines": {
     "node": ">=18.0.0"
   },
-  "homepage": "https://github.com/rmartone/missionlog#readme",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/rmartone/missionlog"
-  },
   "author": "Ray Martone <rmartone@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "coveralls": "^3.1.1",
-    "esbuild": "^0.25.0",
     "@types/node": "^22.13.10",
     "@typescript-eslint/eslint-plugin": "^8.27.0",
     "@typescript-eslint/parser": "^8.27.0",
-    "esbuild-node-externals": "^1.18.0",
+    "@vitest/coverage-v8": "^3.0.9",
+    "coveralls": "^3.1.1",
+    "esbuild": "^0.25.0",
     "esbuild-plugin-tsc": "^0.5.0",
     "eslint": "^9.22.0",
     "eslint-config-prettier": "^10.1.1",
@@ -74,6 +69,7 @@
     "prettier": "^3.5.3",
     "prettier-plugin-organize-imports": "^4.1.0",
     "shx": "^0.4.0",
+    "standard-version": "^9.5.0",
     "tslib": "^2.8.1",
     "typescript": "^5.8.2",
     "vite": "^6.2.2",
