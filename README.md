@@ -13,13 +13,21 @@
 ## **✨ Why Use `missionlog`?**
 
 ✅ **Drop-in Replacement for `console.log` & `ts-log`** – Start using it instantly!
+
 ✅ **Seamless Upgrade to Tagged Logging** – Reduce log clutter and focus on what's important.
+
 ✅ **Configurable Log Levels** – Adjust visibility for log level and tags at runtime.
+
 ✅ **Customizable Output** – Send logs anywhere: console, JSON, cloud services.
+
 ✅ **Structured Logging Support** – Enhanced callbacks with timestamp and typed message data.
+
 ✅ **Blazing Fast Performance** – O(1) log level lookups with advanced level caching.
+
 ✅ **TypeScript-First** – Full type safety with LogMessage and LogConfig interfaces.
+
 ✅ **Chainable API** – All methods return the logger instance for method chaining.
+
 ✅ **Works Everywhere** – Browser, Node.js, Firebase, AWS Lambda etc.
 
 ## **📦 Installing**
@@ -105,7 +113,7 @@ log.init(
 log.setEnhancedCallback((params: LogCallbackParams) => {
   const { level, tag, message, timestamp, params: extraParams } = params;
   console.log(
-    `[${timestamp.toISOString()}] [${level}] ${tag ? tag + ' - ' : ''}${message}`, 
+    `[${timestamp.toISOString()}] [${level}] ${tag ? tag + ' - ' : ''}${message}`,
     ...extraParams
   );
 });
