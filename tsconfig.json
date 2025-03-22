@@ -2,22 +2,23 @@
   "compilerOptions": {
     "target": "ES2022",
     "module": "ES2022",
-    "allowSyntheticDefaultImports": true,
-    "declaration": true,
+    "skipLibCheck": true,
+    "moduleResolution": "Bundler",
+    "isolatedModules": true,
+    "importHelpers": true,
+    "removeComments": true,
     "sourceMap": true,
     "esModuleInterop": true,
-    "isolatedModules": true,
-    "lib": ["es2022"],
-    "moduleDetection": "auto",
-    "skipLibCheck": true,
     "strict": true,
     "noUnusedLocals": true,
     "noUncheckedSideEffectImports": true,
-    "removeComments": true,
+    "allowSyntheticDefaultImports": true,
+    "preserveConstEnums": true,
+    "declaration": true,
+    "noUncheckedIndexedAccess": true,
     "outDir": "./dist",
-    "rootDir": "./src",
-    "baseUrl": "."
+    "rootDir": "./src"
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
 }

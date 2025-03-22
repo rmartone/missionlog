@@ -1,9 +1,33 @@
-.*
-!.editorconfig
-!.gitignore
-!.gitattributes
-!.travis.yml
-.*/
-!.github/
-coverage/
+# Logs
+logs/
+*.log
+
+# Build output
 node_modules/
+dev-dist/
+dist/
+dist-ssr/
+*.local
+.sonarlint
+
+# TypeScript build artifacts
+*.tsbuildinfo
+
+# Editor directories and files
+.vscode/
+!.vscode/launch.json
+!.vscode/tasks.json
+
+# macOS system files
+.DS_Store
+
+# Firebase configuration and environment files
+.firebase/
+service-accounts/
+
+# Environment variables
+.env
+.env.*
+
+# npm configuration
+.npmrc

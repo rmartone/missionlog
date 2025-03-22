@@ -23,12 +23,7 @@ export enum LogLevel {
   OFF = 'OFF',
 }
 
-export type LogCallback = (
-  level: LogLevelStr,
-  tag: string,
-  message: unknown,
-  optionalParams: unknown[],
-) => void;
+export type LogCallback = (level: LogLevelStr, tag: string, message: unknown, optionalParams: unknown[]) => void;
 
 export type LogLevelStr = 'TRACE' | 'DEBUG' | 'INFO' | 'WARN' | 'ERROR' | 'OFF';
 
@@ -76,9 +71,9 @@ export class Log {
           const level = (Level as unknown as Record<string, Level>)[levelStr];
 
           if (key === DEFAULT_TAG) {
-            this._defaultLevel = level;
+            this._defaultLevel = level || Level.INFO;
           } else {
-            this._tagToLevel.set(key, level);
+            this._tagToLevel.set(key, level || Level.DEBUG);
             tagRegistry.add(key);
           }
         } else {
@@ -123,7 +118,7 @@ export class Log {
       LEVEL_STR_MAP.get(level)!,
       tag,
       message,
-      optionalParams.filter((param) => param !== undefined),
+      optionalParams.filter(param => param !== undefined),
     );
   }
 

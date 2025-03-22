@@ -16,7 +16,7 @@ export var LogLevel;
     LogLevel["ERROR"] = "ERROR";
     LogLevel["OFF"] = "OFF";
 })(LogLevel || (LogLevel = {}));
-const DEFAULT_TAG = 'default';
+export const DEFAULT_TAG = '*';
 const tagRegistry = new Set();
 export const tag = new Proxy({}, {
     get(_, prop) {
@@ -51,10 +51,10 @@ export class Log {
                 if (Object.values(LogLevel).includes(levelStr)) {
                     const level = Level[levelStr];
                     if (key === DEFAULT_TAG) {
-                        this._defaultLevel = level;
+                        this._defaultLevel = level || Level.INFO;
                     }
                     else {
-                        this._tagToLevel.set(key, level);
+                        this._tagToLevel.set(key, level || Level.DEBUG);
                         tagRegistry.add(key);
                     }
                 }
@@ -84,15 +84,12 @@ export class Log {
             tag = '';
             message = messageOrTag;
         }
+        if (!message)
+            return;
         const effectiveLevel = this._tagToLevel.get(tag || DEFAULT_TAG) ?? this._defaultLevel;
         if (level < effectiveLevel)
             return;
-        try {
-            this._callback(LEVEL_STR_MAP.get(level), tag, message, optionalParams.filter((param) => param !== undefined));
-        }
-        catch (error) {
-            console.error('Callback error:', error);
-        }
+        this._callback(LEVEL_STR_MAP.get(level), tag, message, optionalParams.filter(param => param !== undefined));
     }
     debug(messageOrTag, ...optionalParams) {
         this._log(Level.DEBUG, messageOrTag, ...optionalParams);
@@ -101,7 +98,6 @@ export class Log {
         this._log(Level.ERROR, messageOrTag, ...optionalParams);
     }
     info(messageOrTag, ...optionalParams) {
-        console.log({ messageOrTag, optionalParams });
         this._log(Level.INFO, messageOrTag, ...optionalParams);
     }
     log(messageOrTag, ...optionalParams) {

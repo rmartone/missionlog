@@ -1,15 +1,33 @@
-# http://editorconfig.org
+# EditorConfig is awesome: https://editorconfig.org
 root = true
 
+# Global settings for all files
 [*]
 charset = utf-8
-end_of_line = lf
-indent_size = 2
 indent_style = space
+indent_size = 2
+end_of_line = lf
 insert_final_newline = true
-max_line_length = 120
 trim_trailing_whitespace = true
+max_line_length = 120
+# Custom property for quote style (used by some tooling)
+quote_type = single
 
-[*.md]
-max_line_length = 0
-trim_trailing_whitespace = false
+# TypeScript files
+[*.ts]
+indent_size = 2
+quote_type = single
+
+# TSX files
+[*.tsx]
+indent_size = 2
+quote_type = single
+
+# JSON files
+[*.json]
+indent_size = 2
+quote_type = double
+
+# HTML files
+[*.html]
+indent_size = 2

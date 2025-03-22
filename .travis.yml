@@ -1,17 +1,17 @@
 sudo: false
 language: node_js
 node_js:
-- "14"
+  - "18"
 branches:
   only:
-  - master
+    - master
 cache:
   directories:
-  - node_modules
+    - node_modules
 before_install:
-- npm upgrade
+  - npm upgrade
 install:
-- npm install
+  - npm install
 script:
-- npm run test
-- npm run coverage
+  - npm run test
+  - npm run coverage
