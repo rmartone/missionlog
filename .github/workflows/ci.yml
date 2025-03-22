@@ -1,0 +1,19 @@
+name: CI (using Travis YAML)
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Travis CI configuration
+        uses: ktomk/run-travis-yml@v1.8.1

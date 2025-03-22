@@ -8,6 +8,7 @@ const commonConfig = {
   sourcemap: true,
   tsconfig: 'tsconfig.json',
   legalComments: "inline",
+  target: ['node18', 'es2022'],
 };
 
 // Async function to run builds

@@ -1,4 +1,19 @@
-*.* linguist-language=TypeScript
-* text=auto
-index.js linguist-generated
-index.d.ts linguist-generated
+# Normalize text files to LF line endings
+* text=auto eol=lf
+
+# Mark generated files (e.g., TPS) as linguist-generated
+*.tps linguist-generated
+
+# Mark image files as binary
+*.png binary
+*.webp binary
+
+# Mark video files as binary
+*.mp4 binary
+
+# Mark audio files as binary
+*.wav binary
+
+# Mark other binary formats (e.g., compressed textures) as binary
+*.pvrtc binary
+*.astc binary

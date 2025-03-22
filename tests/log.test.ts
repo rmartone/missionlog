@@ -1,3 +1,4 @@
+import { describe, test, expect, beforeEach, vi } from 'vitest';
 import { log, tag, DEFAULT_TAG } from '../src/index';
 
 let buffer: string;
@@ -162,6 +163,39 @@ describe('Tag Proxy Behavior', () => {
     const unknownTag = tag.unknownTag;
     expect(unknownTag).toBeUndefined();
   });
+  
+  test('accessing registered tag returns the tag name itself', () => {
+    // The proxy returns the tag name
+    expect(tag.network).toBe('network');
+    expect(tag.loader).toBe('loader');
+    expect(tag.security).toBe('security');
+    expect(tag.system).toBe('system');
+  });
+  
+  test('verifies property descriptor for symbolic property', () => {
+    // Using Symbol to test the proxy's handling of non-string properties
+    const sym = Symbol('test');
+    // @ts-ignore - Testing runtime behavior with Symbol
+    const result = tag[sym];
+    expect(result).toBeUndefined();
+  });
+  
+  test('newly added tags are accessible via proxy', () => {
+    log.init({ newTag: 'INFO' });
+    expect(tag.newTag).toBe('newTag');
+    const keys = Object.keys(tag);
+    expect(keys).toContain('newTag');
+  });
+
+  test('getOwnPropertyDescriptor returns the correct descriptor', () => {
+    const descriptor = Object.getOwnPropertyDescriptor(tag, 'network');
+    expect(descriptor).toEqual({
+      enumerable: true,
+      configurable: true,
+      value: undefined,
+      writable: false
+    });
+  });
 });
 
 describe('Component-level filtering', () => {
@@ -185,7 +219,9 @@ describe('Object logging and invalid levels', () => {
   });
 
   test('handles invalid log levels in init()', () => {
-    console.warn = jest.fn();
+    const originalWarn = console.warn;
+    const mockWarn = vi.fn();
+    console.warn = mockWarn;
 
     log.init({ invalidTag: 'INVALID_LEVEL', [DEFAULT_TAG]: 'INFO' });
 
@@ -194,9 +230,23 @@ describe('Object logging and invalid levels', () => {
 
     expect(buffer).toBe('INFO: [] This should use the default level, Test message');
 
-    expect(console.warn).toHaveBeenCalledWith(
+    expect(mockWarn).toHaveBeenCalledWith(
       'Invalid log level "INVALID_LEVEL" for tag "invalidTag". Using default (INFO).',
     );
+    
+    console.warn = originalWarn;
+  });
+  
+  test('filters undefined params', (): void => {
+    buffer = '';
+    log.info(tag.loader, 'Message with undefined params', undefined, 'visible', undefined);
+    expect(buffer).toBe('INFO: [loader] Message with undefined params, visible');
+  });
+  
+  test('handles multiple primitive params', (): void => {
+    buffer = '';
+    log.info(tag.loader, 'Multiple params', 42, true, 'string');
+    expect(buffer).toBe('INFO: [loader] Multiple params, 42, true, string');
   });
 });
 
@@ -214,6 +264,110 @@ describe('Callback error handling and disabling', () => {
 
     log.warn('system', 'warp core breach');
     expect(buffer).toBe('');
+  });
+  
+  test('init without arguments returns the logger instance', () => {
+    const result = log.init();
+    expect(result).toBe(log);
+  });
+  
+  test('init with empty object returns the logger instance', () => {
+    const result = log.init({});
+    expect(result).toBe(log);
+  });
+});
+
+describe('Enhanced Callback functionality', () => {
+  test('calls enhanced callback with structured data', (): void => {
+    const enhancedCallbackMock = vi.fn();
+    
+    log.init({ [DEFAULT_TAG]: 'INFO' })
+      .setEnhancedCallback(enhancedCallbackMock);
+    
+    const testMessage = 'Test enhanced callback';
+    log.info(testMessage, 'extra param');
+    
+    expect(enhancedCallbackMock).toHaveBeenCalledTimes(1);
+    expect(enhancedCallbackMock).toHaveBeenCalledWith(expect.objectContaining({
+      level: 'INFO',
+      tag: '',
+      message: testMessage,
+      params: ['extra param'],
+      timestamp: expect.any(Date)
+    }));
+  });
+  
+  test('enhanced callback with tagged messages', (): void => {
+    const enhancedCallbackMock = vi.fn();
+    
+    log.init({ network: 'DEBUG', [DEFAULT_TAG]: 'INFO' })
+      .setEnhancedCallback(enhancedCallbackMock);
+    
+    log.debug(tag.network, 'Network debug message', { data: 123 });
+    
+    expect(enhancedCallbackMock).toHaveBeenCalledWith(expect.objectContaining({
+      level: 'DEBUG',
+      tag: 'network',
+      message: 'Network debug message',
+      params: [{ data: 123 }],
+      timestamp: expect.any(Date)
+    }));
+  });
+});
+
+describe('isLevelEnabled method', () => {
+  beforeEach(() => {
+    log.init({
+      network: 'DEBUG',
+      system: 'OFF',
+      [DEFAULT_TAG]: 'INFO'
+    });
+  });
+  
+  test('returns true for enabled levels', () => {
+    expect(log.isLevelEnabled('INFO')).toBe(true);
+    expect(log.isLevelEnabled('WARN')).toBe(true);
+    expect(log.isLevelEnabled('ERROR')).toBe(true);
+    expect(log.isLevelEnabled('DEBUG', 'network')).toBe(true);
+  });
+  
+  test('returns false for disabled levels', () => {
+    expect(log.isLevelEnabled('DEBUG')).toBe(false);
+    expect(log.isLevelEnabled('TRACE')).toBe(false);
+    expect(log.isLevelEnabled('ERROR', 'system')).toBe(false);
+  });
+  
+  test('returns false for invalid level', () => {
+    // @ts-ignore - Testing runtime behavior with invalid input
+    expect(log.isLevelEnabled('INVALID_LEVEL')).toBe(false);
+  });
+});
+
+describe('reset method', () => {
+  test('resets all configuration to defaults', () => {
+    log.init({
+      network: 'TRACE',
+      loader: 'DEBUG',
+      [DEFAULT_TAG]: 'ERROR'
+    });
+    
+    // Verify that the config is applied
+    expect(log.isLevelEnabled('ERROR')).toBe(true);
+    expect(log.isLevelEnabled('INFO')).toBe(false);
+    expect(log.isLevelEnabled('TRACE', 'network')).toBe(true);
+    
+    // Reset the logger
+    log.reset();
+    
+    // Verify default settings are restored (INFO is default level)
+    expect(log.isLevelEnabled('INFO')).toBe(true);
+    expect(log.isLevelEnabled('DEBUG')).toBe(false);
+    expect(log.isLevelEnabled('TRACE', 'network')).toBe(false);
+  });
+  
+  test('reset returns the logger instance for chaining', () => {
+    const result = log.reset();
+    expect(result).toBe(log);
   });
 });
 
@@ -260,5 +414,16 @@ describe('Tag registration and reflection', () => {
       value: undefined,
       writable: false,
     });
+  });
+  
+  test('gets all tag keys correctly', () => {
+    const keys = Object.keys(tag);
+    expect(keys.length).toBeGreaterThan(0);
+    expect(Array.isArray(keys)).toBe(true);
+    // Check that all registered tags are returned by Object.keys
+    expect(keys).toContain('network');
+    expect(keys).toContain('loader');
+    expect(keys).toContain('security');
+    expect(keys).toContain('system');
   });
 });

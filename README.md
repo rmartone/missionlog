@@ -1,106 +1,167 @@
-# missionlog  
+# missionlog
 [![NPM version][npm-image]][npm-url] [![Coverage Status](https://coveralls.io/repos/github/rmartone/missionlog/badge.svg?branch=master)](https://coveralls.io/github/rmartone/missionlog?branch=master)
 
-[npm-image]: https://img.shields.io/npm/v/missionlog.svg?style=flat  
-[npm-url]: https://www.npmjs.com/package/missionlog  
+[npm-image]: https://img.shields.io/npm/v/missionlog.svg?style=flat
+[npm-url]: https://www.npmjs.com/package/missionlog
 
-🚀 **missionlog** is a **lightweight, structured logging package** designed for **performance, flexibility, and ease of use**. It works as a **drop-in replacement for `console.log` or `ts-log`**, and offers both **log level** filtering, optional **tag** filtering, and **customizable output handling**—all in a tiny (~1KB) package.  
+🚀 **missionlog** is a **lightweight, structured logging package** designed for **performance, flexibility, and ease of use**. It works as a **drop-in replacement for `console.log` or `ts-log`**, and offers both **log level** filtering, optional **tag** filtering, and **customizable output handling**—all in a tiny (~1KB) package.
 
-✔ **Fully Typed (TypeScript)** • ✔ **ESM & CJS Support** • ✔ **Zero Dependencies** • ✔ **100% Coverage**   
+✔ **Fully Typed (TypeScript)** • ✔ **ESM & CJS Support** • ✔ **Zero Dependencies** • ✔ **100% Coverage**
 
 ---
 
-## **✨ Why Use `missionlog`?**  
+## **✨ Why Use `missionlog`?**
 
-✅ **Drop-in Replacement for `console.log` & `ts-log`** – Start using it instantly!  
-✅ **Seamless Upgrade to Tagged Logging** – Reduce log clutter and focus on what's important.  
-✅ **Configurable Log Levels** – Adjust visibility for log level and tags at runtime.  
-✅ **Customizable Output** – Send logs anywhere: console, JSON, cloud services.  
-✅ **Blazing Fast Performance** – O(1) log level lookups for minimal overhead.  
-✅ **TypeScript-First** – Full type safety, no need for `@types`.  
-✅ **Works Everywhere** – Browser, Node.js, Firebase, AWS Lambda etc.  
+✅ **Drop-in Replacement for `console.log` & `ts-log`** – Start using it instantly!
 
-## **📦 Installing**  
-```sh  
-npm i missionlog  
+✅ **Seamless Upgrade to Tagged Logging** – Reduce log clutter and focus on what's important.
+
+✅ **Configurable Log Levels** – Adjust visibility for log level and tags at runtime.
+
+✅ **Customizable Output** – Send logs anywhere: console, JSON, cloud services.
+
+✅ **Structured Logging Support** – Enhanced callbacks with timestamp and typed message data.
+
+✅ **Blazing Fast Performance** – O(1) log level lookups with advanced level caching.
+
+✅ **TypeScript-First** – Full type safety with LogMessage and LogConfig interfaces.
+
+✅ **Chainable API** – All methods return the logger instance for method chaining.
+
+✅ **Works Everywhere** – Browser, Node.js, Firebase, AWS Lambda etc.
+
+## **📦 Installing**
+```sh
+npm i missionlog
 ```
 
-## 🎯 **Focus on What Matters, When It Matters**  
-`missionlog` can **filter logs dynamically** by level or tag to avoid clutter and help you focus on what's important. 
+## **🚀 Getting Started**
 
-## **🚀 Example**
+### Basic Usage
+
+Missionlog works as a drop-in replacement for console.log:
 
 ```typescript
-import { DEFAULT_TAG, log, LogLevel, LogLevelStr, tag } from "missionlog";
-import chalk from "chalk";
+import { log } from "missionlog";
 
-// Tags aren't required., This works just like console
-log.error("Alert! Evil twin detected!");
+// Works just like console.log
+log.info("Hello, world!");
+log.warn("Warning message");
+log.error("Error occurred!");
 
-// Use the built-in **"Dummy"** logger and becomes a no-op
-log.info(tag.Engineering, "Engaging warp drive! Destination: The Final Frontier.");
+// Chainable API for fluent logging
+log.debug("Starting process")
+   .info("Process step 1 complete")
+   .warn("Process running slowly");
+```
 
-// Assign tags levels, (TRACE < DEBUG < INFO < WARN < ERROR < OFF)
-log.init({ Engineering: LogLevel.INFO, Transporter: LogLevel.DEBUG });
+### Using Tags for Categorization
 
-// Log with a tag
-log.info(tag.Engineering, "Warp Factor 9!");
+```typescript
+import { log, tag, LogLevel, DEFAULT_TAG } from "missionlog";
 
-// Override the built-in **Dummy** logger with a custom behavior
-log.init({ Engineering: LogLevel.INFO }, createLogHandler());
-
-// Engineering's level is INFO+ so this gets logged!
-log.info(tag.Engineering, "Warp Factor 5.");
-
-// Gets filtered since Engineering is INFO+
-log.debug(tag.Engineering, "Warp Factor 9!");
-
-// Update tag levels and override default (INFO)
+// Configure logging levels for different tags
 log.init({
-  Engineering: LogLevel.TRACE,
-  [DEFAULT_TAG]: LogLevel.ERROR, // used for logs without a tag
-  Transporter: LogLevel.DEBUG,
+  network: LogLevel.DEBUG,
+  ui: LogLevel.INFO,
+  [DEFAULT_TAG]: LogLevel.WARN  // Default level for uncategorized logs
 });
 
-// Log an error
-const error = new Error("Warp core breach!");
-log.error(tag.Engineering, "🚨 Red Alert!", error.message);
+// Log with tags
+log.debug(tag.network, "Connection established");
+log.info(tag.ui, "Component rendered");
 
-// Show some color!
-log.debug(tag.Transporter, "✨ Beam me up, Scotty!");
+// Untagged logs use the DEFAULT_TAG level
+log.debug("This won't be logged because DEFAULT_TAG is WARN");
+log.error("This will be logged because ERROR > WARN");
+```
 
-// Log objects properly
-log.warn(tag.Transporter, "Transporter anomaly detected,", { evilTwin: true });
+### Custom Log Handler
 
-// Replace dummy logger with custom behavior
-function createLogHandler() {
+```typescript
+import { log, LogLevel, LogLevelStr, LogCallbackParams } from "missionlog";
+import chalk from "chalk";
+
+// Create a custom log handler
+function createCustomHandler() {
   const logConfig: Record<
     LogLevelStr,
     { color: (text: string) => string; method: (...args: unknown[]) => void }
   > = {
     ERROR: { color: chalk.red, method: console.error },
     WARN: { color: chalk.yellow, method: console.warn },
-    INFO: { color: chalk.green, method: console.log },
+    INFO: { color: chalk.blue, method: console.log },
     DEBUG: { color: chalk.magenta, method: console.log },
     TRACE: { color: chalk.cyan, method: console.log },
-    OFF: { color: () => '', method: () => {} }, // No-op
+    OFF: { color: () => '', method: () => {} }
   };
 
   return (level: LogLevelStr, tag: string, message: unknown, params: unknown[]) => {
-    const { method, color } = logConfig[level];  
+    const { method, color } = logConfig[level];
     const logLine = `[${color(level)}] ${tag ? tag + ' - ' : ''}${message}`;
     method(logLine, ...params);
   };
 }
+
+// Initialize with custom handler
+log.init(
+  { network: LogLevel.INFO, [DEFAULT_TAG]: LogLevel.INFO },
+  createCustomHandler()
+);
+
+// Enhanced structured logging with timestamps and typed data
+log.setEnhancedCallback((params: LogCallbackParams) => {
+  const { level, tag, message, timestamp, params: extraParams } = params;
+  console.log(
+    `[${timestamp.toISOString()}] [${level}] ${tag ? tag + ' - ' : ''}${message}`,
+    ...extraParams
+  );
+});
+
+// Check if a level is enabled before expensive logging operations
+if (log.isLevelEnabled(LogLevel.DEBUG, 'network')) {
+  // Only perform this expensive operation if DEBUG logs will be shown
+  const stats = getNetworkStatistics(); // Example of an expensive operation
+  log.debug(tag.network, 'Network statistics', stats);
+}
 ```
+
+## **📝 API Reference**
+
+### Log Methods
+
+- `log.trace(messageOrTag?, ...params)` - Lowest verbosity level
+- `log.debug(messageOrTag?, ...params)` - Detailed debugging information
+- `log.info(messageOrTag?, ...params)` - Notable but expected events
+- `log.log(messageOrTag?, ...params)` - Alias for info()
+- `log.warn(messageOrTag?, ...params)` - Potential issues or warnings
+- `log.error(messageOrTag?, ...params)` - Error conditions
+
+### Configuration
+
+- `log.init(config?, callback?)` - Configure log levels and custom handler
+- `log.setEnhancedCallback(callback)` - Set structured logging callback with extended parameters
+- `log.isLevelEnabled(level, tag?)` - Check if a specific level would be logged for a tag
+- `log.reset()` - Clear all tag registrations and configurations
+
+### Log Levels (in order of verbosity)
+
+1. `LogLevel.TRACE` - Most verbose
+2. `LogLevel.DEBUG`
+3. `LogLevel.INFO` - Default level
+4. `LogLevel.WARN`
+5. `LogLevel.ERROR`
+6. `LogLevel.OFF` - No logs
+
+## **🖼️ Example Output**
 
 ![Example Image](example.jpg)
 
 ---
 
-## **📄 License**  
-**MIT License**  
-**© 2019-2025 Ray Martone**  
+## **📄 License**
+**MIT License**
+**© 2019-2025 Ray Martone**
 
 ---
 
