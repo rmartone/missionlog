@@ -1,4 +1,5 @@
 # missionlog
+
 [![NPM version][npm-image]][npm-url] [![Coverage Status](https://coveralls.io/repos/github/rmartone/missionlog/badge.svg?branch=master)](https://coveralls.io/github/rmartone/missionlog?branch=master)
 
 [npm-image]: https://img.shields.io/npm/v/missionlog.svg?style=flat
@@ -31,6 +32,7 @@
 ✅ **Works Everywhere** – Browser, Node.js, Firebase, AWS Lambda etc.
 
 ## **📦 Installing**
+
 ```sh
 npm i missionlog
 ```
@@ -42,58 +44,53 @@ npm i missionlog
 Missionlog works as a drop-in replacement for console.log:
 
 ```typescript
-import { log } from "missionlog";
+import { log } from 'missionlog';
 
 // Works just like console.log
-log.info("Hello, world!");
-log.warn("Warning message");
-log.error("Error occurred!");
+log.info('Hello, world!');
+log.warn('Warning message');
+log.error('Error occurred!');
 
 // Chainable API for fluent logging
-log.debug("Starting process")
-   .info("Process step 1 complete")
-   .warn("Process running slowly");
+log.debug('Starting process').info('Process step 1 complete').warn('Process running slowly');
 ```
 
 ### Using Tags for Categorization
 
 ```typescript
-import { log, tag, LogLevel, DEFAULT_TAG } from "missionlog";
+import { log, tag, LogLevel, DEFAULT_TAG } from 'missionlog';
 
 // Configure logging levels for different tags
 log.init({
   network: LogLevel.DEBUG,
   ui: LogLevel.INFO,
-  [DEFAULT_TAG]: LogLevel.WARN  // Default level for uncategorized logs
+  [DEFAULT_TAG]: LogLevel.WARN, // Default level for uncategorized logs
 });
 
 // Log with tags
-log.debug(tag.network, "Connection established");
-log.info(tag.ui, "Component rendered");
+log.debug(tag.network, 'Connection established');
+log.info(tag.ui, 'Component rendered');
 
 // Untagged logs use the DEFAULT_TAG level
 log.debug("This won't be logged because DEFAULT_TAG is WARN");
-log.error("This will be logged because ERROR > WARN");
+log.error('This will be logged because ERROR > WARN');
 ```
 
 ### Custom Log Handler
 
 ```typescript
-import { log, LogLevel, LogLevelStr, LogCallbackParams } from "missionlog";
-import chalk from "chalk";
+import { log, LogLevel, LogLevelStr, LogCallbackParams } from 'missionlog';
+import chalk from 'chalk';
 
 // Create a custom log handler
 function createCustomHandler() {
-  const logConfig: Record<
-    LogLevelStr,
-    { color: (text: string) => string; method: (...args: unknown[]) => void }
-  > = {
+  const logConfig: Record<LogLevelStr, { color: (text: string) => string; method: (...args: unknown[]) => void }> = {
     ERROR: { color: chalk.red, method: console.error },
     WARN: { color: chalk.yellow, method: console.warn },
     INFO: { color: chalk.blue, method: console.log },
     DEBUG: { color: chalk.magenta, method: console.log },
     TRACE: { color: chalk.cyan, method: console.log },
-    OFF: { color: () => '', method: () => {} }
+    OFF: { color: () => '', method: () => {} },
   };
 
   return (level: LogLevelStr, tag: string, message: unknown, params: unknown[]) => {
@@ -104,25 +101,32 @@ function createCustomHandler() {
 }
 
 // Initialize with custom handler
-log.init(
-  { network: LogLevel.INFO, [DEFAULT_TAG]: LogLevel.INFO },
-  createCustomHandler()
-);
+log.init({ network: LogLevel.INFO, [DEFAULT_TAG]: LogLevel.INFO }, createCustomHandler());
 
 // Enhanced structured logging with timestamps and typed data
 log.setEnhancedCallback((params: LogCallbackParams) => {
   const { level, tag, message, timestamp, params: extraParams } = params;
-  console.log(
-    `[${timestamp.toISOString()}] [${level}] ${tag ? tag + ' - ' : ''}${message}`,
-    ...extraParams
-  );
+  console.log(`[${timestamp.toISOString()}] [${level}] ${tag ? tag + ' - ' : ''}${message}`, ...extraParams);
 });
 
-// Check if a level is enabled before expensive logging operations
-if (log.isLevelEnabled(LogLevel.DEBUG, 'network')) {
-  // Only perform this expensive operation if DEBUG logs will be shown
+// Check if specific levels are enabled before performing expensive operations
+if (log.isDebugEnabled('network')) {
+  // Only perform this expensive operation if DEBUG logs for 'network' will be shown
   const stats = getNetworkStatistics(); // Example of an expensive operation
   log.debug(tag.network, 'Network statistics', stats);
+}
+
+// Similarly for TRACE level
+if (log.isTraceEnabled('ui')) {
+  // Avoid expensive calculations when trace logging is disabled
+  const detailedMetrics = calculateDetailedRenderMetrics();
+  log.trace(tag.ui, 'UI rendering detailed metrics', detailedMetrics);
+}
+
+// The general method is still available for other log levels
+if (log.isLevelEnabled(LogLevel.WARN, 'security')) {
+  const securityCheck = performSecurityAudit();
+  log.warn(tag.security, 'Security audit results', securityCheck);
 }
 ```
 
@@ -142,6 +146,8 @@ if (log.isLevelEnabled(LogLevel.DEBUG, 'network')) {
 - `log.init(config?, callback?)` - Configure log levels and custom handler
 - `log.setEnhancedCallback(callback)` - Set structured logging callback with extended parameters
 - `log.isLevelEnabled(level, tag?)` - Check if a specific level would be logged for a tag
+- `log.isDebugEnabled(tag?)` - Convenience method to check if DEBUG level is enabled for a tag
+- `log.isTraceEnabled(tag?)` - Convenience method to check if TRACE level is enabled for a tag
 - `log.reset()` - Clear all tag registrations and configurations
 
 ### Log Levels (in order of verbosity)
@@ -160,6 +166,7 @@ if (log.isLevelEnabled(LogLevel.DEBUG, 'network')) {
 ---
 
 ## **📄 License**
+
 **MIT License**
 **© 2019-2025 Ray Martone**
 

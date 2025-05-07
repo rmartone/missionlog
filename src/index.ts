@@ -292,6 +292,24 @@ export class Log {
   }
 
   /**
+   * Check if DEBUG level is enabled for a specific tag
+   * @param tag - The tag to check (optional)
+   * @returns Whether DEBUG level is enabled for the tag
+   */
+  public isDebugEnabled(tag: string = DEFAULT_TAG): boolean {
+    return this.isLevelEnabled(LogLevel.DEBUG, tag);
+  }
+
+  /**
+   * Check if TRACE level is enabled for a specific tag
+   * @param tag - The tag to check (optional)
+   * @returns Whether TRACE level is enabled for the tag
+   */
+  public isTraceEnabled(tag: string = DEFAULT_TAG): boolean {
+    return this.isLevelEnabled(LogLevel.TRACE, tag);
+  }
+
+  /**
    * Clear all tag registrations and configurations
    */
   public reset(): this {

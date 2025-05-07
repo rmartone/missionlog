@@ -3,9 +3,9 @@ logs/
 *.log
 
 # Build output
-node_modules/
-dev-dist/
-dist/
+node_modules
+dist
+dev-dist
 dist-ssr/
 *.local
 .sonarlint
