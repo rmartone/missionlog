@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.1.3](https://github.com/rmartone/missionlog/compare/v3.1.3...v3.1.4) (2025-05-13)
+* added updated dev dependencies and README.md
+
+### [3.1.2](https://github.com/rmartone/missionlog/compare/v3.1.1...v3.1.3) (2025-05-07)
+* added isDebugEnabled, isTraceEnabled and isLevelEnabled methods to the log object
+
 ### [3.0.2](https://github.com/rmartone/missionlog/compare/v3.0.1...v3.0.2) (2025-03-02)
 * Updated README sample code
 
@@ -31,7 +37,7 @@ Ensured consistency by replacing hardcoded wildcard values with DEFAULT_TAG.
 
 ## [3.0.0](https://github.com/rmartone/missionlog/compare/v2.0.3...v2.1.0) (2025-03-02)
   * See 3.0.1
-  
+
 ### [2.0.3](https://github.com/rmartone/missionlog/compare/v2.0.2...v2.0.3) (2025-03-01)
   * Updated README.md and keywords
 
