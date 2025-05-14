@@ -7,19 +7,6 @@
 
 ---
 
-## 📚 Table of Contents
-
-- [Why Use missionlog?](#-why-use-missionlog)
-- [Installing](#-installing)
-- [Getting Started](#-getting-started)
-- [Usage Examples](#-usage-examples)
-- [API Reference](#-api-reference)
-- [Example Output](#-example-output)
-- [Contributing](#-contributing)
-- [License](#-license)
-
----
-
 🚀 **missionlog** is a **lightweight, structured logging package** designed for **performance, flexibility, and ease of use**. It works as a **drop-in replacement for `console.log` or `ts-log`**, and offers both **log level** filtering, optional **tag** filtering, and **customizable output handling**—all in a tiny (~1KB) package.
 
 ✔ **Fully Typed (TypeScript)** • ✔ **ESM & CJS Support** • ✔ **Zero Dependencies** • ✔ **100% Coverage**
@@ -180,7 +167,7 @@ if (log.isLevelEnabled(LogLevel.WARN, 'security')) {
 
 ## 🖼️ Example Output
 
-![Example Image](./example.jpg)
+![Example Image](https://github.com/rmartone/missionlog/example.jpg)
 
 ---
 
