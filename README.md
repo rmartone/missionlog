@@ -1,9 +1,24 @@
 # missionlog
 
-[![NPM version][npm-image]][npm-url] [![Coverage Status](https://coveralls.io/repos/github/rmartone/missionlog/badge.svg?branch=master)](https://coveralls.io/github/rmartone/missionlog?branch=master)
+[![NPM version][npm-image]][npm-url] [![Coverage Status](https://coveralls.io/repos/github/rmartone/missionlog/badge.svg?branch=master)](https://coveralls.io/github/rmartone/missionlog?branch=master) ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
 [npm-image]: https://img.shields.io/npm/v/missionlog.svg?style=flat
 [npm-url]: https://www.npmjs.com/package/missionlog
+
+---
+
+## 📚 Table of Contents
+
+- [Why Use missionlog?](#-why-use-missionlog)
+- [Installing](#-installing)
+- [Getting Started](#-getting-started)
+- [Usage Examples](#-usage-examples)
+- [API Reference](#-api-reference)
+- [Example Output](#-example-output)
+- [Contributing](#-contributing)
+- [License](#-license)
+
+---
 
 🚀 **missionlog** is a **lightweight, structured logging package** designed for **performance, flexibility, and ease of use**. It works as a **drop-in replacement for `console.log` or `ts-log`**, and offers both **log level** filtering, optional **tag** filtering, and **customizable output handling**—all in a tiny (~1KB) package.
 
@@ -11,33 +26,29 @@
 
 ---
 
-## **✨ Why Use `missionlog`?**
+## ✨ Why Use `missionlog`?
 
-✅ **Drop-in Replacement for `console.log` & `ts-log`** – Start using it instantly!
+- **Drop-in Replacement for `console.log` & `ts-log`** – Start using it instantly!
+- **Seamless Upgrade to Tagged Logging** – Reduce log clutter and focus on what's important.
+- **Configurable Log Levels** – Adjust visibility for log level and tags at runtime.
+- **Customizable Output** – Send logs anywhere: console, JSON, cloud services.
+- **Structured Logging Support** – Enhanced callbacks with timestamp and typed message data.
+- **Blazing Fast Performance** – O(1) log level lookups with advanced level caching.
+- **TypeScript-First** – Full type safety with LogMessage and LogConfig interfaces.
+- **Chainable API** – All methods return the logger instance for method chaining.
+- **Works Everywhere** – Browser, Node.js, Firebase, AWS Lambda etc.
 
-✅ **Seamless Upgrade to Tagged Logging** – Reduce log clutter and focus on what's important.
+---
 
-✅ **Configurable Log Levels** – Adjust visibility for log level and tags at runtime.
-
-✅ **Customizable Output** – Send logs anywhere: console, JSON, cloud services.
-
-✅ **Structured Logging Support** – Enhanced callbacks with timestamp and typed message data.
-
-✅ **Blazing Fast Performance** – O(1) log level lookups with advanced level caching.
-
-✅ **TypeScript-First** – Full type safety with LogMessage and LogConfig interfaces.
-
-✅ **Chainable API** – All methods return the logger instance for method chaining.
-
-✅ **Works Everywhere** – Browser, Node.js, Firebase, AWS Lambda etc.
-
-## **📦 Installing**
+## 📦 Installing
 
 ```sh
 npm i missionlog
 ```
 
-## **🚀 Getting Started**
+---
+
+## 🚀 Getting Started
 
 ### Basic Usage
 
@@ -54,6 +65,10 @@ log.error('Error occurred!');
 // Chainable API for fluent logging
 log.debug('Starting process').info('Process step 1 complete').warn('Process running slowly');
 ```
+
+---
+
+## 💡 Usage Examples
 
 ### Using Tags for Categorization
 
@@ -76,7 +91,7 @@ log.debug("This won't be logged because DEFAULT_TAG is WARN");
 log.error('This will be logged because ERROR > WARN');
 ```
 
-### Custom Log Handler
+### Custom Log Handler (with Chalk)
 
 ```typescript
 import { log, LogLevel, LogLevelStr, LogCallbackParams } from 'missionlog';
@@ -130,7 +145,9 @@ if (log.isLevelEnabled(LogLevel.WARN, 'security')) {
 }
 ```
 
-## **📝 API Reference**
+---
+
+## 📖 API Reference
 
 ### Log Methods
 
@@ -159,13 +176,21 @@ if (log.isLevelEnabled(LogLevel.WARN, 'security')) {
 5. `LogLevel.ERROR`
 6. `LogLevel.OFF` - No logs
 
-## **🖼️ Example Output**
+---
 
-![Example Image](example.jpg)
+## 🖼️ Example Output
+
+![Example Image](./example.jpg)
 
 ---
 
-## **📄 License**
+## 🤝 Contributing
+
+Contributions, issues, and feature requests are welcome! Feel free to check [issues page](https://github.com/rmartone/missionlog/issues) or submit a pull request.
+
+---
+
+## 📄 License
 
 **MIT License**
 **© 2019-2025 Ray Martone**
