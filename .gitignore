@@ -4,7 +4,6 @@ logs/
 
 # Build output
 node_modules
-coverage/lcov-report/
 dist
 dev-dist
 dist-ssr/
