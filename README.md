@@ -167,7 +167,7 @@ if (log.isLevelEnabled(LogLevel.WARN, 'security')) {
 
 ## 🖼️ Example Output
 
-![Example Image](https://github.com/rmartone/missionlog/example.jpg)
+![Example Image](https://raw.githubusercontent.com/rmartone/missionlog/e267c41e4d36b5523198e8eafcdda2ed203f7941/example.jpg)
 
 ---
 
