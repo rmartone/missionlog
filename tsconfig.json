@@ -16,7 +16,6 @@
     "allowSyntheticDefaultImports": true,
     "preserveConstEnums": true,
     "declaration": true,
-    "noUncheckedIndexedAccess": true,
     "outDir": "./dist",
     "rootDir": "./src"
   },

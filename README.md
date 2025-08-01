@@ -19,7 +19,7 @@
 - **Seamless Upgrade to Tagged Logging** – Reduce log clutter and focus on what's important.
 - **Configurable Log Levels** – Adjust visibility for log level and tags at runtime.
 - **Customizable Output** – Send logs anywhere: console, JSON, cloud services.
-- **Structured Logging Support** – Enhanced callbacks with timestamp and typed message data.
+- **Automatic Buffering** – Log calls before `init()` are automatically buffered and processed once initialized.
 - **Blazing Fast Performance** – O(1) log level lookups with advanced level caching.
 - **TypeScript-First** – Full type safety with LogMessage and LogConfig interfaces.
 - **Chainable API** – All methods return the logger instance for method chaining.
@@ -78,10 +78,41 @@ log.debug("This won't be logged because DEFAULT_TAG is WARN");
 log.error('This will be logged because ERROR > WARN');
 ```
 
+### Automatic Buffering
+
+Missionlog automatically buffers log calls that occur before `init()` is called, ensuring no important logs are lost during application startup:
+
+```typescript
+import { log } from 'missionlog';
+
+// These calls are automatically buffered
+log.info('Application starting...');
+log.debug('Loading configuration');
+log.warn('Using default settings');
+
+// Later in your application startup
+log.init({
+  [DEFAULT_TAG]: 'INFO'
+}, (level, tag, message, params) => {
+  console.log(`[${level}] ${tag ? `[${tag}] ` : ''}${message}`, ...params);
+});
+
+// Output:
+// [INFO] Application starting...
+// [WARN] Using default settings
+// (debug message filtered out based on level)
+```
+
+The buffer automatically:
+- Stores up to 50 log entries before `init()` is called
+- Processes all buffered entries when `init()` is called
+- Respects the configured log levels when draining the buffer
+- Uses a circular buffer (oldest entries are dropped if buffer overflows)
+
 ### Custom Log Handler (with Chalk)
 
 ```typescript
-import { log, LogLevel, LogLevelStr, LogCallbackParams } from 'missionlog';
+import { log, LogLevel, LogLevelStr } from 'missionlog';
 import chalk from 'chalk';
 
 // Create a custom log handler
@@ -104,12 +135,6 @@ function createCustomHandler() {
 
 // Initialize with custom handler
 log.init({ network: LogLevel.INFO, [DEFAULT_TAG]: LogLevel.INFO }, createCustomHandler());
-
-// Enhanced structured logging with timestamps and typed data
-log.setEnhancedCallback((params: LogCallbackParams) => {
-  const { level, tag, message, timestamp, params: extraParams } = params;
-  console.log(`[${timestamp.toISOString()}] [${level}] ${tag ? tag + ' - ' : ''}${message}`, ...extraParams);
-});
 
 // Check if specific levels are enabled before performing expensive operations
 if (log.isDebugEnabled('network')) {
@@ -134,6 +159,34 @@ if (log.isLevelEnabled(LogLevel.WARN, 'security')) {
 
 ---
 
+## ⚠️ Breaking Changes in v4.0.0
+
+### Removed Enhanced Callback
+
+The enhanced callback functionality has been removed to simplify the API:
+
+- ❌ `log.setEnhancedCallback()` method removed
+- ❌ `LogCallbackParams` interface removed
+- ❌ `EnhancedLogCallback` type removed
+
+**Migration:** Use the standard callback in `log.init()` instead:
+
+```typescript
+// ❌ Old way (v3.x)
+log.setEnhancedCallback((params) => {
+  const { level, tag, message, timestamp, params: extraParams } = params;
+  console.log(`[${timestamp.toISOString()}] [${level}] ${message}`, ...extraParams);
+});
+
+// ✅ New way (v4.x)
+log.init({}, (level, tag, message, params) => {
+  const timestamp = new Date().toISOString();
+  console.log(`[${timestamp}] [${level}] ${message}`, ...params);
+});
+```
+
+---
+
 ## 📖 API Reference
 
 ### Log Methods
@@ -148,7 +201,6 @@ if (log.isLevelEnabled(LogLevel.WARN, 'security')) {
 ### Configuration
 
 - `log.init(config?, callback?)` - Configure log levels and custom handler
-- `log.setEnhancedCallback(callback)` - Set structured logging callback with extended parameters
 - `log.isLevelEnabled(level, tag?)` - Check if a specific level would be logged for a tag
 - `log.isDebugEnabled(tag?)` - Convenience method to check if DEBUG level is enabled for a tag
 - `log.isTraceEnabled(tag?)` - Convenience method to check if TRACE level is enabled for a tag

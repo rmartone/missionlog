@@ -16,6 +16,10 @@
  * - Full backward compatibility with existing logging patterns
  */
 
+import { CircularBuffer } from './CircularBuffer';
+
+const MAX_BUFFER = 50;
+
 enum Level {
   TRACE = 1,
   DEBUG,
@@ -37,19 +41,16 @@ export enum LogLevel {
 export type LogLevelStr = 'TRACE' | 'DEBUG' | 'INFO' | 'WARN' | 'ERROR' | 'OFF';
 export type LogMessage = string | number | boolean | object | Error | null | undefined;
 
-export interface LogCallbackParams {
-  level: LogLevelStr;
-  tag: string;
-  message: LogMessage;
-  params: unknown[];
-  timestamp: Date;
-}
-
 export type LogCallback = (level: LogLevelStr, tag: string, message: unknown, optionalParams: unknown[]) => void;
-export type EnhancedLogCallback = (params: LogCallbackParams) => void;
 
 export interface LogConfig {
   [tag: string]: LogLevelStr;
+}
+
+interface BufferedLogEntry {
+  level: Level;
+  messageOrTag?: unknown;
+  optionalParams: unknown[];
 }
 
 export const DEFAULT_TAG = '*';
@@ -102,7 +103,8 @@ export class Log {
   protected readonly _tagToLevel = new Map<string, Level>();
   private readonly _levelCache = new Map<string, boolean>();
   protected _callback?: LogCallback | null;
-  protected _enhancedCallback?: EnhancedLogCallback;
+  private _initialized = false;
+  private readonly _buffer = new CircularBuffer<BufferedLogEntry>(MAX_BUFFER);
 
   /**
    * Initialize the logger with configuration and callback
@@ -123,6 +125,11 @@ export class Log {
     if (callback !== undefined) {
       this._callback = callback;
     }
+
+    this._initialized = true;
+
+    // Drain buffered entries
+    this._drainBuffer();
 
     return this;
   }
@@ -154,12 +161,15 @@ export class Log {
   }
 
   /**
-   * Set an enhanced callback that receives structured log data
-   * @param callback - Enhanced callback function
+   * Drain all buffered log entries
    */
-  setEnhancedCallback(callback: EnhancedLogCallback): this {
-    this._enhancedCallback = callback;
-    return this;
+  private _drainBuffer(): void {
+    const entries = this._buffer.toArray();
+    this._buffer.clear();
+
+    for (const entry of entries) {
+      this._logInternal(entry.level, entry.messageOrTag, ...entry.optionalParams);
+    }
   }
 
   /**
@@ -186,7 +196,24 @@ export class Log {
    * Internal logging implementation
    */
   private _log(level: Level, messageOrTag?: unknown, ...optionalParams: unknown[]): void {
-    if (!this._callback && !this._enhancedCallback) return;
+    // If not initialized, buffer the entry
+    if (!this._initialized) {
+      this._buffer.push({
+        level,
+        messageOrTag,
+        optionalParams,
+      });
+      return;
+    }
+
+    this._logInternal(level, messageOrTag, ...optionalParams);
+  }
+
+  /**
+   * Internal logging implementation (extracted for reuse)
+   */
+  private _logInternal(level: Level, messageOrTag?: unknown, ...optionalParams: unknown[]): void {
+    if (!this._callback) return;
     if (messageOrTag === undefined) return;
 
     let tag: string = '';
@@ -209,20 +236,9 @@ export class Log {
     const filteredParams = optionalParams.filter(param => param !== undefined);
     const levelStr = LEVEL_STR_MAP.get(level)!;
 
-    // Call legacy callback for backward compatibility
+    // Call callback
     if (this._callback) {
       this._callback(levelStr, tag, message, filteredParams);
-    }
-
-    // Call enhanced callback with structured data if available
-    if (this._enhancedCallback) {
-      this._enhancedCallback({
-        level: levelStr,
-        tag,
-        message: message as LogMessage,
-        params: filteredParams,
-        timestamp: new Date(),
-      });
     }
   }
 
@@ -316,6 +332,9 @@ export class Log {
     this._tagToLevel.clear();
     this._levelCache.clear();
     this._defaultLevel = Level.INFO;
+    this._initialized = false;
+    this._buffer.clear();
+    tagRegistry.clear();
     return this;
   }
 }

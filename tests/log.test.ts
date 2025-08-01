@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { CircularBuffer } from '../src/CircularBuffer';
 import { DEFAULT_TAG, log, tag } from '../src/index';
 
 let buffer: string;
@@ -277,46 +278,6 @@ describe('Callback error handling and disabling', () => {
   });
 });
 
-describe('Enhanced Callback functionality', () => {
-  test('calls enhanced callback with structured data', (): void => {
-    const enhancedCallbackMock = vi.fn();
-
-    log.init({ [DEFAULT_TAG]: 'INFO' }).setEnhancedCallback(enhancedCallbackMock);
-
-    const testMessage = 'Test enhanced callback';
-    log.info(testMessage, 'extra param');
-
-    expect(enhancedCallbackMock).toHaveBeenCalledTimes(1);
-    expect(enhancedCallbackMock).toHaveBeenCalledWith(
-      expect.objectContaining({
-        level: 'INFO',
-        tag: '',
-        message: testMessage,
-        params: ['extra param'],
-        timestamp: expect.any(Date),
-      }),
-    );
-  });
-
-  test('enhanced callback with tagged messages', (): void => {
-    const enhancedCallbackMock = vi.fn();
-
-    log.init({ network: 'DEBUG', [DEFAULT_TAG]: 'INFO' }).setEnhancedCallback(enhancedCallbackMock);
-
-    log.debug(tag.network, 'Network debug message', { data: 123 });
-
-    expect(enhancedCallbackMock).toHaveBeenCalledWith(
-      expect.objectContaining({
-        level: 'DEBUG',
-        tag: 'network',
-        message: 'Network debug message',
-        params: [{ data: 123 }],
-        timestamp: expect.any(Date),
-      }),
-    );
-  });
-});
-
 describe('isLevelEnabled method', () => {
   beforeEach(() => {
     log.init({
@@ -389,6 +350,36 @@ describe('reset method', () => {
     const result = log.reset();
     expect(result).toBe(log);
   });
+
+  test('reset clears tag registrations', () => {
+    // Initialize with some tags
+    log.init({
+      network: 'DEBUG',
+      ui: 'INFO',
+      security: 'ERROR',
+    });
+
+    // Verify tags are registered
+    expect(tag.network).toBe('network');
+    expect(tag.ui).toBe('ui');
+    expect(tag.security).toBe('security');
+
+    const keysBeforeReset = Object.keys(tag);
+    expect(keysBeforeReset).toContain('network');
+    expect(keysBeforeReset).toContain('ui');
+    expect(keysBeforeReset).toContain('security');
+
+    // Reset should clear tag registrations
+    log.reset();
+
+    // Verify tags are no longer registered
+    expect(tag.network).toBeUndefined();
+    expect(tag.ui).toBeUndefined();
+    expect(tag.security).toBeUndefined();
+
+    const keysAfterReset = Object.keys(tag);
+    expect(keysAfterReset).toEqual([]);
+  });
 });
 
 describe('Tag registration and reflection', () => {
@@ -445,5 +436,279 @@ describe('Tag registration and reflection', () => {
     expect(keys).toContain('loader');
     expect(keys).toContain('security');
     expect(keys).toContain('system');
+  });
+});
+
+describe('CircularBuffer', () => {
+  test('creates buffer with correct capacity', () => {
+    const buffer = new CircularBuffer<string>(5);
+    expect(buffer.capacity).toBe(5);
+    expect(buffer.count).toBe(0);
+  });
+
+  test('pushes items and maintains count', () => {
+    const buffer = new CircularBuffer<string>(3);
+    buffer.push('item1');
+    expect(buffer.count).toBe(1);
+
+    buffer.push('item2');
+    expect(buffer.count).toBe(2);
+
+    buffer.push('item3');
+    expect(buffer.count).toBe(3);
+  });
+
+  test('overwrites oldest items when full', () => {
+    const buffer = new CircularBuffer<string>(2);
+    buffer.push('item1');
+    buffer.push('item2');
+    buffer.push('item3'); // Should overwrite item1
+
+    expect(buffer.count).toBe(2);
+    expect(buffer.get(0)).toBe('item2'); // Oldest item now
+    expect(buffer.get(1)).toBe('item3'); // Newest item
+  });
+
+  test('get returns correct items by index', () => {
+    const buffer = new CircularBuffer<string>(3);
+    buffer.push('first');
+    buffer.push('second');
+    buffer.push('third');
+
+    expect(buffer.get(0)).toBe('first');
+    expect(buffer.get(1)).toBe('second');
+    expect(buffer.get(2)).toBe('third');
+  });
+
+  test('get returns null for invalid indices', () => {
+    const buffer = new CircularBuffer<string>(3);
+    buffer.push('item');
+
+    expect(buffer.get(-1)).toBe(null);
+    expect(buffer.get(5)).toBe(null);
+    expect(buffer.get(1)).toBe(null); // Only one item at index 0
+  });
+
+  test('getLatest returns most recent item', () => {
+    const buffer = new CircularBuffer<string>(3);
+    expect(buffer.getLatest()).toBe(null); // Empty buffer
+
+    buffer.push('first');
+    expect(buffer.getLatest()).toBe('first');
+
+    buffer.push('second');
+    expect(buffer.getLatest()).toBe('second');
+  });
+
+  test('getPrevious returns second most recent item', () => {
+    const buffer = new CircularBuffer<string>(3);
+    expect(buffer.getPrevious()).toBe(null); // Empty buffer
+
+    buffer.push('first');
+    expect(buffer.getPrevious()).toBe(null); // Only one item
+
+    buffer.push('second');
+    expect(buffer.getPrevious()).toBe('first');
+
+    buffer.push('third');
+    expect(buffer.getPrevious()).toBe('second');
+  });
+
+  test('toArray returns all items in order', () => {
+    const buffer = new CircularBuffer<string>(3);
+    expect(buffer.toArray()).toEqual([]);
+
+    buffer.push('first');
+    buffer.push('second');
+    expect(buffer.toArray()).toEqual(['first', 'second']);
+
+    buffer.push('third');
+    expect(buffer.toArray()).toEqual(['first', 'second', 'third']);
+  });
+
+  test('toArray with wraparound', () => {
+    const buffer = new CircularBuffer<string>(2);
+    buffer.push('first');
+    buffer.push('second');
+    buffer.push('third'); // Overwrites 'first'
+
+    expect(buffer.toArray()).toEqual(['second', 'third']);
+  });
+
+  test('clear resets buffer', () => {
+    const buffer = new CircularBuffer<string>(3);
+    buffer.push('item1');
+    buffer.push('item2');
+
+    expect(buffer.count).toBe(2);
+
+    buffer.clear();
+
+    expect(buffer.count).toBe(0);
+    expect(buffer.getLatest()).toBe(null);
+    expect(buffer.toArray()).toEqual([]);
+  });
+
+  test('works with different data types', () => {
+    const numberBuffer = new CircularBuffer<number>(2);
+    numberBuffer.push(42);
+    numberBuffer.push(100);
+    expect(numberBuffer.getLatest()).toBe(100);
+
+    const objectBuffer = new CircularBuffer<{ id: number }>(2);
+    const obj1 = { id: 1 };
+    const obj2 = { id: 2 };
+    objectBuffer.push(obj1);
+    objectBuffer.push(obj2);
+    expect(objectBuffer.getLatest()).toBe(obj2);
+  });
+
+  test('handles undefined values gracefully', () => {
+    const buffer = new CircularBuffer<string | undefined>(3);
+    buffer.push('first');
+    buffer.push(undefined);
+    buffer.push('third');
+
+    expect(buffer.get(0)).toBe('first');
+    expect(buffer.get(1)).toBe(null); // undefined should be converted to null
+    expect(buffer.get(2)).toBe('third');
+
+    // Test getLatest and getPrevious with undefined
+    expect(buffer.getLatest()).toBe('third');
+    expect(buffer.getPrevious()).toBe(null); // Second most recent was undefined, should return null
+
+    // Test when latest is undefined
+    buffer.push(undefined);
+    expect(buffer.getLatest()).toBe(null); // Latest is undefined, should return null
+  });
+});
+
+describe('Buffering functionality', () => {
+  let logBuffer: string[] = [];
+
+  beforeEach(() => {
+    logBuffer = [];
+    log.reset(); // Ensure we start in uninitialized state
+  });
+
+  test('buffers log calls before initialization', () => {
+    // Log some messages before init
+    log.info('First buffered message');
+    log.warn('testTag', 'Second buffered message');
+    log.error('Third buffered message');
+
+    // Initialize with callback
+    log.init(
+      {
+        testTag: 'TRACE',
+        [DEFAULT_TAG]: 'INFO',
+      },
+      (level, tag, message, params) => {
+        logBuffer.push(`${level}: [${tag}] ${message}${params.length ? `, ${params.join(', ')}` : ''}`);
+      },
+    );
+
+    // Verify buffered messages were processed
+    expect(logBuffer).toEqual([
+      'INFO: [] First buffered message',
+      'WARN: [testTag] Second buffered message',
+      'ERROR: [] Third buffered message',
+    ]);
+  });
+
+  test('processes immediate messages after initialization', () => {
+    // Initialize first
+    log.init({ [DEFAULT_TAG]: 'INFO' }, (level, tag, message, params) => {
+      logBuffer.push(`${level}: [${tag}] ${message}${params.length ? `, ${params.join(', ')}` : ''}`);
+    });
+
+    // Clear any existing messages
+    logBuffer = [];
+
+    // Log messages after init
+    log.info('Immediate message');
+    log.warn('Another immediate message');
+
+    expect(logBuffer).toEqual(['INFO: [] Immediate message', 'WARN: [] Another immediate message']);
+  });
+
+  test('handles buffer overflow gracefully', () => {
+    // Generate more than MAX_BUFFER (50) messages
+    for (let i = 0; i < 60; i++) {
+      log.info(`Message ${i}`);
+    }
+
+    // Initialize and capture what was buffered
+    log.init({ [DEFAULT_TAG]: 'INFO' }, (level, tag, message, params) => {
+      logBuffer.push(`${level}: [${tag}] ${message}${params.length ? `, ${params.join(', ')}` : ''}`);
+    });
+
+    // Should only have the last 50 messages
+    expect(logBuffer.length).toBe(50);
+    expect(logBuffer[0]).toBe('INFO: [] Message 10'); // First 10 were dropped
+    expect(logBuffer[49]).toBe('INFO: [] Message 59'); // Last message
+  });
+
+  test('buffers different log levels', () => {
+    log.trace('Trace message');
+    log.debug('Debug message');
+    log.info('Info message');
+    log.warn('Warn message');
+    log.error('Error message');
+
+    log.init({ [DEFAULT_TAG]: 'TRACE' }, (level, tag, message, params) => {
+      logBuffer.push(`${level}: [${tag}] ${message}`);
+    });
+
+    expect(logBuffer).toEqual([
+      'TRACE: [] Trace message',
+      'DEBUG: [] Debug message',
+      'INFO: [] Info message',
+      'WARN: [] Warn message',
+      'ERROR: [] Error message',
+    ]);
+  });
+
+  test('respects log levels when draining buffer', () => {
+    log.trace('Filtered trace');
+    log.debug('Filtered debug');
+    log.info('Allowed info');
+    log.warn('Allowed warn');
+
+    // Initialize with INFO level (should filter out trace and debug)
+    log.init({ [DEFAULT_TAG]: 'INFO' }, (level, tag, message, params) => {
+      logBuffer.push(`${level}: [${tag}] ${message}`);
+    });
+
+    expect(logBuffer).toEqual(['INFO: [] Allowed info', 'WARN: [] Allowed warn']);
+  });
+
+  test('handles empty messages in buffer', () => {
+    log.info(''); // Empty message
+    log.info(); // Undefined message
+    log.info('Valid message');
+
+    log.init({ [DEFAULT_TAG]: 'INFO' }, (level, tag, message, params) => {
+      logBuffer.push(`${level}: [${tag}] ${message}`);
+    });
+
+    // Only the valid message should be logged
+    expect(logBuffer).toEqual(['INFO: [] Valid message']);
+  });
+
+  test('reset clears buffer and resets initialization state', () => {
+    log.info('Buffered message');
+
+    log.reset();
+
+    // Try to log again before re-initializing
+    log.info('Another buffered message');
+
+    log.init({ [DEFAULT_TAG]: 'INFO' }, (level, tag, message, params) => {
+      logBuffer.push(`${level}: [${tag}] ${message}`);
+    });
+
+    // Should only have the message logged after reset
+    expect(logBuffer).toEqual(['INFO: [] Another buffered message']);
   });
 });
