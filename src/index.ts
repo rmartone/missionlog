@@ -16,8 +16,6 @@
  * - Full backward compatibility with existing logging patterns
  */
 
-import { CircularBuffer } from './CircularBuffer';
-
 const MAX_BUFFER = 50;
 
 enum Level {
@@ -104,7 +102,7 @@ export class Log {
   private readonly _levelCache = new Map<string, boolean>();
   protected _callback?: LogCallback | null;
   private _initialized = false;
-  private readonly _buffer = new CircularBuffer<BufferedLogEntry>(MAX_BUFFER);
+  private readonly _buffer: BufferedLogEntry[] = [];
 
   /**
    * Initialize the logger with configuration and callback
@@ -164,8 +162,8 @@ export class Log {
    * Drain all buffered log entries
    */
   private _drainBuffer(): void {
-    const entries = this._buffer.toArray();
-    this._buffer.clear();
+    const entries = [...this._buffer]; // Create a copy of the array
+    this._buffer.length = 0; // Clear the array
 
     for (const entry of entries) {
       this._logInternal(entry.level, entry.messageOrTag, ...entry.optionalParams);
@@ -196,13 +194,15 @@ export class Log {
    * Internal logging implementation
    */
   private _log(level: Level, messageOrTag?: unknown, ...optionalParams: unknown[]): void {
-    // If not initialized, buffer the entry
+    // If not initialized, buffer the entry (up to MAX_BUFFER)
     if (!this._initialized) {
-      this._buffer.push({
-        level,
-        messageOrTag,
-        optionalParams,
-      });
+      if (this._buffer.length < MAX_BUFFER) {
+        this._buffer.push({
+          level,
+          messageOrTag,
+          optionalParams,
+        });
+      }
       return;
     }
 
@@ -333,7 +333,7 @@ export class Log {
     this._levelCache.clear();
     this._defaultLevel = Level.INFO;
     this._initialized = false;
-    this._buffer.clear();
+    this._buffer.length = 0;
     tagRegistry.clear();
     return this;
   }

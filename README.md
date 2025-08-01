@@ -104,10 +104,9 @@ log.init({
 ```
 
 The buffer automatically:
-- Stores up to 50 log entries before `init()` is called
+- Can store up to 50 log entries before `init()` is called
 - Processes all buffered entries when `init()` is called
 - Respects the configured log levels when draining the buffer
-- Uses a circular buffer (oldest entries are dropped if buffer overflows)
 
 ### Custom Log Handler (with Chalk)
 

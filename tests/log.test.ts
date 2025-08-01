@@ -1,5 +1,4 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { CircularBuffer } from '../src/CircularBuffer';
 import { DEFAULT_TAG, log, tag } from '../src/index';
 
 let buffer: string;
@@ -439,150 +438,6 @@ describe('Tag registration and reflection', () => {
   });
 });
 
-describe('CircularBuffer', () => {
-  test('creates buffer with correct capacity', () => {
-    const buffer = new CircularBuffer<string>(5);
-    expect(buffer.capacity).toBe(5);
-    expect(buffer.count).toBe(0);
-  });
-
-  test('pushes items and maintains count', () => {
-    const buffer = new CircularBuffer<string>(3);
-    buffer.push('item1');
-    expect(buffer.count).toBe(1);
-
-    buffer.push('item2');
-    expect(buffer.count).toBe(2);
-
-    buffer.push('item3');
-    expect(buffer.count).toBe(3);
-  });
-
-  test('overwrites oldest items when full', () => {
-    const buffer = new CircularBuffer<string>(2);
-    buffer.push('item1');
-    buffer.push('item2');
-    buffer.push('item3'); // Should overwrite item1
-
-    expect(buffer.count).toBe(2);
-    expect(buffer.get(0)).toBe('item2'); // Oldest item now
-    expect(buffer.get(1)).toBe('item3'); // Newest item
-  });
-
-  test('get returns correct items by index', () => {
-    const buffer = new CircularBuffer<string>(3);
-    buffer.push('first');
-    buffer.push('second');
-    buffer.push('third');
-
-    expect(buffer.get(0)).toBe('first');
-    expect(buffer.get(1)).toBe('second');
-    expect(buffer.get(2)).toBe('third');
-  });
-
-  test('get returns null for invalid indices', () => {
-    const buffer = new CircularBuffer<string>(3);
-    buffer.push('item');
-
-    expect(buffer.get(-1)).toBe(null);
-    expect(buffer.get(5)).toBe(null);
-    expect(buffer.get(1)).toBe(null); // Only one item at index 0
-  });
-
-  test('getLatest returns most recent item', () => {
-    const buffer = new CircularBuffer<string>(3);
-    expect(buffer.getLatest()).toBe(null); // Empty buffer
-
-    buffer.push('first');
-    expect(buffer.getLatest()).toBe('first');
-
-    buffer.push('second');
-    expect(buffer.getLatest()).toBe('second');
-  });
-
-  test('getPrevious returns second most recent item', () => {
-    const buffer = new CircularBuffer<string>(3);
-    expect(buffer.getPrevious()).toBe(null); // Empty buffer
-
-    buffer.push('first');
-    expect(buffer.getPrevious()).toBe(null); // Only one item
-
-    buffer.push('second');
-    expect(buffer.getPrevious()).toBe('first');
-
-    buffer.push('third');
-    expect(buffer.getPrevious()).toBe('second');
-  });
-
-  test('toArray returns all items in order', () => {
-    const buffer = new CircularBuffer<string>(3);
-    expect(buffer.toArray()).toEqual([]);
-
-    buffer.push('first');
-    buffer.push('second');
-    expect(buffer.toArray()).toEqual(['first', 'second']);
-
-    buffer.push('third');
-    expect(buffer.toArray()).toEqual(['first', 'second', 'third']);
-  });
-
-  test('toArray with wraparound', () => {
-    const buffer = new CircularBuffer<string>(2);
-    buffer.push('first');
-    buffer.push('second');
-    buffer.push('third'); // Overwrites 'first'
-
-    expect(buffer.toArray()).toEqual(['second', 'third']);
-  });
-
-  test('clear resets buffer', () => {
-    const buffer = new CircularBuffer<string>(3);
-    buffer.push('item1');
-    buffer.push('item2');
-
-    expect(buffer.count).toBe(2);
-
-    buffer.clear();
-
-    expect(buffer.count).toBe(0);
-    expect(buffer.getLatest()).toBe(null);
-    expect(buffer.toArray()).toEqual([]);
-  });
-
-  test('works with different data types', () => {
-    const numberBuffer = new CircularBuffer<number>(2);
-    numberBuffer.push(42);
-    numberBuffer.push(100);
-    expect(numberBuffer.getLatest()).toBe(100);
-
-    const objectBuffer = new CircularBuffer<{ id: number }>(2);
-    const obj1 = { id: 1 };
-    const obj2 = { id: 2 };
-    objectBuffer.push(obj1);
-    objectBuffer.push(obj2);
-    expect(objectBuffer.getLatest()).toBe(obj2);
-  });
-
-  test('handles undefined values gracefully', () => {
-    const buffer = new CircularBuffer<string | undefined>(3);
-    buffer.push('first');
-    buffer.push(undefined);
-    buffer.push('third');
-
-    expect(buffer.get(0)).toBe('first');
-    expect(buffer.get(1)).toBe(null); // undefined should be converted to null
-    expect(buffer.get(2)).toBe('third');
-
-    // Test getLatest and getPrevious with undefined
-    expect(buffer.getLatest()).toBe('third');
-    expect(buffer.getPrevious()).toBe(null); // Second most recent was undefined, should return null
-
-    // Test when latest is undefined
-    buffer.push(undefined);
-    expect(buffer.getLatest()).toBe(null); // Latest is undefined, should return null
-  });
-});
-
 describe('Buffering functionality', () => {
   let logBuffer: string[] = [];
 
@@ -643,10 +498,10 @@ describe('Buffering functionality', () => {
       logBuffer.push(`${level}: [${tag}] ${message}${params.length ? `, ${params.join(', ')}` : ''}`);
     });
 
-    // Should only have the last 50 messages
+    // Should only have the first 50 messages (we stop appending after MAX_BUFFER)
     expect(logBuffer.length).toBe(50);
-    expect(logBuffer[0]).toBe('INFO: [] Message 10'); // First 10 were dropped
-    expect(logBuffer[49]).toBe('INFO: [] Message 59'); // Last message
+    expect(logBuffer[0]).toBe('INFO: [] Message 0'); // First message
+    expect(logBuffer[49]).toBe('INFO: [] Message 49'); // 50th message (last one buffered)
   });
 
   test('buffers different log levels', () => {
