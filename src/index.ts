@@ -3,21 +3,13 @@
  * @author Ray Martone
  * @copyright Copyright (c) 2019-2025 Ray Martone
  * @license MIT
- * @description A lightweight TypeScript logger providing level-based filtering and tagging capabilities.
- * missionlog is designed as a drop-in replacement for console.log with additional features for
- * categorizing and filtering logs by severity levels and custom tags.
- *
- * Key features:
- * - Type safety with LogMessage and LogConfig interfaces
- * - Performance optimizations with level caching
- * - Enhanced API with structured logging support via EnhancedLogCallback
- * - Fully chainable API with all methods returning the logger instance
- * - Level checking with isLevelEnabled() and configuration reset()
- * - Full backward compatibility with existing logging patterns
+ * @description A lightweight TypeScript logger with level-based filtering and tagging.
+ * Drop-in replacement for console.log with additional categorization and filtering capabilities.
  */
 
-const MAX_BUFFER = 50;
-
+/**
+ * Internal log levels enum
+ */
 enum Level {
   TRACE = 1,
   DEBUG,
@@ -27,6 +19,9 @@ enum Level {
   OFF,
 }
 
+/**
+ * Public log levels enum for external use
+ */
 export enum LogLevel {
   TRACE = 'TRACE',
   DEBUG = 'DEBUG',
@@ -36,27 +31,27 @@ export enum LogLevel {
   OFF = 'OFF',
 }
 
+/** Valid log level strings */
 export type LogLevelStr = 'TRACE' | 'DEBUG' | 'INFO' | 'WARN' | 'ERROR' | 'OFF';
+
+/** Supported message types for logging */
 export type LogMessage = string | number | boolean | object | Error | null | undefined;
 
+/** Callback function invoked for each log message */
 export type LogCallback = (level: LogLevelStr, tag: string, message: unknown, optionalParams: unknown[]) => void;
 
+/** Configuration mapping tags to log levels */
 export interface LogConfig {
   [tag: string]: LogLevelStr;
 }
 
-interface BufferedLogEntry {
-  level: Level;
-  messageOrTag?: unknown;
-  optionalParams: unknown[];
-}
-
+/** Default tag used for untagged logging and wildcard configuration */
 export const DEFAULT_TAG = '*';
 const tagRegistry = new Set<string>();
 
 /**
- * Proxy object for type-safe tag access
- * Provides autocompletion and validation for registered tags
+ * Proxy for type-safe tag access with runtime validation.
+ * Returns the tag name if registered, undefined otherwise.
  */
 export const tag: Record<string, string> = new Proxy(
   {},
@@ -76,7 +71,7 @@ export const tag: Record<string, string> = new Proxy(
   },
 );
 
-// Map to convert numeric Level enum to string representation
+// Level enum to string conversion
 const LEVEL_STR_MAP = new Map<Level, LogLevelStr>([
   [Level.TRACE, 'TRACE'],
   [Level.DEBUG, 'DEBUG'],
@@ -86,7 +81,7 @@ const LEVEL_STR_MAP = new Map<Level, LogLevelStr>([
   [Level.OFF, 'OFF'],
 ]);
 
-// Map to convert string level to numeric Level enum
+// String to level enum conversion
 const STR_TO_LEVEL_MAP = new Map<LogLevelStr, Level>([
   ['TRACE', Level.TRACE],
   ['DEBUG', Level.DEBUG],
@@ -96,21 +91,26 @@ const STR_TO_LEVEL_MAP = new Map<LogLevelStr, Level>([
   ['OFF', Level.OFF],
 ]);
 
+const DEFAULT_LEVEL = Level.INFO;
+const FALLBACK_LEVEL = Level.DEBUG;
+const EMPTY_ARRAY: readonly unknown[] = [];
+
+/**
+ * Main logging class with level-based filtering and tagging support
+ */
 export class Log {
-  private _defaultLevel: Level = Level.INFO;
+  private _defaultLevel: Level = DEFAULT_LEVEL;
   protected readonly _tagToLevel = new Map<string, Level>();
-  private readonly _levelCache = new Map<string, boolean>();
+  private readonly _levelCache = new Map<Level, Map<string, boolean>>();
   protected _callback?: LogCallback | null;
-  private _initialized = false;
-  private readonly _buffer: BufferedLogEntry[] = [];
 
   /**
-   * Initialize the logger with configuration and callback
+   * Initialize logger with tag levels and callback
    * @param config - Map of tags to log levels
    * @param callback - Callback function for log processing
+   * @returns this for method chaining
    */
   init(config?: Record<string, string> | LogConfig, callback?: LogCallback | null): this {
-    // Clear caches when configuration changes
     this._levelCache.clear();
 
     if (config) {
@@ -124,21 +124,13 @@ export class Log {
       this._callback = callback;
     }
 
-    this._initialized = true;
-
-    // Drain buffered entries
-    this._drainBuffer();
-
     return this;
   }
 
   /**
-   * Set the log level for a specific tag
-   * @param tag - The tag to set the level for
-   * @param levelStr - The log level as a string
+   * Set log level for a tag
    */
   private _setTagLevel(tag: string, levelStr: LogLevelStr): void {
-    // Use direct map lookup instead of Object.values + includes
     const level = STR_TO_LEVEL_MAP.get(levelStr);
 
     if (level !== undefined) {
@@ -152,41 +144,31 @@ export class Log {
       console.warn(
         `Invalid log level "${levelStr}" for tag "${tag}". Using default (${LEVEL_STR_MAP.get(this._defaultLevel)}).`,
       );
-      // Use DEBUG as fallback level for invalid configurations
-      this._tagToLevel.set(tag, Level.DEBUG);
+      this._tagToLevel.set(tag, FALLBACK_LEVEL);
       tagRegistry.add(tag);
     }
   }
 
   /**
-   * Drain all buffered log entries
-   */
-  private _drainBuffer(): void {
-    const entries = [...this._buffer]; // Create a copy of the array
-    this._buffer.length = 0; // Clear the array
-
-    for (const entry of entries) {
-      this._logInternal(entry.level, entry.messageOrTag, ...entry.optionalParams);
-    }
-  }
-
-  /**
-   * Check if a message should be logged based on level and tag
-   * @param level - The log level
-   * @param tag - The log tag
+   * Check if logging is enabled for level and tag (cached)
    */
   private _shouldLog(level: Level, tag: string): boolean {
-    // Use cache to avoid repeated lookups and comparisons
-    const cacheKey = `${level}:${tag || DEFAULT_TAG}`;
-    if (this._levelCache.has(cacheKey)) {
-      return this._levelCache.get(cacheKey)!;
+    let levelMap = this._levelCache.get(level);
+    if (!levelMap) {
+      levelMap = new Map<string, boolean>();
+      this._levelCache.set(level, levelMap);
     }
 
-    const effectiveLevel = this._tagToLevel.get(tag || DEFAULT_TAG) ?? this._defaultLevel;
+    const normalizedTag = tag || DEFAULT_TAG;
+    const cached = levelMap.get(normalizedTag);
+    if (cached !== undefined) {
+      return cached;
+    }
+
+    const effectiveLevel = this._tagToLevel.get(normalizedTag) ?? this._defaultLevel;
     const shouldLog = level >= effectiveLevel;
 
-    // Cache the result
-    this._levelCache.set(cacheKey, shouldLog);
+    levelMap.set(normalizedTag, shouldLog);
     return shouldLog;
   }
 
@@ -194,57 +176,38 @@ export class Log {
    * Internal logging implementation
    */
   private _log(level: Level, messageOrTag?: unknown, ...optionalParams: unknown[]): void {
-    // If not initialized, buffer the entry (up to MAX_BUFFER)
-    if (!this._initialized) {
-      if (this._buffer.length < MAX_BUFFER) {
-        this._buffer.push({
-          level,
-          messageOrTag,
-          optionalParams,
-        });
-      }
-      return;
-    }
+    if (!this._callback || messageOrTag === undefined) return;
 
-    this._logInternal(level, messageOrTag, ...optionalParams);
-  }
-
-  /**
-   * Internal logging implementation (extracted for reuse)
-   */
-  private _logInternal(level: Level, messageOrTag?: unknown, ...optionalParams: unknown[]): void {
-    if (!this._callback) return;
-    if (messageOrTag === undefined) return;
-
-    let tag: string = '';
+    let tag: string;
     let message: unknown;
+    let params: unknown[];
 
-    // Handle tag-based logging
     if (typeof messageOrTag === 'string' && tagRegistry.has(messageOrTag)) {
       tag = messageOrTag;
-      message = optionalParams[0] ?? '';
-      optionalParams = optionalParams.slice(1);
+      message = optionalParams[0];
+      params = optionalParams.slice(1);
     } else {
+      tag = DEFAULT_TAG;
       message = messageOrTag;
+      params = optionalParams;
     }
 
-    // Skip if message is undefined, empty, or if level is filtered
     if (message === undefined || message === '') return;
     if (!this._shouldLog(level, tag)) return;
 
-    // Filter out undefined parameters
-    const filteredParams = optionalParams.filter(param => param !== undefined);
+    const filteredParams = params.length > 0 ? params.filter(param => param !== undefined) : (EMPTY_ARRAY as unknown[]);
+
     const levelStr = LEVEL_STR_MAP.get(level)!;
 
-    // Call callback
-    if (this._callback) {
-      this._callback(levelStr, tag, message, filteredParams);
-    }
+    const outputTag = tag === DEFAULT_TAG ? '' : tag;
+    this._callback(levelStr, outputTag, message, filteredParams);
   }
 
   /**
    * Log a message at DEBUG level
-   * @returns this for chaining
+   * @param messageOrTag - Message to log, or tag if second parameter is provided
+   * @param optionalParams - Additional parameters to log
+   * @returns this for method chaining
    */
   public debug(messageOrTag?: unknown, ...optionalParams: unknown[]): this {
     this._log(Level.DEBUG, messageOrTag, ...optionalParams);
@@ -253,7 +216,9 @@ export class Log {
 
   /**
    * Log a message at ERROR level
-   * @returns this for chaining
+   * @param messageOrTag - Message to log, or tag if second parameter is provided
+   * @param optionalParams - Additional parameters to log
+   * @returns this for method chaining
    */
   public error(messageOrTag?: unknown, ...optionalParams: unknown[]): this {
     this._log(Level.ERROR, messageOrTag, ...optionalParams);
@@ -262,7 +227,9 @@ export class Log {
 
   /**
    * Log a message at INFO level
-   * @returns this for chaining
+   * @param messageOrTag - Message to log, or tag if second parameter is provided
+   * @param optionalParams - Additional parameters to log
+   * @returns this for method chaining
    */
   public info(messageOrTag?: unknown, ...optionalParams: unknown[]): this {
     this._log(Level.INFO, messageOrTag, ...optionalParams);
@@ -271,7 +238,9 @@ export class Log {
 
   /**
    * Log a message at INFO level (alias for info)
-   * @returns this for chaining
+   * @param messageOrTag - Message to log, or tag if second parameter is provided
+   * @param optionalParams - Additional parameters to log
+   * @returns this for method chaining
    */
   public log(messageOrTag?: unknown, ...optionalParams: unknown[]): this {
     this._log(Level.INFO, messageOrTag, ...optionalParams);
@@ -280,7 +249,9 @@ export class Log {
 
   /**
    * Log a message at TRACE level
-   * @returns this for chaining
+   * @param messageOrTag - Message to log, or tag if second parameter is provided
+   * @param optionalParams - Additional parameters to log
+   * @returns this for method chaining
    */
   public trace(messageOrTag?: unknown, ...optionalParams: unknown[]): this {
     this._log(Level.TRACE, messageOrTag, ...optionalParams);
@@ -289,7 +260,9 @@ export class Log {
 
   /**
    * Log a message at WARN level
-   * @returns this for chaining
+   * @param messageOrTag - Message to log, or tag if second parameter is provided
+   * @param optionalParams - Additional parameters to log
+   * @returns this for method chaining
    */
   public warn(messageOrTag?: unknown, ...optionalParams: unknown[]): this {
     this._log(Level.WARN, messageOrTag, ...optionalParams);
@@ -297,9 +270,10 @@ export class Log {
   }
 
   /**
-   * Check if a specific level would be logged for a tag
+   * Check if level would be logged for tag
    * @param level - The log level to check
-   * @param tag - The tag to check (optional)
+   * @param tag - The tag to check (defaults to DEFAULT_TAG)
+   * @returns true if the level would be logged for the tag
    */
   public isLevelEnabled(level: LogLevelStr, tag: string = DEFAULT_TAG): boolean {
     const numericLevel = STR_TO_LEVEL_MAP.get(level);
@@ -308,35 +282,36 @@ export class Log {
   }
 
   /**
-   * Check if DEBUG level is enabled for a specific tag
-   * @param tag - The tag to check (optional)
-   * @returns Whether DEBUG level is enabled for the tag
+   * Check if DEBUG level is enabled for a tag
+   * @param tag - The tag to check (defaults to DEFAULT_TAG)
+   * @returns true if DEBUG level is enabled for the tag
    */
   public isDebugEnabled(tag: string = DEFAULT_TAG): boolean {
     return this.isLevelEnabled(LogLevel.DEBUG, tag);
   }
 
   /**
-   * Check if TRACE level is enabled for a specific tag
-   * @param tag - The tag to check (optional)
-   * @returns Whether TRACE level is enabled for the tag
+   * Check if TRACE level is enabled for a tag
+   * @param tag - The tag to check (defaults to DEFAULT_TAG)
+   * @returns true if TRACE level is enabled for the tag
    */
   public isTraceEnabled(tag: string = DEFAULT_TAG): boolean {
     return this.isLevelEnabled(LogLevel.TRACE, tag);
   }
 
   /**
-   * Clear all tag registrations and configurations
+   * Reset logger to initial state
+   * @returns this for method chaining
    */
   public reset(): this {
     this._tagToLevel.clear();
     this._levelCache.clear();
-    this._defaultLevel = Level.INFO;
-    this._initialized = false;
-    this._buffer.length = 0;
+    this._defaultLevel = DEFAULT_LEVEL;
+    this._callback = undefined;
     tagRegistry.clear();
     return this;
   }
 }
 
+/** Default logger instance ready for immediate use */
 export const log = new Log();

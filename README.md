@@ -7,9 +7,9 @@
 
 ---
 
-🚀 **missionlog** is a **lightweight, structured logging package** designed for **performance, flexibility, and ease of use**. It works as a **drop-in replacement for `console.log` or `ts-log`**, and offers both **log level** filtering, optional **tag** filtering, and **customizable output handling**—all in a tiny (~1KB) package.
+🚀 **missionlog** is a **lightweight, high-performance structured logging package** designed for **performance, flexibility, and ease of use**. It works as a **drop-in replacement for `console.log` or `ts-log`**, and offers both **log level** filtering, optional **tag** filtering, and **customizable output handling**—all in a tiny (~1KB) package.
 
-✔ **Fully Typed (TypeScript)** • ✔ **ESM & CJS Support** • ✔ **Zero Dependencies** • ✔ **100% Coverage**
+✔ **Fully Typed (TypeScript)** • ✔ **ESM & CJS Support** • ✔ **Zero Dependencies** • ✔ **100% Coverage** • ✔ **Optimized Performance**
 
 ---
 
@@ -19,11 +19,24 @@
 - **Seamless Upgrade to Tagged Logging** – Reduce log clutter and focus on what's important.
 - **Configurable Log Levels** – Adjust visibility for log level and tags at runtime.
 - **Customizable Output** – Send logs anywhere: console, JSON, cloud services.
-- **Automatic Buffering** – Log calls before `init()` are automatically buffered and processed once initialized.
-- **Blazing Fast Performance** – O(1) log level lookups with advanced level caching.
-- **TypeScript-First** – Full type safety with LogMessage and LogConfig interfaces.
+- **Ultra-Fast Performance** – Optimized with advanced caching and minimal memory allocation.
+- **TypeScript-First** – Full type safety with comprehensive JSDoc documentation.
 - **Chainable API** – All methods return the logger instance for method chaining.
 - **Works Everywhere** – Browser, Node.js, Firebase, AWS Lambda etc.
+
+---
+
+## ⚡ Performance & Efficiency
+
+**missionlog v4** has been optimized for high-performance applications:
+
+- **Smart Caching** – Level checks are cached to avoid repeated calculations
+- **Minimal Memory Allocation** – Reduced garbage collection with optimized array handling
+- **Zero String Concatenation** – Efficient cache keys using nested Map structures
+- **Type-Safe Tag Access** – Runtime validation with compile-time safety via proxy
+- **Optimized Parameter Handling** – Minimal array operations for better performance
+
+Perfect for high-frequency logging scenarios like real-time applications, games, and data processing pipelines.
 
 ---
 
@@ -69,44 +82,18 @@ log.init({
   [DEFAULT_TAG]: LogLevel.WARN, // Default level for uncategorized logs
 });
 
-// Log with tags
+// Log with type-safe tags - autocomplete shows available tags!
 log.debug(tag.network, 'Connection established');
 log.info(tag.ui, 'Component rendered');
+
+// Typos in tags return undefined, preventing silent errors
+log.debug(tag.netwrok, 'This will be logged without tag due to typo');
 
 // Untagged logs use the DEFAULT_TAG level
 log.debug("This won't be logged because DEFAULT_TAG is WARN");
 log.error('This will be logged because ERROR > WARN');
 ```
 
-### Automatic Buffering
-
-Missionlog automatically buffers log calls that occur before `init()` is called, ensuring no important logs are lost during application startup:
-
-```typescript
-import { log } from 'missionlog';
-
-// These calls are automatically buffered
-log.info('Application starting...');
-log.debug('Loading configuration');
-log.warn('Using default settings');
-
-// Later in your application startup
-log.init({
-  [DEFAULT_TAG]: 'INFO'
-}, (level, tag, message, params) => {
-  console.log(`[${level}] ${tag ? `[${tag}] ` : ''}${message}`, ...params);
-});
-
-// Output:
-// [INFO] Application starting...
-// [WARN] Using default settings
-// (debug message filtered out based on level)
-```
-
-The buffer automatically:
-- Can store up to 50 log entries before `init()` is called
-- Processes all buffered entries when `init()` is called
-- Respects the configured log levels when draining the buffer
 
 ### Custom Log Handler (with Chalk)
 
@@ -190,6 +177,8 @@ log.init({}, (level, tag, message, params) => {
 
 ### Log Methods
 
+All logging methods support both tagged and untagged logging with full type safety:
+
 - `log.trace(messageOrTag?, ...params)` - Lowest verbosity level
 - `log.debug(messageOrTag?, ...params)` - Detailed debugging information
 - `log.info(messageOrTag?, ...params)` - Notable but expected events
@@ -197,13 +186,19 @@ log.init({}, (level, tag, message, params) => {
 - `log.warn(messageOrTag?, ...params)` - Potential issues or warnings
 - `log.error(messageOrTag?, ...params)` - Error conditions
 
-### Configuration
+### Configuration & Utilities
 
 - `log.init(config?, callback?)` - Configure log levels and custom handler
 - `log.isLevelEnabled(level, tag?)` - Check if a specific level would be logged for a tag
-- `log.isDebugEnabled(tag?)` - Convenience method to check if DEBUG level is enabled for a tag
-- `log.isTraceEnabled(tag?)` - Convenience method to check if TRACE level is enabled for a tag
-- `log.reset()` - Clear all tag registrations and configurations
+- `log.isDebugEnabled(tag?)` - Convenience method to check if DEBUG level is enabled
+- `log.isTraceEnabled(tag?)` - Convenience method to check if TRACE level is enabled
+- `log.reset()` - Reset logger to initial state and clear all configurations
+
+### Type-Safe Tag Access
+
+- `tag.{tagName}` - Access registered tags with runtime validation
+- Returns the tag name if registered, `undefined` otherwise
+- Provides IDE autocomplete for registered tags
 
 ### Log Levels (in order of verbosity)
 

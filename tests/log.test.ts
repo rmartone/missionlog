@@ -321,6 +321,33 @@ describe('isLevelEnabled method', () => {
     expect(log.isTraceEnabled()).toBe(false); // Default tag with INFO level
     expect(log.isTraceEnabled('unknown')).toBe(false); // Falls back to default level
   });
+
+  test('caches level checks for performance', () => {
+    log.init({ network: 'DEBUG', [DEFAULT_TAG]: 'INFO' }, (level, component, msg, params): void => {
+      buffer += `${level}: [${component}] ${msg}`;
+      for (const param of params) {
+        buffer += `, ${param}`;
+      }
+    });
+
+    // First call should calculate and cache
+    expect(log.isLevelEnabled('DEBUG', 'network')).toBe(true);
+    // Second call should hit cache (this tests the cached return path)
+    expect(log.isLevelEnabled('DEBUG', 'network')).toBe(true);
+
+    // Test default tag caching too
+    expect(log.isLevelEnabled('DEBUG')).toBe(false);
+    expect(log.isLevelEnabled('DEBUG')).toBe(false);
+
+    // Test cache hit during actual logging
+    buffer = '';
+    log.debug(tag.network, 'First debug message');
+    log.debug(tag.network, 'Second debug message'); // This should hit cache
+    expect(buffer).toBe('DEBUG: [network] First debug messageDEBUG: [network] Second debug message');
+
+    // Test empty string tag (should use DEFAULT_TAG) - this covers the missing branch
+    expect(log.isLevelEnabled('INFO', '')).toBe(true);
+  });
 });
 
 describe('reset method', () => {
@@ -438,7 +465,7 @@ describe('Tag registration and reflection', () => {
   });
 });
 
-describe('Buffering functionality', () => {
+describe('Pre-initialization behavior', () => {
   let logBuffer: string[] = [];
 
   beforeEach(() => {
@@ -446,11 +473,11 @@ describe('Buffering functionality', () => {
     log.reset(); // Ensure we start in uninitialized state
   });
 
-  test('buffers log calls before initialization', () => {
+  test('ignores log calls before initialization', () => {
     // Log some messages before init
-    log.info('First buffered message');
-    log.warn('testTag', 'Second buffered message');
-    log.error('Third buffered message');
+    log.info('First message');
+    log.warn('testTag', 'Second message');
+    log.error('Third message');
 
     // Initialize with callback
     log.init(
@@ -463,12 +490,8 @@ describe('Buffering functionality', () => {
       },
     );
 
-    // Verify buffered messages were processed
-    expect(logBuffer).toEqual([
-      'INFO: [] First buffered message',
-      'WARN: [testTag] Second buffered message',
-      'ERROR: [] Third buffered message',
-    ]);
+    // Verify no messages were processed (they were ignored)
+    expect(logBuffer).toEqual([]);
   });
 
   test('processes immediate messages after initialization', () => {
@@ -487,24 +510,21 @@ describe('Buffering functionality', () => {
     expect(logBuffer).toEqual(['INFO: [] Immediate message', 'WARN: [] Another immediate message']);
   });
 
-  test('handles buffer overflow gracefully', () => {
-    // Generate more than MAX_BUFFER (50) messages
-    for (let i = 0; i < 60; i++) {
-      log.info(`Message ${i}`);
-    }
+  test('continues to ignore messages if no callback is set', () => {
+    // Log messages before init (no callback)
+    log.info('Should be ignored');
 
-    // Initialize and capture what was buffered
-    log.init({ [DEFAULT_TAG]: 'INFO' }, (level, tag, message, params) => {
-      logBuffer.push(`${level}: [${tag}] ${message}${params.length ? `, ${params.join(', ')}` : ''}`);
-    });
+    // Initialize without callback
+    log.init({ [DEFAULT_TAG]: 'INFO' });
 
-    // Should only have the first 50 messages (we stop appending after MAX_BUFFER)
-    expect(logBuffer.length).toBe(50);
-    expect(logBuffer[0]).toBe('INFO: [] Message 0'); // First message
-    expect(logBuffer[49]).toBe('INFO: [] Message 49'); // 50th message (last one buffered)
+    // Log more messages (still no callback)
+    log.info('Still ignored');
+
+    // Verify no messages were captured
+    expect(logBuffer).toEqual([]);
   });
 
-  test('buffers different log levels', () => {
+  test('ignores different log levels before initialization', () => {
     log.trace('Trace message');
     log.debug('Debug message');
     log.info('Info message');
@@ -515,30 +535,11 @@ describe('Buffering functionality', () => {
       logBuffer.push(`${level}: [${tag}] ${message}`);
     });
 
-    expect(logBuffer).toEqual([
-      'TRACE: [] Trace message',
-      'DEBUG: [] Debug message',
-      'INFO: [] Info message',
-      'WARN: [] Warn message',
-      'ERROR: [] Error message',
-    ]);
+    // All messages before init should be ignored
+    expect(logBuffer).toEqual([]);
   });
 
-  test('respects log levels when draining buffer', () => {
-    log.trace('Filtered trace');
-    log.debug('Filtered debug');
-    log.info('Allowed info');
-    log.warn('Allowed warn');
-
-    // Initialize with INFO level (should filter out trace and debug)
-    log.init({ [DEFAULT_TAG]: 'INFO' }, (level, tag, message, params) => {
-      logBuffer.push(`${level}: [${tag}] ${message}`);
-    });
-
-    expect(logBuffer).toEqual(['INFO: [] Allowed info', 'WARN: [] Allowed warn']);
-  });
-
-  test('handles empty messages in buffer', () => {
+  test('handles empty messages before initialization', () => {
     log.info(''); // Empty message
     log.info(); // Undefined message
     log.info('Valid message');
@@ -547,23 +548,27 @@ describe('Buffering functionality', () => {
       logBuffer.push(`${level}: [${tag}] ${message}`);
     });
 
-    // Only the valid message should be logged
-    expect(logBuffer).toEqual(['INFO: [] Valid message']);
+    // All messages before init should be ignored, including empty ones
+    expect(logBuffer).toEqual([]);
   });
 
-  test('reset clears buffer and resets initialization state', () => {
-    log.info('Buffered message');
+  test('reset allows normal operation after re-initialization', () => {
+    // Log before init (ignored)
+    log.info('Ignored message');
 
     log.reset();
 
-    // Try to log again before re-initializing
-    log.info('Another buffered message');
+    // Log again before re-initializing (also ignored)
+    log.info('Also ignored');
 
     log.init({ [DEFAULT_TAG]: 'INFO' }, (level, tag, message, params) => {
       logBuffer.push(`${level}: [${tag}] ${message}`);
     });
 
-    // Should only have the message logged after reset
-    expect(logBuffer).toEqual(['INFO: [] Another buffered message']);
+    // Log after init (this should work)
+    log.info('Working message');
+
+    // Should only have the message logged after init
+    expect(logBuffer).toEqual(['INFO: [] Working message']);
   });
 });
