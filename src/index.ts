@@ -8,16 +8,18 @@
  */
 
 /**
- * Internal log levels enum
+ * Internal log levels (const-object + derived type; values are contiguous 1..6
+ * so they can index into LEVEL_STR directly).
  */
-enum Level {
-  TRACE = 1,
-  DEBUG,
-  INFO,
-  WARN,
-  ERROR,
-  OFF,
-}
+const Level = {
+  TRACE: 1,
+  DEBUG: 2,
+  INFO: 3,
+  WARN: 4,
+  ERROR: 5,
+  OFF: 6,
+} as const;
+type Level = (typeof Level)[keyof typeof Level];
 
 /**
  * Public log levels enum for external use
@@ -71,18 +73,13 @@ export const tag: Record<string, string> = new Proxy(
   },
 );
 
-// Level enum to string conversion
-const LEVEL_STR_MAP = new Map<Level, LogLevelStr>([
-  [Level.TRACE, 'TRACE'],
-  [Level.DEBUG, 'DEBUG'],
-  [Level.INFO, 'INFO'],
-  [Level.WARN, 'WARN'],
-  [Level.ERROR, 'ERROR'],
-  [Level.OFF, 'OFF'],
-]);
+// Level-to-string conversion, indexed directly by the numeric Level value.
+// Index 0 is an unused placeholder (Level values start at 1).
+const LEVEL_STR: readonly LogLevelStr[] = ['OFF', 'TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR', 'OFF'];
 
-// String to level enum conversion
-const STR_TO_LEVEL_MAP = new Map<LogLevelStr, Level>([
+// String to level conversion. Keyed by string so arbitrary user input
+// (init config values, isLevelEnabled args) can be looked up without casts.
+const STR_TO_LEVEL_MAP = new Map<string, Level>([
   ['TRACE', Level.TRACE],
   ['DEBUG', Level.DEBUG],
   ['INFO', Level.INFO],
@@ -114,9 +111,8 @@ export class Log {
     this._levelCache.clear();
 
     if (config) {
-      for (const key in config) {
-        const levelStr = config[key] as LogLevelStr;
-        this._setTagLevel(key, levelStr);
+      for (const key of Object.keys(config)) {
+        this._setTagLevel(key, config[key]);
       }
     }
 
@@ -130,7 +126,7 @@ export class Log {
   /**
    * Set log level for a tag
    */
-  private _setTagLevel(tag: string, levelStr: LogLevelStr): void {
+  private _setTagLevel(tag: string, levelStr: string): void {
     const level = STR_TO_LEVEL_MAP.get(levelStr);
 
     if (level !== undefined) {
@@ -142,7 +138,7 @@ export class Log {
       }
     } else {
       console.warn(
-        `Invalid log level "${levelStr}" for tag "${tag}". Using default (${LEVEL_STR_MAP.get(this._defaultLevel)}).`,
+        `Invalid log level "${levelStr}" for tag "${tag}". Using default (${LEVEL_STR[this._defaultLevel]}).`,
       );
       this._tagToLevel.set(tag, FALLBACK_LEVEL);
       tagRegistry.add(tag);
@@ -153,22 +149,30 @@ export class Log {
    * Check if logging is enabled for level and tag (cached)
    */
   private _shouldLog(level: Level, tag: string): boolean {
-    let levelMap = this._levelCache.get(level);
-    if (!levelMap) {
-      levelMap = new Map<string, boolean>();
-      this._levelCache.set(level, levelMap);
-    }
-
     const normalizedTag = tag || DEFAULT_TAG;
-    const cached = levelMap.get(normalizedTag);
-    if (cached !== undefined) {
-      return cached;
+
+    let levelMap = this._levelCache.get(level);
+    if (levelMap) {
+      const cached = levelMap.get(normalizedTag);
+      if (cached !== undefined) {
+        return cached;
+      }
     }
 
-    const effectiveLevel = this._tagToLevel.get(normalizedTag) ?? this._defaultLevel;
-    const shouldLog = level >= effectiveLevel;
+    const tagLevel = this._tagToLevel.get(normalizedTag);
+    const shouldLog = level >= (tagLevel ?? this._defaultLevel);
 
-    levelMap.set(normalizedTag, shouldLog);
+    // Only cache known tags (registered, or the default). Arbitrary tags passed
+    // to isLevelEnabled() would otherwise grow _levelCache without bound; their
+    // result is recomputed each call but is identical to the cached value.
+    if (tagLevel !== undefined || normalizedTag === DEFAULT_TAG) {
+      if (!levelMap) {
+        levelMap = new Map<string, boolean>();
+        this._levelCache.set(level, levelMap);
+      }
+      levelMap.set(normalizedTag, shouldLog);
+    }
+
     return shouldLog;
   }
 
@@ -195,9 +199,17 @@ export class Log {
     if (message === undefined || message === '') return;
     if (!this._shouldLog(level, tag)) return;
 
-    const filteredParams = params.length > 0 ? params.filter(param => param !== undefined) : (EMPTY_ARRAY as unknown[]);
+    // Skip the filter allocation unless an undefined is actually present.
+    let filteredParams: unknown[];
+    if (params.length === 0) {
+      filteredParams = EMPTY_ARRAY as unknown[];
+    } else if (params.includes(undefined)) {
+      filteredParams = params.filter(param => param !== undefined);
+    } else {
+      filteredParams = params;
+    }
 
-    const levelStr = LEVEL_STR_MAP.get(level)!;
+    const levelStr = LEVEL_STR[level];
 
     const outputTag = tag === DEFAULT_TAG ? '' : tag;
     this._callback(levelStr, outputTag, message, filteredParams);

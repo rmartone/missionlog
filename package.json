@@ -1,6 +1,6 @@
 {
   "name": "missionlog",
-  "version": "4.1.1",
+  "version": "4.1.2",
   "type": "module",
   "repository": {
     "type": "git",
@@ -30,7 +30,7 @@
     "build:types": "tsc --emitDeclarationOnly",
     "build:js": "node build.js",
     "format": "prettier -c src/**/*.ts",
-    "lint": "eslint ./src --ext .ts,.tsx --fix",
+    "lint": "eslint ./src --fix",
     "pub": "npm version patch --no-git-tag-version && npm run build && npm publish",
     "coverage": "vitest run --coverage",
     "test": "vitest --config vitest.config.ts --run"
@@ -59,25 +59,24 @@
   "author": "Ray Martone <rmartone@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^24.1.0",
-    "@typescript-eslint/eslint-plugin": "^8.38.0",
-    "@typescript-eslint/parser": "^8.38.0",
-    "@vitest/coverage-v8": "^3.2.4",
-    "@vitest/ui": "^3.2.4",
+    "@types/node": "^25.9.1",
+    "@typescript-eslint/eslint-plugin": "^8.60.0",
+    "@typescript-eslint/parser": "^8.60.0",
+    "@vitest/coverage-v8": "^4.1.7",
+    "@vitest/ui": "^4.1.7",
     "coveralls": "^3.1.1",
-    "esbuild": "^0.25.8",
-    "esbuild-plugin-tsc": "^0.5.0",
-    "eslint": "^9.32.0",
+    "esbuild": "^0.28.0",
+    "esbuild-plugin-tsc": "^0.6.0",
+    "eslint": "^10.4.0",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-prettier": "^5.5.3",
-    "prettier": "^3.6.2",
-    "prettier-plugin-organize-imports": "^4.2.0",
+    "eslint-plugin-prettier": "^5.5.5",
+    "prettier": "^3.8.3",
+    "prettier-plugin-organize-imports": "^4.3.0",
     "shx": "^0.4.0",
     "standard-version": "^9.5.0",
     "tslib": "^2.8.1",
-    "typescript": "^5.8.3",
-    "vite": "^7.0.6",
-    "vitest": "^3.2.4"
+    "typescript": "^6.0.3",
+    "vite": "^8.0.14",
+    "vitest": "^4.1.7"
   }
 }

@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.1.3](https://github.com/rmartone/missionlog/compare/v4.1.2...v4.1.3) (2026-05-26)
+Internal robustness and performance improvements. No public API or behavior changes.
+* `init()` now reads only own config keys (`Object.keys`) instead of walking the prototype chain
+* Bounded the internal level cache: tags passed to `isLevelEnabled()` that aren't registered are no longer cached, preventing unbounded growth (return values are unchanged)
+* Replaced hot-path `Map` lookups with direct array indexing for level-to-string conversion
+* Skip the params-filter array allocation on log calls when no `undefined` arguments are present
+* Converted the internal level enum to a const-object + derived type (no effect on the public `LogLevel` enum)
+
 ### [3.1.5](https://github.com/rmartone/missionlog/compare/v3.1.4...v3.1.5) (2025-05-13)
 * Updated README.md
 
